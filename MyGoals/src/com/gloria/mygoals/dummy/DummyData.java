@@ -105,4 +105,38 @@ public class DummyData {
 		return data;
 	}
 
+	public static List<HashMap<String, String>> getActivitiesData() {
+		List<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
+	    //"title", "start_date", "end_date", "status", "progress", "effort"
+		
+		HashMap<String, String> map3 = new HashMap<String, String>();
+	    map3.put("title", "To Read the PMBok");
+	    map3.put("start_date", "01/01/14 10:30");
+	    map3.put("end_date", "24/01/14 12:00");
+	    map3.put("status", "On Track");	    
+	    map3.put("progress", "5 on 12");	 
+	    map3.put("effort", "12 x 1.5 hrs");	    
+	    data.add(map3);
+ 
+		HashMap<String, String> map7 = new HashMap<String, String>();
+	    map7.put("title", "To Train with the simulation software");
+	    map7.put("start_date", "22/01/14 14:00");
+	    map7.put("end_date", "29/01/14 18:00");
+	    map7.put("status", "Late");	
+	    map7.put("progress", "0 on 2");
+	    map7.put("effort", "2 x 4 hrs");	    
+	    data.add(map7);	    
+	    
+		HashMap<String, String> map8 = new HashMap<String, String>();
+	    map8.put("title", "To pass the exam");
+	    map8.put("start_date", "01/03/14 14:00");
+	    map8.put("end_date", "01/03/14 18:00");
+	    map8.put("status", "Scheduled");	
+	    map8.put("progress", "0 on 1");
+	    map8.put("effort", "4 hrs");	
+	    data.add(map8);
+
+		return data;
+	}
+
 }

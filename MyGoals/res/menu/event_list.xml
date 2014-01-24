@@ -8,8 +8,8 @@
 
     <!-- TODO specify a dedicated string for action "new event"'s title --> 
     <item 
-        android:id="@+id/action_new_event" 
-        android:title="@string/action_new_goal" 
+        android:id="@+id/action_new" 
+        android:title="@string/action_new" 
         android:icon="@drawable/action_content_new" 
         android:showAsAction="always"/>
 

@@ -28,7 +28,7 @@ public class EventListFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// Return the View built from the layout
-		root_view = inflater.inflate(R.layout.activity_event_list, container, false);
+		root_view = inflater.inflate(R.layout.event_list, container, false);
 		return root_view;
 	}	
 	
@@ -39,7 +39,7 @@ public class EventListFragment extends Fragment {
         
         // create the list mapping
         String[] from = new String[] {"date", "task", "activity", "feedback"};
-        int[] to = new int[] { R.id.t_event_date, R.id.t_event_title, R.id.t_event_goal, R.id.t_event_feedback};
+        int[] to = new int[] { R.id.t_event_date, R.id.t_event_title, R.id.t_event_goal, R.id.t_progress};
  
         // fill in the goal list layout
         //TODO Create a custom adapter to display Event in the list of events with category color, checkbox ...
@@ -53,39 +53,5 @@ public class EventListFragment extends Fragment {
         	}
         });
 	}
-
-	/* TODO Manage the action bar in fragments
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.event_list, menu);
-		return true;
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
-	    switch (item.getItemId()) {
-	        case R.id.action_new_event:
-	        	// TODO action when 'add event' action in action bar is pressed 
-	            openNewEventActivity();
-	            return true;
-	        case R.id.action_settings:
-	            openSettings();
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
-	}
-	
-	private void openNewEventActivity() {
-		// TODO action when 'add event' action in action bar is pressed 
-	    //Intent intent = new Intent(this, NewEventActivity.class);
-	    //startActivity(intent);
-	}
-	
-	private void openSettings() {
-		
-	} */
 	
 }

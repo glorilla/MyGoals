@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 
-public class NewGoalActivity extends Activity {
+public class EditGoalActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_goal_detail);
+		setContentView(R.layout.goal_edit);
         
 		// Make sure we're running on Honeycomb or higher to use ActionBar APIs
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
