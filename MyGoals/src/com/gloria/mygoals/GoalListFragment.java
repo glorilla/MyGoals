@@ -35,8 +35,9 @@ public class GoalListFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState);
+        	
     	if (root_view != null) {
-    		 // get the listview in the view hierarchy
+    		// get the listview in the view hierarchy
     		ListView lv= (ListView)root_view.findViewById(R.id.lv_goals);
     	
 		    // create the list mapping

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -17,7 +18,7 @@ import android.view.MenuItem;
  * @author glorilla
  *
  */
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements OnPageChangeListener {
     static final int NUM_ITEMS = 2; // nb of pages
 
     MyAdapter mAdapter;	// adapter that provides the page to draw
@@ -30,6 +31,7 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        this.setTitle("My Goals");
         
         mAdapter = new MyAdapter(getSupportFragmentManager());
 
@@ -38,6 +40,9 @@ public class MainActivity extends FragmentActivity {
         
         mIndicator = (LinePageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
+        /* The PageIndicator overrides the OnPageChangelistener affectation on the ViewPager.
+        But it offers the method setOnPageChangeListener to continue the treatment on these events */
+        mIndicator.setOnPageChangeListener(this);
     }
 
 	@Override
@@ -97,5 +102,25 @@ public class MainActivity extends FragmentActivity {
 			} 
         }
     }
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset,
+			int positionOffsetPixels) {
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+    	if (position % NUM_ITEMS == 0) {
+    		// Activity title set according to the goal list page
+            setTitle("My Goals");
+		} else { 
+    		// Activity title set according to the goal list page
+            setTitle("My Tasks");
+		} 		
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int state) {
+	}
 
 }

@@ -35,23 +35,26 @@ public class EventListFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState);
-        ListView lv= (ListView)root_view.findViewById(R.id.lv_events); // get the listview in the view hierarchy
-        
-        // create the list mapping
-        String[] from = new String[] {"date", "task", "activity", "feedback"};
-        int[] to = new int[] { R.id.t_event_date, R.id.t_event_title, R.id.t_event_goal, R.id.t_progress};
- 
-        // fill in the goal list layout
-        //TODO Create a custom adapter to display Event in the list of events with category color, checkbox ...
-        SimpleAdapter adapter = new SimpleAdapter(getActivity(), DummyData.getEventsData(), R.layout.event_item, from, to);
-        lv.setAdapter(adapter);
-        
-        // Define action when clicking on a Goal item 
-        lv.setOnItemClickListener(new OnItemClickListener() {
-        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    			Log.v("DEBUG", "Item "+id+" has been clicked");	
-        	}
-        });
+
+    	if (root_view != null) {        
+	        ListView lv= (ListView)root_view.findViewById(R.id.lv_events); // get the listview in the view hierarchy
+	        
+	        // create the list mapping
+	        String[] from = new String[] {"date", "task", "activity", "feedback"};
+	        int[] to = new int[] { R.id.t_event_date, R.id.t_event_title, R.id.t_event_goal, R.id.t_progress};
+	 
+	        // fill in the goal list layout
+	        //TODO Create a custom adapter to display Event in the list of events with category color, checkbox ...
+	        SimpleAdapter adapter = new SimpleAdapter(getActivity(), DummyData.getEventsData(), R.layout.event_item, from, to);
+	        lv.setAdapter(adapter);
+	        
+	        // Define action when clicking on a Goal item 
+	        lv.setOnItemClickListener(new OnItemClickListener() {
+	        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	    			Log.v("DEBUG", "Item "+id+" has been clicked");	
+	        	}
+	        });
+		}
 	}
 	
 }

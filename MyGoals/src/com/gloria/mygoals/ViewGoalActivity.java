@@ -11,14 +11,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 
 /**
  * @author glorilla
  *
  */
-public class ViewGoalActivity extends FragmentActivity {
+public class ViewGoalActivity extends FragmentActivity implements OnPageChangeListener {
     static final int NUM_ITEMS = 2; // nb of pages
 
     MyAdapter mAdapter;	// adapter that provides the page to draw
@@ -39,6 +39,12 @@ public class ViewGoalActivity extends FragmentActivity {
         
         mIndicator = (LinePageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
+        /* The PageIndicator overrides the OnPageChangelistener affectation on the ViewPager.
+        But it offers the method setOnPageChangeListener to continue the treatment on these events */
+        mIndicator.setOnPageChangeListener(this);
+        
+		// TODO Set the goal title as activity title
+        setTitle("To Pass the PMP Exam");
     }
 
     public static class MyAdapter extends FragmentPagerAdapter {
@@ -61,57 +67,23 @@ public class ViewGoalActivity extends FragmentActivity {
         }
     }
 
-    /*
-    public static class ArrayListFragment extends ListFragment {
-        int mNum;
+	@Override
+	public void onPageScrolled(int position, float positionOffset,
+			int positionOffsetPixels) {
+	}
 
-        /**
-         * Create a new instance of CountingFragment, providing "num"
-         * as an argument.
-         *
-        static ArrayListFragment newInstance(int num) {
-            ArrayListFragment f = new ArrayListFragment();
+	@Override
+	public void onPageSelected(int position) {
+    	if (position % NUM_ITEMS == 0) {
+    		// TODO Set the goal title as activity title
+            setTitle("To Pass the PMP Exam");
+		} else { 
+    		// TODO To use @string references
+            setTitle("Associated activities");
+		} 	
+	}
 
-            // Supply num input as an argument.
-            Bundle args = new Bundle();
-            args.putInt("num", num);
-            f.setArguments(args);
-
-            return f;
-        }
-
-        /**
-         * When creating, retrieve this instance's number from its arguments.
-         *
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            mNum = getArguments() != null ? getArguments().getInt("num") : 1;
-        }
-
-        /**
-         * The Fragment's UI is just a simple text view showing its
-         * instance number.
-         *
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.fragment_pager_list, container, false);
-            View tv = v.findViewById(R.id.text);
-            ((TextView)tv).setText("Fragment #" + mNum);
-            return v;
-        }
-
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-            setListAdapter(new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.simple_list_item_1, Cheeses.sCheeseStrings));
-        }
-
-        @Override
-        public void onListItemClick(ListView l, View v, int position, long id) {
-            Log.i("FragmentList", "Item clicked: " + id);
-        }
-    }*/
+	@Override
+	public void onPageScrollStateChanged(int state) {
+	}
 }
