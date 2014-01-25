@@ -3,6 +3,9 @@
  */
 package com.gloria.mygoals;
 
+import com.viewpagerindicator.LinePageIndicator;
+import com.viewpagerindicator.PageIndicator;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -20,7 +23,9 @@ public class ViewGoalActivity extends FragmentActivity {
 
     MyAdapter mAdapter;	// adapter that provides the page to draw
 
-    ViewPager mPager; // the page renderer 
+    ViewPager mPager; // the page renderer
+    
+    PageIndicator mIndicator; // the page indicator    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,20 +36,9 @@ public class ViewGoalActivity extends FragmentActivity {
 
         mPager = (ViewPager)findViewById(R.id.goal_pager);
         mPager.setAdapter(mAdapter);
-
-        /* Watch for button clicks.
-        Button button = (Button)findViewById(R.id.goto_first);
-        button.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                mPager.setCurrentItem(0);
-            }
-        });
-        button = (Button)findViewById(R.id.goto_last);
-        button.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                mPager.setCurrentItem(NUM_ITEMS-1);
-            }
-        }); */
+        
+        mIndicator = (LinePageIndicator)findViewById(R.id.indicator);
+        mIndicator.setViewPager(mPager);
     }
 
     public static class MyAdapter extends FragmentPagerAdapter {

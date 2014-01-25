@@ -1,7 +1,7 @@
-/**
- * 
- */
 package com.gloria.mygoals;
+
+import com.viewpagerindicator.LinePageIndicator;
+import com.viewpagerindicator.PageIndicator;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,7 +22,9 @@ public class MainActivity extends FragmentActivity {
 
     MyAdapter mAdapter;	// adapter that provides the page to draw
 
-    ViewPager mPager; // the page renderer 
+    ViewPager mPager; // the page renderer
+    
+    PageIndicator mIndicator; // the page indicator
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,9 @@ public class MainActivity extends FragmentActivity {
 
         mPager = (ViewPager)findViewById(R.id.list_pager);
         mPager.setAdapter(mAdapter);
+        
+        mIndicator = (LinePageIndicator)findViewById(R.id.indicator);
+        mIndicator.setViewPager(mPager);
     }
 
 	@Override
