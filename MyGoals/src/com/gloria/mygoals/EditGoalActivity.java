@@ -4,6 +4,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 public class EditGoalActivity extends Activity {
 
@@ -20,6 +22,16 @@ public class EditGoalActivity extends Activity {
 		    // If your minSdkVersion is 11 or higher, instead use:
 		    getActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        
+        // Category Spinner
+        Spinner spinner = (Spinner) findViewById(R.id.sp_goal_detail_category);
+		// Create an ArrayAdapter using the string array and a default spinner layout
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, 
+				R.array.category_array, android.R.layout.simple_spinner_item);
+		// Specify the layout to use when the list of choices appears
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// Apply the adapter to the spinner
+		spinner.setAdapter(adapter);
 	}
 
 	@Override

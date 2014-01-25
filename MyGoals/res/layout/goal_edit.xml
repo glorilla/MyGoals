@@ -66,17 +66,18 @@
 	        android:minLines="2" />
 	       
 	    <!-- Category -->
+
 	    <Spinner
 	        android:id="@+id/sp_goal_detail_category"
-	        android:layout_width="48dp"
+	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@id/l_goal_detail_title"
 	        android:layout_alignBottom="@id/l_goal_detail_title"
 	        android:layout_alignParentRight="true"
 	        android:layout_marginBottom="4dp"
 	        android:layout_marginLeft="16dp"
 	        android:layout_marginRight="16dp"
-	        android:layout_marginTop="4dp"
-	        android:layout_weight="1" />
+	        android:layout_marginTop="4dp" />
 	
 	    <!-- Start Date -->
 		<TextView
