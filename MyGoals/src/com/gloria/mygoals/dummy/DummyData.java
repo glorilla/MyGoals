@@ -17,6 +17,7 @@ public class DummyData {
 	    goal_map1.put("desc", "This project management certification will be a real plus on my CV");
 	    goal_map1.put("status", "In progress");
 	    goal_map1.put("end_date", "31/07/14");
+	    goal_map1.put("progress", "15");
 	    goals_data.add(goal_map1);
 	    
 		HashMap<String, String> goal_map6 = new HashMap<String, String>();
@@ -24,6 +25,7 @@ public class DummyData {
 	    goal_map6.put("desc", "I need to do some sport");
 	    goal_map6.put("status", "Planned");
 	    goal_map6.put("end_date", "31/12/14");
+	    goal_map6.put("progress", "45");
 	    goals_data.add(goal_map6);
 	    
 		HashMap<String, String> goal_map7 = new HashMap<String, String>();
@@ -31,6 +33,7 @@ public class DummyData {
 	    goal_map7.put("desc", "Not an option ... unfortunately");
 	    goal_map7.put("status", "In progress");
 	    goal_map7.put("end_date", "31/03/14");
+	    goal_map7.put("progress", "85");
 	    goals_data.add(goal_map7);	    
 
 		HashMap<String, String> goal_map8 = new HashMap<String, String>();
@@ -38,6 +41,7 @@ public class DummyData {
 	    goal_map8.put("desc", "Quite difficult");
 	    goal_map8.put("status", "In progress");
 	    goal_map8.put("end_date", "31/03/14");
+	    goal_map8.put("progress", "30");
 	    goals_data.add(goal_map8);
 	    
 		return goals_data;
