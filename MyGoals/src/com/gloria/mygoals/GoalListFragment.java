@@ -42,6 +42,11 @@ public class GoalListFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState);
+    }
+	
+    @Override
+    public void onStart() {
+    	super.onStart();
         	
     	if (root_view != null) {
     		// get the listview in the view hierarchy

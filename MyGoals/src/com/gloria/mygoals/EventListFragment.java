@@ -35,7 +35,10 @@ public class EventListFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState);
-
+    }
+    
+    public void onStart() {
+    	super.onStart();
     	if (root_view != null) {        
 	        ListView lv= (ListView)root_view.findViewById(R.id.lv_events); // get the listview in the view hierarchy
 	        

@@ -12,7 +12,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -34,7 +33,7 @@ public class MyGoalsProvider extends ContentProvider {
      * The database that the provider uses as its underlying data store
      */
     private static final String DATABASE_NAME = "mygoals.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     /**
      * Projection maps used to select columns from the database
@@ -46,20 +45,29 @@ public class MyGoalsProvider extends ContentProvider {
      */
 
     /**
-     * Standard projection for the interesting columns of a normal note.
-     * TODO To adapt
+     * Standard projection for the interesting columns of a goal.
+     * 
      */
-    private static final String[] READ_NOTE_PROJECTION = new String[] {
-            MyGoals.Goals._ID,               // Projection position 0, the note's id
-            MyGoals.Goals.COLUMN_NAME_DESC,  // Projection position 1, the note's content
-            MyGoals.Goals.COLUMN_NAME_TITLE  // Projection position 2, the note's title
+    public static final String[] GOAL_PROJECTION = new String[] {
+            MyGoals.Goals._ID,               	// Projection position 0, the goal's id
+            MyGoals.Goals.COLUMN_NAME_TITLE, 	// Projection position 1, the goal's title
+            MyGoals.Goals.COLUMN_NAME_DESC,   	// Projection position 2, the goal's description
+            MyGoals.Goals.COLUMN_NAME_START_DATE, 	// Projection position 3, the goal's start date
+            MyGoals.Goals.COLUMN_NAME_TARGET_DATE,  // Projection position 4, the goal's target date
+            MyGoals.Goals.COLUMN_NAME_WORKLOAD,	// Projection position 5, the goal's workload
+            MyGoals.Goals.COLUMN_NAME_PROGRESS	// Projection position 6, the goal's progress
     };
-    /*
-     * TODO what is it for?
-    private static final int READ_NOTE_NOTE_INDEX = 1;
-    private static final int READ_NOTE_TITLE_INDEX = 2;
-     */
     
+    /*
+     * Indexes of the columns in the projection 
+     */
+    public static final int GOAL_TITLE_INDEX = 1;
+    public static final int GOAL_DESC_INDEX = 2;
+    public static final int GOAL_START_DATE_INDEX = 3;
+    public static final int GOAL_TARGET_DATE_INDEX = 4;
+    public static final int GOAL_WORKLOAD_INDEX = 5;
+    public static final int GOAL_PROGRESS_INDEX = 6;
+         
     /*
      * Constants used by the Uri matcher to choose an action based on the pattern
      * of the incoming URI
@@ -134,6 +142,10 @@ public class MyGoalsProvider extends ContentProvider {
         // Maps "workload" to "workload"
         sGoalsProjectionMap.put(MyGoals.Goals.COLUMN_NAME_WORKLOAD,
         		MyGoals.Goals.COLUMN_NAME_WORKLOAD);
+
+        // Maps "progress" to "progress"
+        sGoalsProjectionMap.put(MyGoals.Goals.COLUMN_NAME_PROGRESS,
+        		MyGoals.Goals.COLUMN_NAME_PROGRESS);        
         
         /*
          * Creates an initializes a projection map for handling Live Folders
@@ -179,7 +191,8 @@ public class MyGoalsProvider extends ContentProvider {
                    + MyGoals.Goals.COLUMN_NAME_DESC + " TEXT,"
                    + MyGoals.Goals.COLUMN_NAME_START_DATE + " TEXT,"
                    + MyGoals.Goals.COLUMN_NAME_TARGET_DATE + " TEXT,"
-                   + MyGoals.Goals.COLUMN_NAME_WORKLOAD + " INTEGER"
+                   + MyGoals.Goals.COLUMN_NAME_WORKLOAD + " INTEGER,"
+                   + MyGoals.Goals.COLUMN_NAME_PROGRESS + " INTEGER"
                    + ");");
        }
 
@@ -234,7 +247,7 @@ public class MyGoalsProvider extends ContentProvider {
 
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
+		String[] selectionArgs, String sortOrder) {
 	       // Constructs a new query builder and sets its table name
 	       SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 	       qb.setTables( MyGoals.Goals.TABLE_NAME);

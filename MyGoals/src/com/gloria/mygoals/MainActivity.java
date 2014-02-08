@@ -76,6 +76,7 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
  
 	private void openNewGoalActivity() {
 	    Intent intent = new Intent(this, EditGoalActivity.class);
+	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.NEW);
 	    startActivity(intent);
 	}
 	

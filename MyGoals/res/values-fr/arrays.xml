@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_array">
+        <item>Travail</item>
+        <item>Santé</item>
+        <item>Sport</item>
+        <item>Amour</item>
+        <item>Etude</item>
+    </string-array>
+</resources>

@@ -137,7 +137,13 @@ public final class MyGoals {
          *<P>Type: INTEGER </P>
          */
         public static final String COLUMN_NAME_WORKLOAD = "workload";       
-        
+
+        /**
+         * Column name for the goal progress
+         *<P>Type: INTEGER </P>
+         */
+        public static final String COLUMN_NAME_PROGRESS = "progress";
+
         /**
          * Column name for the goal category
          * TODO category column type ? 
