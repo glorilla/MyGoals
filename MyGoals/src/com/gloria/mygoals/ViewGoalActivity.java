@@ -14,6 +14,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.Menu;
+import android.view.MenuItem;
 
 /**
  * @author glorilla
@@ -51,7 +53,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
         But it offers the method setOnPageChangeListener to continue the treatment on these events */
         mIndicator.setOnPageChangeListener(this);
         
-		// TODO Set the goal title as activity title
+		// Set the goal title as activity title
         setTitle(getIntent().getStringExtra(EXTRA_KEY_TITLE));
     }
 
@@ -83,15 +85,49 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	@Override
 	public void onPageSelected(int position) {
     	if (position % NUM_ITEMS == 0) {
-    		// TODO Set the goal title as activity title
-            setTitle("To Pass the PMP Exam");
+    		// Set the goal title as activity title
+            setTitle(getIntent().getStringExtra(EXTRA_KEY_TITLE));
 		} else { 
-    		// TODO To use @string references
-            setTitle("Associated activities");
+    		// Set activities fragment title
+            setTitle(R.string.activities);
 		} 	
 	}
 
 	@Override
 	public void onPageScrollStateChanged(int state) {
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.goal_detail, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle presses on the action bar items
+		int position = mPager.getCurrentItem();
+	    switch (item.getItemId()) {
+	        case R.id.action_edit:
+	        	if (position % NUM_ITEMS == 0) {
+	        		// TODO To implement the action bar "edit" button for the goal fragment
+	        		openEditGoalActivity();
+	    		} else { 
+	        		// TODO To implement the action bar "edit" button for the activity fragment
+	    		} 
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+
+	private void openEditGoalActivity() {
+	    Intent intent = new Intent(this, EditGoalActivity.class);
+
+	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.EDIT);
+  	    intent.putExtra(EditGoalActivity.EXTRA_KEY_ID, getIntent().getIntExtra(ViewGoalActivity.EXTRA_KEY_ID, 0));
+  
+	    startActivity(intent);
 	}
 }

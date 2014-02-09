@@ -12,8 +12,9 @@
     <string name="goal_workload">Nb of hours</string>
     <string name="goal_hours">h</string>
     <string name="action_new">New</string>
+    <string name="action_edit">Edit</string>
     <string name="title_activity_new_goal">New Goal</string>
-    
+    <string name="activities">"Associated activities"</string>
     <string name="create">create</string>
     <string name="modify">modify</string>
 
