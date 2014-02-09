@@ -6,6 +6,7 @@ package com.gloria.mygoals;
 import com.viewpagerindicator.LinePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -21,6 +22,13 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 public class ViewGoalActivity extends FragmentActivity implements OnPageChangeListener {
     static final int NUM_ITEMS = 2; // nb of pages
 
+	public static final String EXTRA_KEY_ID = "id";
+	public static final String EXTRA_KEY_TITLE = "title";
+	public static final String EXTRA_KEY_DESC = "desc";
+	public static final String EXTRA_KEY_START_DATE = "start_date";
+	public static final String EXTRA_KEY_TARGET_DATE = "target_date";
+	public static final String EXTRA_KEY_WORKLOAD = "workload";
+    
     MyAdapter mAdapter;	// adapter that provides the page to draw
 
     ViewPager mPager; // the page renderer
@@ -44,7 +52,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
         mIndicator.setOnPageChangeListener(this);
         
 		// TODO Set the goal title as activity title
-        setTitle("To Pass the PMP Exam");
+        setTitle(getIntent().getStringExtra(EXTRA_KEY_TITLE));
     }
 
     public static class MyAdapter extends FragmentPagerAdapter {

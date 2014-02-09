@@ -61,6 +61,7 @@ public class MyGoalsProvider extends ContentProvider {
     /*
      * Indexes of the columns in the projection 
      */
+	public static final int GOAL_ID_INDEX = 0;
     public static final int GOAL_TITLE_INDEX = 1;
     public static final int GOAL_DESC_INDEX = 2;
     public static final int GOAL_START_DATE_INDEX = 3;

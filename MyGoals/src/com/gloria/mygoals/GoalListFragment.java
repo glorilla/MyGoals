@@ -59,7 +59,7 @@ public class GoalListFragment extends Fragment {
     		
     		ContentResolver cr = getActivity().getContentResolver();
     		Uri uri = MyGoals.Goals.CONTENT_URI;
-    		Cursor c = cr.query(uri, null, null, null, null);
+    		Cursor c = cr.query(uri, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
     		
     		String[] from = new String[] {
     				MyGoals.Goals.COLUMN_NAME_TITLE, 
@@ -108,14 +108,25 @@ public class GoalListFragment extends Fragment {
 		    lv.setOnItemClickListener(new OnItemClickListener() {
 		    	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 					Log.d("DEBUG", "Goal "+id+" has been clicked");
-					viewGoal();
+					Cursor c= ((CursorAdapter)((ListView)parent).getAdapter()).getCursor();
+					c.moveToPosition(position);
+					int goal_id = c.getInt(MyGoalsProvider.GOAL_ID_INDEX);
+					viewGoal(c, goal_id);
 		    	}
 		    });
     	}
     }
     
-	private void viewGoal() {
+	private void viewGoal(Cursor c, int goal_id) {
 	    Intent intent = new Intent(getActivity(), ViewGoalActivity.class);
+	    
+	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_ID, goal_id);
+	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_TITLE, c.getString(MyGoalsProvider.GOAL_TITLE_INDEX));
+	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_DESC, c.getString(MyGoalsProvider.GOAL_DESC_INDEX));
+	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_START_DATE, c.getString(MyGoalsProvider.GOAL_START_DATE_INDEX));
+	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_TARGET_DATE, c.getString(MyGoalsProvider.GOAL_TARGET_DATE_INDEX));
+	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_WORKLOAD, c.getString(MyGoalsProvider.GOAL_WORKLOAD_INDEX));
+	    
 	    startActivity(intent);
 	}
 	
