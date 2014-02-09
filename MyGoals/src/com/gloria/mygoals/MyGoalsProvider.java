@@ -428,8 +428,38 @@ public class MyGoalsProvider extends ContentProvider {
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+        // Validates the incoming URI.
+		switch (sUriMatcher.match(uri)) {
+		// The incoming URI is valid only if it matches one of the predefined URI pattern
+		case GOALS:
+			break;
+
+		/* If the incoming URI is for a single Goal identified by its ID, sets the selection "_ID = <goalID>" to the where clause,
+		 * so that it selects that single Goal
+		 */
+		case GOAL_ID:
+			if (selection == null) {
+				selection = MyGoals.Goals._ID + "=" + 
+				// the position of the note ID itself in the incoming URI
+				uri.getPathSegments().get(MyGoals.Goals.GOAL_ID_PATH_POSITION);
+			}
+			break;
+		default:
+			// If the URI doesn't match any of the known patterns, throw an exception.
+			throw new IllegalArgumentException("Unknown URI " + uri);
+		}
+		
+        // Opens the database object in "write" mode.
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        // Execute the Delete SQL command
+        int nbRow = db.delete(
+            	MyGoals.Goals.TABLE_NAME,    // The table to update.
+        		selection, 
+        		null
+        );
+
+        return nbRow;	
 	}
 
 	@Override

@@ -6,7 +6,11 @@ package com.gloria.mygoals;
 import com.viewpagerindicator.LinePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
+import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,7 +27,10 @@ import android.view.MenuItem;
  *
  */
 public class ViewGoalActivity extends FragmentActivity implements OnPageChangeListener {
-    static final int NUM_ITEMS = 2; // nb of pages
+    
+	private final String TAG = "ViewGoalActivity"; 
+	
+	static final int NUM_ITEMS = 2; // nb of pages
 
 	public static final String EXTRA_KEY_ID = "id";
 	public static final String EXTRA_KEY_TITLE = "title";
@@ -30,12 +38,17 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	public static final String EXTRA_KEY_START_DATE = "start_date";
 	public static final String EXTRA_KEY_TARGET_DATE = "target_date";
 	public static final String EXTRA_KEY_WORKLOAD = "workload";
-    
+	
+	public static final String EXTRA_KEY_RESULT = "result";
+	public static enum result {DELETION}
+	
     MyAdapter mAdapter;	// adapter that provides the page to draw
 
     ViewPager mPager; // the page renderer
     
     PageIndicator mIndicator; // the page indicator    
+    
+	private int mGoalId; // the displayed Goal id
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +68,9 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
         
 		// Set the goal title as activity title
         setTitle(getIntent().getStringExtra(EXTRA_KEY_TITLE));
+        
+        // get the Goal id
+    	mGoalId=getIntent().getIntExtra(ViewGoalActivity.EXTRA_KEY_ID, 0);
     }
 
     public static class MyAdapter extends FragmentPagerAdapter {
@@ -117,6 +133,8 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	        		// TODO To implement the action bar "edit" button for the activity fragment
 	    		} 
 	            return true;
+	        case R.id.action_delete:
+	        	removeGoal();
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -126,8 +144,34 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	    Intent intent = new Intent(this, EditGoalActivity.class);
 
 	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.EDIT);
-  	    intent.putExtra(EditGoalActivity.EXTRA_KEY_ID, getIntent().getIntExtra(ViewGoalActivity.EXTRA_KEY_ID, 0));
+  	    intent.putExtra(EditGoalActivity.EXTRA_KEY_ID, mGoalId);
   
 	    startActivity(intent);
 	}
+	
+	private void removeGoal() {
+		new AlertDialog.Builder(this)
+	    .setTitle("Delete entry")
+	    .setMessage("Are you sure you want to delete this entry?")
+	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) { 
+	            // continue with delete
+	        	ContentResolver cr = getContentResolver();
+	        	int nbRow =  cr.delete(Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + mGoalId), null, null);
+	        	Log.d(TAG, "" + nbRow + " rows have been successfully deleted");
+	        	Intent intent = getIntent();
+	        	intent.putExtra(EXTRA_KEY_RESULT, result.DELETION);
+	        	setResult(RESULT_OK,getIntent());
+	        	finish();
+	        }
+	     })
+	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) { 
+	            // do nothing
+	        }
+	     })
+	    .setIcon(R.drawable.alert_warning)
+	    .show();
+	}
+
 }

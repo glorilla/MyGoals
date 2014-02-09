@@ -22,6 +22,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 
 public class GoalListFragment extends Fragment {
@@ -127,7 +128,22 @@ public class GoalListFragment extends Fragment {
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_TARGET_DATE, c.getString(MyGoalsProvider.GOAL_TARGET_DATE_INDEX));
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_WORKLOAD, c.getString(MyGoalsProvider.GOAL_WORKLOAD_INDEX));
 	    
-	    startActivity(intent);
+	    startActivityForResult(intent, 0);
 	}
 	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == Activity.RESULT_OK) {
+			ViewGoalActivity.result res = (ViewGoalActivity.result)data.getExtras().get(ViewGoalActivity.EXTRA_KEY_RESULT);
+			switch (res) {
+			case DELETION:
+				Toast.makeText(getActivity(), "Goal deleted", Toast.LENGTH_SHORT).show();
+				break;
+			default:
+			}
+		}
+		
+	}
 }
