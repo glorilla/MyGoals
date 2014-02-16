@@ -1,5 +1,10 @@
 package com.gloria.mygoals;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import com.gloria.mygoals.dummy.DummyData;
 
 import android.net.Uri;
@@ -22,6 +27,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -65,26 +71,25 @@ public class GoalListFragment extends Fragment {
     		String[] from = new String[] {
     				MyGoals.Goals.COLUMN_NAME_TITLE, 
     				MyGoals.Goals.COLUMN_NAME_DESC,
-    				MyGoals.Goals.COLUMN_NAME_TARGET_DATE
+    				MyGoals.Goals.COLUMN_NAME_TARGET_DATE,
+    				MyGoals.Goals.COLUMN_NAME_PROGRESS
     				};
-		    int[] to = new int[] { 
+		    
+    		int[] to = new int[] { 
 		    		R.id.t_goal_title, 
 		    		R.id.t_goal_desc, 
-		    		R.id.t_goal_end_date
+		    		R.id.t_goal_end_date,
+		    		R.id.goal_progress
 		    		};
     		
-		    SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), R.layout.goal_item, c, from, to, 0);
-		    
-		    /*
+
 		    // fill in the goal list layout
 		    //TODO Create a custom adapter to display Goal in the list of goals with category icon, colors ...
-		    SimpleAdapter adapter = new SimpleAdapter(getActivity(), DummyData.getGoalsData(), 
-		    		R.layout.goal_item, from, to);
-		    // specific Binder to represent the progress value in the progress bar
-		    adapter.setViewBinder(new ViewBinder() {
-				@Override
-				public boolean setViewValue(View view, Object data, String textRepresentation) {
-					if (view instanceof ProgressBar) {
+
+		    SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), R.layout.goal_item, c, from, to, 0);
+		    adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+
+					/*if (view instanceof ProgressBar) {
                         if (data instanceof Integer) {
                             ((ProgressBar)view).setProgress(((Integer)data).intValue());
                             return true;
@@ -98,10 +103,33 @@ public class GoalListFragment extends Fragment {
                         }
                     }
 					// by returning false, the SimpleAdapter natively maps data of types String, Boolean, Integer or Image  
+					return false;*/
+
+
+				@Override
+				public boolean setViewValue(View view, Cursor cursor,
+						int columnIndex) {
+					// TODO Auto-generated method stub
+					if (view.getId()==R.id.t_goal_end_date){
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+
+						try {
+							Date endDate = sdf.parse(cursor.getString(columnIndex));
+							((TextView)view).setText(SimpleDateFormat.getDateInstance().format(endDate));
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						return true;
+					}
+					if (view.getId()==R.id.goal_progress) {
+                    	int value=Integer.parseInt((String)cursor.getString(columnIndex));
+                    	((ProgressBar)view).setProgress(value);
+                    	return true;
+                    }
 					return false;
 				}
 			});
-		    */
 		    
 		    lv.setAdapter(adapter);
 		    
@@ -126,7 +154,7 @@ public class GoalListFragment extends Fragment {
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_DESC, c.getString(MyGoalsProvider.GOAL_DESC_INDEX));
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_START_DATE, c.getString(MyGoalsProvider.GOAL_START_DATE_INDEX));
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_TARGET_DATE, c.getString(MyGoalsProvider.GOAL_TARGET_DATE_INDEX));
-	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_WORKLOAD, c.getString(MyGoalsProvider.GOAL_WORKLOAD_INDEX));
+	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_WORKLOAD, c.getInt(MyGoalsProvider.GOAL_WORKLOAD_INDEX));
 	    
 	    startActivityForResult(intent, 0);
 	}

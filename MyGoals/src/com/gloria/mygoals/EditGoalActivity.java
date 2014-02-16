@@ -9,12 +9,20 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.*;
-import java.sql.Date;
+
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class EditGoalActivity extends Activity {
 	
@@ -106,15 +114,25 @@ public class EditGoalActivity extends Activity {
 		// insert in db
 		ContentResolver cr = getContentResolver();
 		ContentValues values=new ContentValues();
+		
+		GregorianCalendar calendar = (GregorianCalendar)Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
 		values.put(MyGoals.Goals.COLUMN_NAME_TITLE, ((EditText)findViewById(R.id.t_goal_detail_title)).getText().toString());
 		values.put(MyGoals.Goals.COLUMN_NAME_DESC, ((EditText)findViewById(R.id.t_goal_detail_description)).getText().toString());
-		//Date stored as ISO8601 strings ("YYYY-MM-DD HH:MM:SS.SSS")
+
+		//Date stored as UTC date strings ("YYYY-MM-DD HH:mmZ")
 		DatePicker datePicker = (DatePicker)findViewById(R.id.d_goal_start_date);
-		Date tmpDate= new Date (datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-		values.put(MyGoals.Goals.COLUMN_NAME_START_DATE, tmpDate.toString());
+		calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+		Date startDate = calendar.getTime();
+		values.put(MyGoals.Goals.COLUMN_NAME_START_DATE, sdf.format(startDate));
+		
 		datePicker = (DatePicker)findViewById(R.id.d_goal_end_date);
-		tmpDate = new Date (datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-		values.put(MyGoals.Goals.COLUMN_NAME_TARGET_DATE, tmpDate.toString());
+		calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());		
+		Date endDate = calendar.getTime();
+		values.put(MyGoals.Goals.COLUMN_NAME_TARGET_DATE, sdf.format(endDate));
+
 		values.put(MyGoals.Goals.COLUMN_NAME_WORKLOAD, ((EditText)findViewById(R.id.t_goal_hours)).getText().toString());
 		values.put(MyGoals.Goals.COLUMN_NAME_PROGRESS, 0);
 		
@@ -125,15 +143,25 @@ public class EditGoalActivity extends Activity {
 		// update in db
 		ContentResolver cr = getContentResolver();
 		ContentValues values=new ContentValues();
+		
+		GregorianCalendar calendar = (GregorianCalendar)Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
 		values.put(MyGoals.Goals.COLUMN_NAME_TITLE, ((EditText)findViewById(R.id.t_goal_detail_title)).getText().toString());
 		values.put(MyGoals.Goals.COLUMN_NAME_DESC, ((EditText)findViewById(R.id.t_goal_detail_description)).getText().toString());
-		//Date stored as ISO8601 strings ("YYYY-MM-DD HH:MM:SS.SSS")
+		
+		//Date stored as UTC date strings ("YYYY-MM-DD HH:mmZ")
 		DatePicker datePicker = (DatePicker)findViewById(R.id.d_goal_start_date);
-		Date tmpDate= new Date (datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-		values.put(MyGoals.Goals.COLUMN_NAME_START_DATE, tmpDate.toString());
+		calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+		Date startDate = calendar.getTime();
+		values.put(MyGoals.Goals.COLUMN_NAME_START_DATE, sdf.format(startDate));
+		
 		datePicker = (DatePicker)findViewById(R.id.d_goal_end_date);
-		tmpDate = new Date (datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-		values.put(MyGoals.Goals.COLUMN_NAME_TARGET_DATE, tmpDate.toString());
+		calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());		
+		Date endDate = calendar.getTime();
+		values.put(MyGoals.Goals.COLUMN_NAME_TARGET_DATE, sdf.format(endDate));
+		
 		values.put(MyGoals.Goals.COLUMN_NAME_WORKLOAD, ((EditText)findViewById(R.id.t_goal_hours)).getText().toString());
 		
 		cr.update(Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + id), values, null, null);
@@ -147,10 +175,21 @@ public class EditGoalActivity extends Activity {
 		if (c != null) {
 			((EditText)findViewById(R.id.t_goal_detail_title)).setText(c.getString(MyGoalsProvider.GOAL_TITLE_INDEX));
 			((EditText)findViewById(R.id.t_goal_detail_description)).setText(c.getString(MyGoalsProvider.GOAL_DESC_INDEX));
-			/* TODO to set the date spinners
-			((EditText)findViewById(R.id.t_goal_start_date)).setText(c.getString(MyGoalsProvider.GOAL_START_DATE_INDEX));
-			((EditText)findViewById(R.id.t_goal_end_date)).setText(c.getString(MyGoalsProvider.GOAL_TARGET_DATE_INDEX));
-			*/
+			// TODO to set the date spinners
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+			Calendar calendar = (Calendar) Calendar.getInstance();
+
+			Date startDate = sdf.parse(c.getString(MyGoalsProvider.GOAL_START_DATE_INDEX), new ParsePosition(0));
+			calendar.setTime(startDate);
+			DatePicker dpStartDate = (DatePicker)findViewById(R.id.d_goal_start_date);
+			dpStartDate.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+			
+			Date endDate = sdf.parse(c.getString(MyGoalsProvider.GOAL_TARGET_DATE_INDEX), new ParsePosition(0));
+			calendar.setTime(endDate);
+			DatePicker dpEndDate = (DatePicker)findViewById(R.id.d_goal_end_date);
+			dpEndDate.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+			
 			((EditText)findViewById(R.id.t_goal_hours)).setText(""+c.getInt(MyGoalsProvider.GOAL_WORKLOAD_INDEX));
 		}
 	}
