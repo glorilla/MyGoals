@@ -7,4 +7,9 @@
         <item>Love</item>
         <item>Study</item>
     </string-array>
+    <string-array name="frequency_array">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+    </string-array>
 </resources>

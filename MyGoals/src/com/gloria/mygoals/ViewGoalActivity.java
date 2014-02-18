@@ -131,6 +131,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	        		openEditGoalActivity();
 	    		} else { 
 	        		// TODO To implement the action bar "edit" button for the activity fragment
+	    			openEditActivity();
 	    		} 
 	            return true;
 	        case R.id.action_delete:
@@ -148,6 +149,15 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
   
 	    startActivity(intent);
 	}
+
+	private void openEditActivity() {
+	    Intent intent = new Intent(this, EditActivity.class);
+
+	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.EDIT);
+  	    intent.putExtra(EditGoalActivity.EXTRA_KEY_ID, mGoalId);
+  
+	    startActivity(intent);
+	}	
 	
 	private void removeGoal() {
 		new AlertDialog.Builder(this)
