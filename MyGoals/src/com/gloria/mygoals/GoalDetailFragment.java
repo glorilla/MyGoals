@@ -62,7 +62,7 @@ public class GoalDetailFragment extends Fragment {
 			e.printStackTrace();
 		}
 
-		((TextView)root_view.findViewById(R.id.t_goal_hours)).setText("" + i.getIntExtra(ViewGoalActivity.EXTRA_KEY_WORKLOAD, 0) + getResources().getString(R.string.goal_hours));
+		((TextView)root_view.findViewById(R.id.t_goal_hours)).setText("" + i.getIntExtra(ViewGoalActivity.EXTRA_KEY_WORKLOAD, 0) + getResources().getString(R.string.hours));
 		
 		return root_view;
 	}	

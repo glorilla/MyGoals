@@ -10,7 +10,7 @@
     <string name="goal_start_date">From</string>
     <string name="goal_end_date">To</string>
     <string name="goal_workload">Nb of hours</string>
-    <string name="goal_hours">h</string>
+    <string name="hours">hrs</string>
     <string name="action_new">New</string>
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>    
@@ -18,5 +18,14 @@
     <string name="activities">"Associated activities"</string>
     <string name="create">create</string>
     <string name="modify">modify</string>
-
+    <string name="day">day</string>
+    <string name="week">week</string>
+    <string name="days">days</string>
+    <string name="weeks">weeks</string>    
+    <string name="title">title</string>
+    <string name="description">description</string>
+    <string name="duration">Duration</string>
+    <string name="every">Every</string>
+    <string name="untill">Untill</string> 
+    <string name="events">events</string>     
 </resources>

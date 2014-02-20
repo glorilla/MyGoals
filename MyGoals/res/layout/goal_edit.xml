@@ -39,7 +39,6 @@
 	        android:layout_marginRight="16dp"
 	        android:layout_marginTop="4dp"
 	        android:layout_toRightOf="@id/l_goal_detail_title"
-	        android:layout_weight="1"
 	        android:ems="10"
 	        android:hint="title"
 	        android:inputType="text" >
@@ -56,7 +55,6 @@
 	        android:layout_marginBottom="4dp"
 	        android:layout_marginRight="16dp"
 	        android:layout_marginTop="4dp"
-	        android:layout_weight="1"
 	        android:ems="10"
 	        android:hint="description"
 	        android:inputType="textMultiLine"

@@ -4,19 +4,20 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
-import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
-public class DatePickerFragment extends DialogFragment
-	implements DatePickerDialog.OnDateSetListener {
+public class TimePickerFragment extends DialogFragment
+	implements TimePickerDialog.OnTimeSetListener {
 
 	// For log purpose
-	private static final  String TAG = "DatePickerFragment"; 	
+	private static final  String TAG = "TimePickerFragment"; 	
 	
 	private Date mDate;
 	private TextView mTextView;
@@ -35,19 +36,23 @@ public class DatePickerFragment extends DialogFragment
 		} 
 	
 		// Create a new instance of DatePickerDialog and return it
-		return new DatePickerDialog(getActivity(), this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+		return new TimePickerDialog(getActivity(), this, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), DateFormat.is24HourFormat(getActivity()) );
 	}
 	
-	public void onDateSet(DatePicker view, int year, int month, int day) {
-		Log.d(TAG,"onDateSet method");
+	@Override
+	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+		Log.d(TAG,"onTimeSet method");
 		if (mTextView != null) {
 			// Format the date to the user's locales and set the destination view
 			final Calendar c = Calendar.getInstance();
-			c.set(year, month, day);
+			c.set(1, 0, 1, hourOfDay, minute);
 			mDate.setTime(c.getTimeInMillis());
-			mTextView.setText(SimpleDateFormat.getDateInstance().format(mDate));
+			mTextView.setText(SimpleDateFormat.getTimeInstance().format(mDate));
 			return;
 		}
-		Log.w(TAG,"Setting a date in this DatePicker dialog should update a View parameter");
+		Log.w(TAG,"Setting a date in this TimePicker dialog should update a View parameter");
+
+		
 	}
 }
+
