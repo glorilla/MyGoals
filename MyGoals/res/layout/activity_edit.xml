@@ -78,6 +78,15 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/t_activity_start_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/l_activity_start_date"
+            android:layout_toRightOf="@+id/l_activity_goalTitle"
+            android:text="01/01/2014"             
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
         <!-- Duration -->
 
         <TextView
@@ -85,16 +94,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/l_activity_start_date"
-            android:layout_below="@+id/d_activity_start_date"
+            android:layout_below="@+id/t_activity_start_date"
             android:layout_marginBottom="4dp"
+            android:layout_marginRight="4dp"
             android:layout_marginTop="20dp"
             android:text="Duration"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
 
+        <EditText
+            android:id="@+id/t_task_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/l_task_duration"
+            android:layout_marginLeft="4dp"            
+            android:layout_toRightOf="@+id/l_task_duration"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:ems="3"
+            android:inputType="number" />
+
 
         <!-- Repetition -->
-
+        
         <TextView
             android:id="@+id/l_repetition"
             android:layout_width="wrap_content"
@@ -242,15 +263,16 @@
 
 	        <!-- Estimated effort -->
 
-	        <DatePicker
-	            android:id="@+id/d_activity_end_date"
+	        <TextView
+	            android:id="@+id/t_activity_end_date"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignBaseline="@+id/c_activity_end_date"
 	            android:layout_alignBottom="@+id/c_activity_end_date"
 	            android:layout_marginLeft="16dp"
 	            android:layout_toRightOf="@+id/c_activity_end_date"
-	            android:calendarViewShown="false" />
+	            android:text="31/12/2015"             
+	            android:textAppearance="?android:attr/textAppearanceMedium" />
 
 	        <TextView
 	            android:id="@+id/l_activity_workload"
@@ -285,18 +307,11 @@
 	            android:text="events"
 				android:textStyle="bold"	            
 	            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-
             
         </RelativeLayout>
-
-        
         
         <!-- Submit button -->
-
-
-
-        <Button
+		<Button
             android:id="@+id/btn_submit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -307,26 +322,6 @@
             android:layout_marginRight="16dp"
             android:layout_marginTop="20dp"
             android:text="OK" />
-
-        <DatePicker
-            android:id="@+id/d_activity_start_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/l_activity_start_date"
-            android:layout_toRightOf="@+id/l_activity_goalTitle"
-            android:calendarViewShown="false" />
-
-        <EditText
-            android:id="@+id/t_task_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/l_task_duration"
-            android:layout_alignBottom="@+id/l_task_duration"
-            android:layout_alignRight="@+id/t_activity_description"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@id/l_task_duration"
-            android:ems="10"
-            android:inputType="number" />
 
 
 

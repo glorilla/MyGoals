@@ -27,7 +27,7 @@ import android.view.MenuItem;
  *
  */
 public class ViewGoalActivity extends FragmentActivity implements OnPageChangeListener {
-    
+	// For log purpose
 	private final String TAG = "ViewGoalActivity"; 
 	
 	static final int NUM_ITEMS = 2; // nb of pages
@@ -52,6 +52,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG,"onCreate method");		    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.goal_page);
         
@@ -100,6 +101,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 
 	@Override
 	public void onPageSelected(int position) {
+		Log.d(TAG,"onPageSelected method");				
     	if (position % NUM_ITEMS == 0) {
     		// Set the goal title as activity title
             setTitle(getIntent().getStringExtra(EXTRA_KEY_TITLE));
@@ -122,6 +124,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.d(TAG,"onOptionsItemSelected method");					
 	    // Handle presses on the action bar items
 		int position = mPager.getCurrentItem();
 	    switch (item.getItemId()) {
@@ -142,6 +145,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	}
 
 	private void openEditGoalActivity() {
+		Log.d(TAG,"openEditGoalActivity method");				
 	    Intent intent = new Intent(this, EditGoalActivity.class);
 
 	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.EDIT);
@@ -151,6 +155,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	}
 
 	private void openEditActivity() {
+		Log.d(TAG,"openEditActivity method");				
 	    Intent intent = new Intent(this, EditActivity.class);
 
 	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.EDIT);
@@ -160,6 +165,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	}	
 	
 	private void removeGoal() {
+		Log.d(TAG,"removeGoal method");			
 		new AlertDialog.Builder(this)
 	    .setTitle("Delete entry")
 	    .setMessage("Are you sure you want to delete this entry?")

@@ -1,5 +1,4 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
@@ -66,18 +65,6 @@
 	        android:minLines="2" />
 	       
 	    <!-- Category -->
-
-	    <Spinner
-	        android:id="@+id/sp_goal_detail_category"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignBaseline="@id/l_goal_detail_title"
-	        android:layout_alignBottom="@id/l_goal_detail_title"
-	        android:layout_alignParentRight="true"
-	        android:layout_marginBottom="4dp"
-	        android:layout_marginLeft="16dp"
-	        android:layout_marginRight="16dp"
-	        android:layout_marginTop="4dp" />
 	
 	    <!-- Start Date -->
 		<TextView
@@ -88,10 +75,26 @@
 	        android:layout_below="@id/t_goal_detail_description"
 	        android:layout_marginBottom="4dp"
 	        android:layout_marginTop="20dp"
+	        android:layout_marginRight="4dp"
+	        android:layout_marginLeft="4dp"
 	        android:text="@string/goal_start_date"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textStyle="bold" />
-	
+
+		<TextView
+	        android:id="@+id/t_pick_start_date"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/l_goal_detail_start_date"
+	        android:layout_marginBottom="4dp"
+	        android:layout_marginRight="4dp"
+	        android:layout_marginLeft="4dp"
+	        android:layout_alignBaseline="@id/l_goal_detail_start_date"
+	        android:layout_alignBottom="@id/l_goal_detail_start_date"	        
+	        android:text="01/01/2014"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+		
+		<!--  			
 		<DatePicker
 	        android:id="@+id/d_goal_start_date"
 	        android:layout_width="wrap_content"
@@ -101,6 +104,7 @@
 	        android:layout_marginBottom="4dp"
 	        android:layout_marginTop="4dp"
 	        android:calendarViewShown="false" />
+		-->
 		
 	    <!-- Target Date -->
 
@@ -109,13 +113,29 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_alignLeft="@id/l_goal_detail_title"
-	        android:layout_below="@id/d_goal_start_date"
+	        android:layout_below="@id/l_goal_detail_start_date"
 	        android:layout_marginBottom="4dp"
 	        android:layout_marginTop="20dp"
+	        android:layout_marginRight="4dp"
+	        android:layout_marginLeft="4dp"
 	        android:text="@string/goal_end_date"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textStyle="bold" />
-	
+	    
+	    <TextView 
+	        android:id="@+id/t_pick_end_date" 
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content" 
+	        android:layout_above="@+id/l_goal_detail_workload" 
+	        android:layout_alignLeft="@+id/t_pick_start_date"
+	        android:layout_marginBottom="4dp"
+	        android:layout_marginRight="4dp"
+	        android:layout_alignBaseline="@id/l_goal_detail_end_date"
+	        android:layout_alignBottom="@id/l_goal_detail_end_date"	 
+	        android:text="31/12/2014" 
+	        android:textAppearance="?android:attr/textAppearanceMedium" />	    
+	   
+		<!-- 
 	   <DatePicker
 	        android:id="@+id/d_goal_end_date"
 	        android:layout_width="wrap_content"
@@ -125,7 +145,7 @@
 	        android:layout_marginTop="4dp"
 	        android:layout_below="@id/l_goal_detail_end_date"
 	        android:calendarViewShown="false" />
-	
+	    -->				
 	   <!-- Estimated effort -->
 
 	   <TextView
@@ -133,7 +153,7 @@
 	       android:layout_width="wrap_content"
 	       android:layout_height="wrap_content"
 	       android:layout_alignLeft="@id/l_goal_detail_title"
-	       android:layout_below="@id/d_goal_end_date"
+	       android:layout_below="@id/l_goal_detail_end_date"
 	       android:layout_marginBottom="4dp"
 	       android:layout_marginTop="20dp"
 	       android:text="Estimated Workload"
@@ -180,7 +200,19 @@
 	        android:layout_marginRight="16dp"
 	        android:layout_marginTop="20dp"
 	        android:text="OK" />
+
+	    <Spinner
+	        android:id="@+id/sp_goal_detail_category"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="false"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_alignTop="@+id/l_goal_detail_title"
+	        android:layout_marginRight="16dp"
+	        android:layout_marginTop="20dp" />
 	    
 	</RelativeLayout>
+
 </ScrollView>
 

@@ -8,6 +8,7 @@
         <item>Study</item>
     </string-array>
     <string-array name="frequency_array">
+        <item>No</item>
         <item>Daily</item>
         <item>Weekly</item>
         <item>Monthly</item>

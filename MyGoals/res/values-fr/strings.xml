@@ -6,8 +6,8 @@
     <string name="goal_title">Objectif</string>
     <string name="goal_description">Description</string>
     <string name="goal_category">Catégorie</string>
-    <string name="goal_start_date">de</string>
-    <string name="goal_end_date">à</string>
+    <string name="goal_start_date">Du</string>
+    <string name="goal_end_date">Au</string>
     <string name="goal_workload">"Nb d'heures"</string>
     <string name="goal_hours">h</string>
     <string name="action_new">Nouveau</string>
@@ -15,7 +15,7 @@
     <string name="action_delete">Supprimer</string>    
     <string name="title_activity_new_goal">Nouvel Objectif</string>
     <string name="activities">"Activités associées"</string>
-    <string name="create">créer</string>
-    <string name="modify">modifier</string>
+    <string name="create">Créer</string>
+    <string name="modify">Modifier</string>
 
 </resources>

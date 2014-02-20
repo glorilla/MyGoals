@@ -28,15 +28,20 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;;
 
 public class GoalDetailFragment extends Fragment {
+	// For log purpose
+	private static final  String TAG = "GoalDetailFragment"; 
+	
 	private View root_view;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG,"onCreate method");			
         super.onCreate(savedInstanceState);
     }	
     
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		Log.d(TAG,"onCreateView method");					
 		// Return the View built from the layout
 		root_view = inflater.inflate(R.layout.goal_detail, container, false);
 		Intent i = getActivity().getIntent();
@@ -64,7 +69,14 @@ public class GoalDetailFragment extends Fragment {
 	
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+		Log.d(TAG,"onActivityCreated method");	      	
     	super.onActivityCreated(savedInstanceState);
-	}
+  	}
+
+    @Override
+    public void onStart() {
+		Log.d(TAG,"onStart method");
+		super.onStart();
+    }
 
 }

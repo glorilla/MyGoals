@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,6 +20,9 @@ import android.view.MenuItem;
  *
  */
 public class MainActivity extends FragmentActivity implements OnPageChangeListener {
+	// For log purpose
+	private static final  String TAG = "GoalDetailFragment"; 
+	
     static final int NUM_ITEMS = 2; // nb of pages
 
     MyAdapter mAdapter;	// adapter that provides the page to draw
@@ -30,6 +34,8 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		Log.d(TAG,"onCreate method");		
+		
         setContentView(R.layout.main);
         this.setTitle("My Goals");
         
@@ -47,6 +53,7 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d(TAG,"onCreateOptionsMenu method");				
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.goal_list, menu);
 		return true;
@@ -54,6 +61,7 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.d(TAG,"onOptionsItemSelected method");			
 	    // Handle presses on the action bar items
 		int position = mPager.getCurrentItem();
 	    switch (item.getItemId()) {
@@ -75,12 +83,14 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
 	}
  
 	private void openNewGoalActivity() {
+		Log.d(TAG,"openNewGoalActivity method");				
 	    Intent intent = new Intent(this, EditGoalActivity.class);
 	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.NEW);
 	    startActivity(intent);
 	}
 	
 	private void openSettings() {
+		Log.d(TAG,"openSettings method");				
 		// TODO To implement the "setting" button
 	}
 	
