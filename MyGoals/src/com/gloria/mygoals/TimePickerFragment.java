@@ -47,7 +47,7 @@ public class TimePickerFragment extends DialogFragment
 			final Calendar c = Calendar.getInstance();
 			c.set(1, 0, 1, hourOfDay, minute);
 			mDate.setTime(c.getTimeInMillis());
-			mTextView.setText(SimpleDateFormat.getTimeInstance().format(mDate));
+			mTextView.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(mDate));
 			return;
 		}
 		Log.w(TAG,"Setting a date in this TimePicker dialog should update a View parameter");

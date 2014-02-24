@@ -18,32 +18,117 @@ import android.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 public class GoalListFragment extends Fragment {
-	private View root_view;
+	// For log purpose
+	private static final  String TAG = "GoalListFragment";
+	
+	private View mRootView;
+	private LayoutInflater mInflater;
+	private SimpleCursorAdapter mAdapter;
+	private Cursor mCursor;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.setHasOptionsMenu(true);
     }	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// Return the View built from the layout
-		root_view = inflater.inflate(R.layout.goal_list, container, false);
-		return root_view;
+		mInflater = inflater;
+		mRootView = inflater.inflate(R.layout.goal_list, container, false);
+		// get the listview in the view hierarchy
+		ListView lv= (ListView)mRootView.findViewById(R.id.lv_goals);
+    	
+	    // create the list mapping
+		ContentResolver cr = getActivity().getContentResolver();
+		mCursor = cr.query( MyGoals.Goals.CONTENT_URI, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
+		
+		String[] from = new String[] {
+				MyGoals.Goals.COLUMN_NAME_TITLE, 
+				MyGoals.Goals.COLUMN_NAME_DESC,
+				MyGoals.Goals.COLUMN_NAME_TARGET_DATE,
+				MyGoals.Goals.COLUMN_NAME_PROGRESS
+				};
+	    
+		int[] to = new int[] { 
+	    		R.id.t_goal_title, 
+	    		R.id.t_goal_desc, 
+	    		R.id.t_goal_end_date,
+	    		R.id.goal_progress
+	    		};
+		
+
+	    // fill in the goal list layout
+	    //TODO Create a custom adapter to display Goal in the list of goals with category icon, colors ...
+
+	    mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.goal_item, mCursor, from, to, 0);
+ 
+	    mAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+
+			@Override
+			public boolean setViewValue(View view, Cursor cursor,
+					int columnIndex) {
+				// TODO Auto-generated method stub
+				if (view.getId()==R.id.t_goal_end_date){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+
+					try {
+						Date endDate = sdf.parse(cursor.getString(columnIndex));
+						((TextView)view).setText(SimpleDateFormat.getDateInstance().format(endDate));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return true;
+				}
+				if (view.getId()==R.id.goal_progress) {
+		        	int value=Integer.parseInt((String)cursor.getString(columnIndex));
+		        	((ProgressBar)view).setProgress(value);
+		        	return true;
+		        }
+				return false;
+			}
+		});
+	    
+	    // Add a footer to the list to add new goals
+	    View footer = mInflater.inflate(R.layout.footer_goal, null);
+	    lv.addFooterView(footer);
+	    footer.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+        		openNewGoalActivity();
+			}
+		});
+    
+	    // Define action when clicking on a Goal item 
+	    lv.setOnItemClickListener(new OnItemClickListener() {
+	    	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Log.d("DEBUG", "Goal "+id+" has been clicked");
+				mCursor.moveToPosition(position);
+				int goal_id = mCursor.getInt(MyGoalsProvider.GOAL_ID_INDEX);
+				viewGoal(mCursor, goal_id);
+	    	}
+	    });
+	    
+	    lv.setAdapter(mAdapter);		
+		return mRootView;
 	}
 
     @Override
@@ -54,96 +139,11 @@ public class GoalListFragment extends Fragment {
     @Override
     public void onStart() {
     	super.onStart();
-        	
-    	if (root_view != null) {
-    		// get the listview in the view hierarchy
-    		ListView lv= (ListView)root_view.findViewById(R.id.lv_goals);
-    	
-		    // create the list mapping
-		    /*String[] from = new String[] {"title", "desc", "status", "end_date", "progress"};
-		    int[] to = new int[] { R.id.t_goal_title, R.id.t_goal_desc, R.id.t_goal_status, R.id.t_goal_end_date, R.id.goal_progress };
-		    */
-    		
-    		ContentResolver cr = getActivity().getContentResolver();
-    		Uri uri = MyGoals.Goals.CONTENT_URI;
-    		Cursor c = cr.query(uri, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
-    		
-    		String[] from = new String[] {
-    				MyGoals.Goals.COLUMN_NAME_TITLE, 
-    				MyGoals.Goals.COLUMN_NAME_DESC,
-    				MyGoals.Goals.COLUMN_NAME_TARGET_DATE,
-    				MyGoals.Goals.COLUMN_NAME_PROGRESS
-    				};
-		    
-    		int[] to = new int[] { 
-		    		R.id.t_goal_title, 
-		    		R.id.t_goal_desc, 
-		    		R.id.t_goal_end_date,
-		    		R.id.goal_progress
-		    		};
-    		
+	    // create the list mapping
+		ContentResolver cr = getActivity().getContentResolver();
+		mCursor = cr.query( MyGoals.Goals.CONTENT_URI, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
 
-		    // fill in the goal list layout
-		    //TODO Create a custom adapter to display Goal in the list of goals with category icon, colors ...
-
-		    SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), R.layout.goal_item, c, from, to, 0);
-		    adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-
-					/*if (view instanceof ProgressBar) {
-                        if (data instanceof Integer) {
-                            ((ProgressBar)view).setProgress(((Integer)data).intValue());
-                            return true;
-                        } else if (data instanceof String) {
-                        	int value=Integer.parseInt((String)data);
-                        	((ProgressBar)view).setProgress(value);
-                        	return true;
-                        } else {
-                        	throw new IllegalStateException(view.getClass().getName() + " is not a" +
-                                    " view that can be bounds by this SimpleAdapter using data of type " + data.getClass().getName());
-                        }
-                    }
-					// by returning false, the SimpleAdapter natively maps data of types String, Boolean, Integer or Image  
-					return false;*/
-
-
-				@Override
-				public boolean setViewValue(View view, Cursor cursor,
-						int columnIndex) {
-					// TODO Auto-generated method stub
-					if (view.getId()==R.id.t_goal_end_date){
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
-
-						try {
-							Date endDate = sdf.parse(cursor.getString(columnIndex));
-							((TextView)view).setText(SimpleDateFormat.getDateInstance().format(endDate));
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						return true;
-					}
-					if (view.getId()==R.id.goal_progress) {
-                    	int value=Integer.parseInt((String)cursor.getString(columnIndex));
-                    	((ProgressBar)view).setProgress(value);
-                    	return true;
-                    }
-					return false;
-				}
-			});
-		    
-		    lv.setAdapter(adapter);
-		    
-		    // Define action when clicking on a Goal item 
-		    lv.setOnItemClickListener(new OnItemClickListener() {
-		    	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					Log.d("DEBUG", "Goal "+id+" has been clicked");
-					Cursor c= ((CursorAdapter)((ListView)parent).getAdapter()).getCursor();
-					c.moveToPosition(position);
-					int goal_id = c.getInt(MyGoalsProvider.GOAL_ID_INDEX);
-					viewGoal(c, goal_id);
-		    	}
-		    });
-    	}
+		mAdapter.changeCursor(mCursor);
     }
     
 	private void viewGoal(Cursor c, int goal_id) {
@@ -161,7 +161,7 @@ public class GoalListFragment extends Fragment {
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
+
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == Activity.RESULT_OK) {
 			ViewGoalActivity.result res = (ViewGoalActivity.result)data.getExtras().get(ViewGoalActivity.EXTRA_KEY_RESULT);
@@ -172,6 +172,33 @@ public class GoalListFragment extends Fragment {
 			default:
 			}
 		}
-		
 	}
+    
+	@Override
+    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
+		Log.d(TAG,"onCreateOptionsMenu method");			
+        inflater.inflate(R.menu.goal_list_fragment, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.d(TAG,"onOptionsItemSelected method");			
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+	        case R.id.action_new:
+        		openNewGoalActivity();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+ 
+	private void openNewGoalActivity() {
+		Log.d(TAG,"openNewGoalActivity method");				
+	    Intent intent= new Intent(getActivity(), EditGoalActivity.class);
+	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.NEW);
+	    startActivity(intent);
+	}	
+	
 }

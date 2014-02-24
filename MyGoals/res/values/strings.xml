@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">My Goals</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
@@ -26,6 +25,8 @@
     <string name="description">description</string>
     <string name="duration">Duration</string>
     <string name="every">Every</string>
-    <string name="untill">Untill</string> 
+    <string name="until">Until</string> 
     <string name="events">events</string>     
+    <string name="footer_add_goal">Add a new goal</string>
+    <string name="footer_add_event">Add a new task</string>    
 </resources>

@@ -1,7 +1,8 @@
-<ScrollView android:layout_width="fill_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
-    android:layout_alignParentTop="true" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_alignParentTop="true" >
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -71,8 +72,8 @@
             android:layout_alignLeft="@id/l_activity_goalTitle"
             android:layout_below="@id/t_activity_description"
             android:layout_marginBottom="4dp"
+            android:layout_marginRight="4dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="4dp"            
             android:text="@string/goal_start_date"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
@@ -81,31 +82,23 @@
             android:id="@+id/t_activity_start_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/l_activity_start_date"
-            android:layout_toRightOf="@+id/l_activity_goalTitle"
-            android:layout_marginRight="4dp" 
-            android:layout_marginLeft="4dp"                         
-            android:text="01/01/2014"             
+            android:layout_alignBottom="@id/l_activity_start_date"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_toRightOf="@+id/l_task_duration"
+            android:text="01/01/2014"
             android:textAppearance="?android:attr/textAppearanceMedium" />
- 
-        <TextView
-            android:id="@+id/t_activity_start_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/l_activity_start_date"
-            android:layout_toRightOf="@+id/t_activity_start_date"
-            android:layout_marginLeft="4dp"              
-            android:text="00:00"             
-            android:textAppearance="?android:attr/textAppearanceMedium" />        
-        
+
+
+
         <!-- Duration -->
 
         <TextView
-            android:id="@+id/l_task_duration"
+            android:id="@id/l_task_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/l_activity_start_date"
-            android:layout_below="@+id/t_activity_start_date"
+            android:layout_alignLeft="@id/l_activity_start_date"
+            android:layout_below="@id/t_activity_start_date"
             android:layout_marginBottom="4dp"
             android:layout_marginRight="4dp"
             android:layout_marginTop="20dp"
@@ -113,29 +106,41 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/t_activity_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/l_activity_start_date"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@id/t_activity_start_date"
+            android:text="00:00"
+            android:textAppearance="?android:attr/textAppearanceMedium" />        
+        
+        
         <EditText
             android:id="@+id/t_task_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/l_task_duration"
-            android:layout_marginLeft="4dp"    
-            android:layout_marginRight="4dp"  
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             android:layout_toRightOf="@+id/l_task_duration"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:ems="3"
-            android:inputType="number" />
+            android:inputType="number"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/l_goal_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/l_task_duration"
-            android:layout_marginLeft="4dp"            
-            android:layout_toRightOf="@+id/t_task_duration"            
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/t_task_duration"
             android:text="@string/hours"
             android:textAppearance="?android:attr/textAppearanceMedium" />
- 
+
         <!-- Repetition -->
+
         <TextView
             android:id="@+id/l_repetition"
             android:layout_width="wrap_content"
@@ -152,65 +157,77 @@
             android:id="@+id/sp_frequency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/l_repetition"
             android:layout_toRightOf="@id/l_repetition"
-			android:layout_alignBaseline="@id/l_repetition"
-	        android:entries="@array/frequency_array" />        
- 
-        <!--             android:layout_alignBaseline="@id/l_repetition" -->
-        
+            android:entries="@array/frequency_array" />
+
+        <!-- android:layout_alignBaseline="@id/l_repetition" -->
+
+        <!-- Submit button -->
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/l_activity_goalTitle"
+            android:layout_below="@+id/repetition_layout"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/create" />
+
         <RelativeLayout
             android:id="@+id/repetition_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@id/l_repetition"
+            android:layout_below="@+id/l_repetition"
             android:orientation="vertical" >
 
-            <!-- Frequency -->            
             <LinearLayout
                 android:id="@+id/layout_frequency"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" 
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-				android:layout_marginLeft="16dp"
-				android:layout_marginTop="20dp" >
-	            
-	            <TextView
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-      				android:layout_marginRight="4dp"
-	                android:text="@string/every"
-	                android:textAppearance="?android:attr/textAppearanceMedium" />
-	            
-	            <EditText
-	                android:id="@+id/t_occurence"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:layout_marginLeft="4dp"
-	                android:layout_marginRight="4dp"
-	                android:ems="2"
-	                android:inputType="number"
-	                android:text="1" />
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp" >
 
-	            <TextView
-	                android:id="@+id/t_freq_unit"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:layout_marginLeft="4dp"
-	                android:layout_marginRight="16dp"
-	                android:text="@string/day"
-	                android:textAppearance="?android:attr/textAppearanceMedium" />
-			
-			</LinearLayout>            
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
+                    android:text="@string/every"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <EditText
+                    android:id="@+id/t_occurence"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:ems="2"
+                    android:inputType="number"
+                    android:text="1" />
+
+                <TextView
+                    android:id="@+id/t_freq_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="16dp"
+                    android:text="@string/day"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/layout_week"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_frequency"                          
+                android:layout_below="@+id/layout_frequency"
                 android:layout_marginBottom="4dp"
-				android:layout_marginLeft="16dp"
-				android:layout_marginTop="20dp" >
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp" >
 
                 <CheckBox
                     android:id="@+id/c_monday"
@@ -220,129 +237,131 @@
                     android:gravity="right|center_vertical"
                     android:text="L" />
 
-	            <CheckBox
+                <CheckBox
                     android:id="@+id/c_tuesday"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"                    
-                    android:text="M" />
-	            <CheckBox
-                    android:id="@+id/c_Wednesday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="M" />
-	            <CheckBox
+
+                <CheckBox
+                    android:id="@+id/c_wednesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="M" />
+
+                <CheckBox
                     android:id="@+id/c_thrusday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"                    
+                    android:layout_weight="1"
                     android:text="J" />
-	            <CheckBox
+
+                <CheckBox
                     android:id="@+id/c_friday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"                    
+                    android:layout_weight="1"
                     android:text="V" />
-	            <CheckBox
+
+                <CheckBox
                     android:id="@+id/c_saturday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="S" />
-	            <CheckBox
-                    android:id="@+id/c_sunnday"
+
+                <CheckBox
+                    android:id="@+id/c_sunday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"                    
-                    android:text="D" />	            	            	            	            	            
-  			</LinearLayout>               
-                
-	                        
-            <!-- Target Date -->
-			<RadioButton
-                android:id="@+id/c_activity_end_date"
+                    android:layout_weight="1"
+                    android:text="D" />
+            </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginBottom="4dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_below="@+id/layout_week"                
-                android:text="@string/goal_end_date"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+                android:layout_below="@+id/layout_week"
+                android:layout_marginTop="20dp" >
 
-            <RadioButton
-                android:id="@+id/c_nb_task"
+                <RadioButton
+                    android:id="@+id/c_activity_end_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/layout_week"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginLeft="16dp"
+                    android:text="@string/goal_end_date"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/c_nb_task"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/c_activity_end_date"
+                    android:layout_below="@+id/c_activity_end_date"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="4dp"
+                    android:text="@string/until"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold" />
+            </RadioGroup>
+
+
+
+
+
+            <TextView
+                android:id="@+id/t_activity_end_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/c_activity_end_date"
-                android:layout_below="@+id/c_activity_end_date"
-                android:text="@string/untill"
+                android:layout_alignLeft="@+id/t_nb_task"
+                android:layout_alignTop="@+id/radioGroup"
+                android:layout_marginTop="8dp"
+                android:text="31/12/2015"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/t_nb_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/radioGroup"
+                android:layout_toRightOf="@+id/radioGroup"
+                android:layout_marginLeft="4dp"
+                android:ems="2"
+                android:inputType="number" />
+            
+            <TextView
+                android:id="@+id/l_event"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/t_nb_task"
+                android:layout_alignBottom="@+id/t_nb_task"
+                android:layout_marginLeft="4dp"
+                android:layout_toRightOf="@+id/t_nb_task"
+                android:text="@string/events"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+                android:textStyle="bold" />            
 
-	        <!-- Estimated effort -->
-
-	        <TextView
-	            android:id="@+id/t_activity_end_date"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignBaseline="@+id/c_activity_end_date"
-	            android:layout_alignBottom="@+id/c_activity_end_date"
-	            android:layout_marginLeft="16dp"
-	            android:layout_toRightOf="@+id/c_activity_end_date"
-	            android:text="31/12/2015"             
-	            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-	        <TextView
-	            android:id="@+id/l_activity_workload"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignLeft="@+id/c_nb_task"
+            <TextView
+                android:id="@+id/l_activity_workload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/radioGroup"
+                android:layout_below="@+id/radioGroup"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="20dp"
-                android:layout_below="@+id/c_nb_task"
-	            android:text="Activity Workload"
-	            android:textAppearance="?android:attr/textAppearanceMedium"
-	            android:textStyle="bold" />
-
-	        <EditText
-	            android:id="@+id/t_nb_task"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_above="@+id/l_activity_workload"
-	            android:layout_marginLeft="8dp"
-	            android:layout_toRightOf="@+id/c_nb_task"
-	            android:ems="2"
-	            android:inputType="number" />
-
-	        <TextView
-	            android:id="@+id/l_event"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignBaseline="@+id/c_nb_task"
-	            android:layout_alignBottom="@+id/c_nb_task"
-	            android:layout_toRightOf="@+id/t_nb_task"
-	            android:layout_marginLeft="8dp"
-	            android:text="@string/events"
-				android:textStyle="bold"	            
-	            android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:layout_marginLeft="16dp"                
+                android:text="Activity Workload"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />            
             
         </RelativeLayout>
-        
-        <!-- Submit button -->
-		<Button
-            android:id="@+id/btn_submit"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/l_activity_goalTitle"
-            android:layout_below="@id/repetition_layout"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/create" />
 
     </RelativeLayout>
 

@@ -1,5 +1,6 @@
 package com.gloria.mygoals;
 
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -7,6 +8,7 @@ import java.util.TimeZone;
 
 import com.gloria.mygoals.EditGoalActivity.Mode;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -38,12 +41,14 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 	
 	// Intent extra parameters' interface
 	static final String EXTRA_KEY_MODE = "mode";
-	static final String EXTRA_KEY_ID = "id";
+	static final String EXTRA_KEY_GOAL_ID = "goal_id";
+	static final String EXTRA_KEY_GOAL_TITLE = "goal_title";	
 	static enum Mode {NEW, EDIT};
 	
 	// activity state
 	private Mode mMode=Mode.NEW;
 	private int mGoalId=0;
+	private String mGoalTitle;
 
 	// form views
 	private TextView mVGoalTitle;
@@ -56,6 +61,7 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 	private Spinner mVFrequencyChoice;
 	private EditText mVOccurence;
 	private EditText mVNbTasks;
+	// TODO To add the workload field in the activity table
 	private TextView mVWorkload;	
 	private TextView mVFreqUnit;
 	private Button mSubmitBtn;
@@ -64,11 +70,19 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 	private ViewGroup mRepetitionLayout;
 	private ViewGroup mWeekLayout;
 	private ViewGroup mFrequencyLayout;
+	private final int[] mVCheckboxes = {
+		R.id.c_monday, R.id.c_tuesday, R.id.c_wednesday, R.id.c_thrusday,
+		R.id.c_friday, R.id.c_saturday, R.id.c_sunday
+	};
 	
 	// form values
 	private Date mStartDate;
 	private Date mStartTime;	
 	private Date mEndDate;
+	private int mFreqSpinnerPos=NONE;
+	private int mNbTasks;
+	private int mOccurrence;
+	private String mWeekdays;
 	
 	// for DatePickerDialog purpose
 	private Date mCurrentDate;
@@ -81,9 +95,9 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 		setContentView(R.layout.activity_edit);
 		
 		// Set the mode and the Goal id thanks to the intent extra values	
-		/* TODO To adapt
 		mMode = (Mode)getIntent().getExtras().get(EXTRA_KEY_MODE);
-		mGoalId = getIntent().getIntExtra(EXTRA_KEY_ID,0);*/
+		mGoalId = getIntent().getIntExtra(EXTRA_KEY_GOAL_ID,0);
+		mGoalTitle = getIntent().getStringExtra(EXTRA_KEY_GOAL_TITLE);
 		
 		// Init the views' values and listeners
         initViews();		
@@ -112,6 +126,9 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 		mSubmitBtn = (Button) findViewById(R.id.btn_submit);
 		mVFreqUnit = (TextView) findViewById(R.id.t_freq_unit);
 
+		// Set the Goal Title
+		mVGoalTitle.setText(mGoalTitle);
+		
 		// Set the submit button label and init the fields values
 		switch (mMode) {
 			case NEW:	// Set the label "Create" on the submit button
@@ -164,7 +181,8 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG,"onClick method on the Start Time textView");						
+				Log.d(TAG,"onClick method on the Start Time textView");
+				Log.v(TAG,"The id of the clicked view is " + v.getId());				
 				// Init the view's references 
 				mCurrentDateTextView=(TextView)v;
 				mCurrentDate=mStartTime;
@@ -191,7 +209,8 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO To implement the panes' visibility management
+				mFreqSpinnerPos=position;
+				// To implement the panes' visibility management
 				switch (position) {
 					case NONE:
 						mRepetitionLayout.setVisibility(View.GONE);
@@ -201,7 +220,7 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 						mRepetitionLayout.setVisibility(View.VISIBLE);
 						mFrequencyLayout.setVisibility(View.VISIBLE);
 						mWeekLayout.setVisibility(View.GONE);
-						// TODO Set the frequency unity to days
+						// Set the frequency unity to days
 						mVFreqUnit.setText(R.string.day);
 						break;
 					case WEEKLY:
@@ -209,11 +228,12 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 						mRepetitionLayout.setVisibility(View.VISIBLE);
 						mFrequencyLayout.setVisibility(View.VISIBLE);
 						mWeekLayout.setVisibility(View.VISIBLE);
-						// TODO Set the frequency unity to weeks
+						// Set the frequency unity to weeks
 						mVFreqUnit.setText(R.string.week);						
 						break;
 					case MONTHLY:
 						// TODO Utility of monthly repetition? Every 1st Monday of the month? in interaction with the start date
+						mRepetitionLayout.setVisibility(View.VISIBLE);
 						mFrequencyLayout.setVisibility(View.GONE);
 						mWeekLayout.setVisibility(View.GONE);						
 						break;
@@ -243,6 +263,20 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 	private void insertInDB() {
 		Log.d(TAG,"insertInDB method");
 		
+		Uri res = insertActivityInDB();
+		// TODO Raise an exception if not a parseable string
+		int activityId = Integer.parseInt(res.getPathSegments().get(1));
+		
+		// TODO to insert the tasks in DB		
+		for (int task=0; task < mNbTasks; task++) {
+			insertTaskInDB(activityId);
+		}
+		
+	}
+
+	private Uri insertActivityInDB() {
+		Log.d(TAG,"insertActivityInDB method");
+		
 		// Query the DB through a contentProvider, though use a contentResolver
 		ContentResolver cr = getContentResolver();
 		ContentValues values=new ContentValues();
@@ -250,21 +284,83 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		
-		/* TODO to adapt to activity URI
-		values.put(MyGoals.Goals.COLUMN_NAME_TITLE, mVGoalTitle.getText().toString());
-		values.put(MyGoals.Goals.COLUMN_NAME_DESC, mVGoalDesc.getText().toString());
+		values.put(MyGoals.Activities.COLUMN_NAME_GOAL_ID, mGoalId);
+		values.put(MyGoals.Activities.COLUMN_NAME_TITLE, mVActivityTitle.getText().toString());
+		values.put(MyGoals.Activities.COLUMN_NAME_DESC, mVActivityDesc.getText().toString());
 
 		//Dates are stored as UTC date strings ("YYYY-MM-DD HH:mmZ")
-		values.put(MyGoals.Goals.COLUMN_NAME_START_DATE, sdf.format(mStartDate));
-		values.put(MyGoals.Goals.COLUMN_NAME_TARGET_DATE, sdf.format(mEndDate));
-
-		values.put(MyGoals.Goals.COLUMN_NAME_WORKLOAD, ((EditText)findViewById(R.id.t_goal_hours)).getText().toString());
-		values.put(MyGoals.Goals.COLUMN_NAME_PROGRESS, 0);
+		values.put(MyGoals.Activities.COLUMN_NAME_START_DATE, sdf.format(mStartDate));
+		// TODO Store START_TIME: values.put(MyGoals.Activities.COLUMN_NAME_START_TIME, 
+		values.put(MyGoals.Activities.COLUMN_NAME_DURATION, mVTaskDuration.getText().toString());
+		values.put(MyGoals.Activities.COLUMN_NAME_REPETITION, mFreqSpinnerPos);
 		
-		cr.insert(MyGoals.Goals.CONTENT_URI, values);
-		*/
-	}
+		// The week checkbox values are stored in DB as a String of boolean values eg. "true&false&..."
+		mWeekdays = "" + ((CheckBox)findViewById(mVCheckboxes[0])).isChecked();
+		for (int i=1; i<mVCheckboxes.length; i++) {
+			mWeekdays += "&" + ((CheckBox)findViewById(mVCheckboxes[i])).isChecked();
+		}
+		
+		switch (mFreqSpinnerPos) {
+			case NONE:
+				// The end date is the end of the unique task: start date + the task duration
+				values.put(MyGoals.Activities.COLUMN_NAME_END_DATE, sdf.format(mStartDate));
+				mNbTasks = 1;
+				mOccurrence = 1;
+				mWeekdays = "";
+				break;
+			case DAILY:
+				/* TODO To manage end date value, if not defined it should be start date + duration
+		 		or the last task date */
+				values.put(MyGoals.Activities.COLUMN_NAME_END_DATE, sdf.format(mEndDate));
+				mNbTasks = Integer.parseInt(""+mVNbTasks.getText());
+				mOccurrence = Integer.parseInt(""+mVOccurence.getText().toString());
+				mWeekdays = "";
+				break;
+			case WEEKLY:
+				/* TODO To manage end date value, if not defined it should be start date + duration
+		 		or the last task date */
+				values.put(MyGoals.Activities.COLUMN_NAME_END_DATE, sdf.format(mEndDate));
+				mNbTasks = Integer.parseInt(""+mVNbTasks.getText());
+				mOccurrence = Integer.parseInt(""+mVOccurence.getText().toString());
+				break;
+			case MONTHLY:
+				/* TODO To manage end date value, if not defined it should be start date + duration
+		 		or the last task date */
 
+				values.put(MyGoals.Activities.COLUMN_NAME_END_DATE, sdf.format(mEndDate));
+				mNbTasks = Integer.parseInt(""+mVNbTasks.getText());
+				mOccurrence = 1;
+				mWeekdays = "";
+				break;
+		}
+		values.put(MyGoals.Activities.COLUMN_NAME_NB_TASKS, mNbTasks);
+		values.put(MyGoals.Activities.COLUMN_NAME_OCCURRENCE, mOccurrence);
+		values.put(MyGoals.Activities.COLUMN_NAME_WEEKDAYS, mWeekdays);
+		
+		return cr.insert(MyGoals.Activities.CONTENT_URI, values);
+
+	}		
+	
+	private Uri insertTaskInDB(int activityId) {
+		Log.d(TAG,"insertActivityInDB method");
+		
+		// Query the DB through a contentProvider, though use a contentResolver
+		ContentResolver cr = getContentResolver();
+		ContentValues values=new ContentValues();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+		values.put(MyGoals.Tasks.COLUMN_NAME_TITLE, mVActivityTitle.getText().toString());
+		values.put(MyGoals.Tasks.COLUMN_NAME_GOAL_ID, mGoalId);
+		values.put(MyGoals.Tasks.COLUMN_NAME_ACTIVITY_ID, activityId);
+		values.put(MyGoals.Tasks.COLUMN_NAME_DUE_DATE, sdf.format(mEndDate));
+		values.put(MyGoals.Tasks.COLUMN_NAME_START_TIME, sdf.format(mStartTime));
+
+		return cr.insert(MyGoals.Tasks.CONTENT_URI, values);
+		
+	}	
+	
 	private void fillWithDefaultValues() {
 		Log.d(TAG,"fillWithDefaultValues method");				
 		mStartDate=new Date();
@@ -272,13 +368,11 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 		mEndDate=new Date();
 		
 		mVStartDate.setText(SimpleDateFormat.getDateInstance().format(mStartDate));
-		mVStartTime.setText(SimpleDateFormat.getTimeInstance().format(mStartTime));
+		// TODO start time init: mVStartTime.setText(SimpleDateFormat.getTimeInstance().format(mStartTime));
 		mVEndDate.setText(SimpleDateFormat.getDateInstance().format(mEndDate));
 		
-		// TODO Get & set the Goal Title
-		// mVGoalTitle.setText(text);
-		
-		// TODO Default spinner value and panes' visibility
+		// Default spinner value and panes' visibility
+		mVFrequencyChoice.setSelection(mFreqSpinnerPos);
 	}
 
 	public void showDatePickerDialog() {

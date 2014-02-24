@@ -50,7 +50,7 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
         But it offers the method setOnPageChangeListener to continue the treatment on these events */
         mIndicator.setOnPageChangeListener(this);
     }
-
+/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		Log.d(TAG,"onCreateOptionsMenu method");				
@@ -93,7 +93,7 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
 		Log.d(TAG,"openSettings method");				
 		// TODO To implement the "setting" button
 	}
-	
+*/	
     public static class MyAdapter extends FragmentPagerAdapter {
         public MyAdapter(FragmentManager fm) {
             super(fm);

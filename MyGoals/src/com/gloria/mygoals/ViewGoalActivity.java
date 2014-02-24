@@ -48,7 +48,8 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
     
     PageIndicator mIndicator; // the page indicator    
     
-	private int mGoalId; // the displayed Goal id
+	public static int mGoalId; 		// the id of the displayed Goal
+	public static String mGoalTitle;	// the title of the displayed Goal
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +69,8 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
         mIndicator.setOnPageChangeListener(this);
         
 		// Set the goal title as activity title
-        setTitle(getIntent().getStringExtra(EXTRA_KEY_TITLE));
-        
+        mGoalTitle = getIntent().getStringExtra(EXTRA_KEY_TITLE);
+        setTitle(mGoalTitle);
         // get the Goal id
     	mGoalId=getIntent().getIntExtra(ViewGoalActivity.EXTRA_KEY_ID, 0);
     }
@@ -126,24 +127,24 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.d(TAG,"onOptionsItemSelected method");					
 	    // Handle presses on the action bar items
-		int position = mPager.getCurrentItem();
+		//int position = mPager.getCurrentItem();
 	    switch (item.getItemId()) {
-	        case R.id.action_edit:
+	        /*case R.id.action_edit:
 	        	if (position % NUM_ITEMS == 0) {
 	        		// TODO To implement the action bar "edit" button for the goal fragment
 	        		openEditGoalActivity();
 	    		} else { 
 	        		// TODO To implement the action bar "edit" button for the activity fragment
-	    			openEditActivity();
+	    			openNewActivity();
 	    		} 
-	            return true;
+	            return true;*/
 	        case R.id.action_delete:
 	        	removeGoal();
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
-
+/*
 	private void openEditGoalActivity() {
 		Log.d(TAG,"openEditGoalActivity method");				
 	    Intent intent = new Intent(this, EditGoalActivity.class);
@@ -152,18 +153,19 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
   	    intent.putExtra(EditGoalActivity.EXTRA_KEY_ID, mGoalId);
   
 	    startActivity(intent);
-	}
-
-	private void openEditActivity() {
+	}*/
+/*
+	private void openNewActivity() {
 		Log.d(TAG,"openEditActivity method");				
 	    Intent intent = new Intent(this, EditActivity.class);
 
-	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.EDIT);
-  	    intent.putExtra(EditGoalActivity.EXTRA_KEY_ID, mGoalId);
+	    intent.putExtra(EditActivity.EXTRA_KEY_MODE, EditActivity.Mode.NEW);
+  	    intent.putExtra(EditActivity.EXTRA_KEY_GOAL_ID, mGoalId);
+  	    intent.putExtra(EditActivity.EXTRA_KEY_GOAL_TITLE, mGoalTitle);  	    
   
 	    startActivity(intent);
 	}	
-	
+	*/
 	private void removeGoal() {
 		Log.d(TAG,"removeGoal method");			
 		new AlertDialog.Builder(this)

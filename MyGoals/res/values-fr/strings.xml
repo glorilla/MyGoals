@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">My Goals</string>
     <string name="action_settings">Paramètres</string>
     <string name="goal_title">Objectif</string>
@@ -25,6 +24,8 @@
     <string name="description">description</string>
     <string name="duration">Durée</string>
     <string name="every">Chaque</string>
-    <string name="untill">"Jusqu'au"</string> 
-    <string name="events">occurrences</string>        
+    <string name="until">"Jusqu'au"</string> 
+    <string name="events">occurrences</string>
+    <string name="footer_add_goal">Ajouter un nouvel objectif</string>
+    <string name="footer_add_event">Ajouter une nouvelle tâche </string>                   
 </resources>

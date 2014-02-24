@@ -18,6 +18,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class GoalDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG,"onCreate method");			
         super.onCreate(savedInstanceState);
+        this.setHasOptionsMenu(true);        
     }	
     
 	@Override
@@ -78,5 +80,35 @@ public class GoalDetailFragment extends Fragment {
 		Log.d(TAG,"onStart method");
 		super.onStart();
     }
+    
+	@Override
+    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
+		Log.d(TAG,"onCreateOptionsMenu method");			
+        inflater.inflate(R.menu.goal_detail_fragment, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.d(TAG,"onOptionsItemSelected method");			
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+	    	case R.id.action_edit:
+        		// TODO To implement the action bar "edit" button for the goal fragment
+        		openEditGoalActivity();
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}    
+
+	private void openEditGoalActivity() {
+		Log.d(TAG,"openEditGoalActivity method");				
+	    Intent intent = new Intent(getActivity(), EditGoalActivity.class);
+
+	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.EDIT);
+  	    intent.putExtra(EditGoalActivity.EXTRA_KEY_ID, ViewGoalActivity.mGoalId);
+  
+	    startActivity(intent);
+	}	
 
 }
