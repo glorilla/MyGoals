@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -136,6 +137,10 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 		Log.d(TAG,"onOptionsItemSelected method");					
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
+		    case android.R.id.home:
+		        //TODO proper up navigation : NavUtils.navigateUpFromSameTask(this);
+		        finish();
+		        return true;
 	        case R.id.action_delete:
 	        	removeGoal();
 	        default:

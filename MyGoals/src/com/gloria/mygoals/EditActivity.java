@@ -15,9 +15,12 @@ import com.gloria.mygoals.EditGoalActivity.Mode;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.text.Layout;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -669,9 +672,25 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 
 	}
 
-/*	@Override
- 	public TextView getCurrentDateTextView() {
-		return mCurrentDateTextView;
-	} */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d(TAG,"onCreateOptionsMenu method");
+		// Inflate the menu; this adds items to the action bar if it is present.
+		// getMenuInflater().inflate(R.menu., menu);
+		return true;
+	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.d(TAG,"onOptionsItemSelected method");					
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+		    case android.R.id.home:
+		        // TODO proper Up Navigation : NavUtils.navigateUpFromSameTask(this);
+		        finish();
+		        return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
 }

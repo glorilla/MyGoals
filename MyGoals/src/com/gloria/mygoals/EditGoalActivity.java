@@ -11,9 +11,11 @@ import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.v4.app.NavUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.*;
@@ -265,7 +267,21 @@ public class EditGoalActivity extends Activity implements usesDatePickerDialogIn
 		getMenuInflater().inflate(R.menu.new_goal, menu);
 		return true;
 	}
-
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.d(TAG,"onOptionsItemSelected method");					
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+		    case android.R.id.home:
+		        // TODO proper up navigation : NavUtils.navigateUpFromSameTask(this);
+		        finish();
+		        return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
 	@Override
 	public Date getCurrentDate() {
 		return mCurrentDate;

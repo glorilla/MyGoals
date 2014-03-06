@@ -21,14 +21,42 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ViewGoalActivity"></activity>
-        <activity android:name="EditGoalActivity"></activity>
+        <activity 
+            android:name="com.gloria.mygoals.ViewGoalActivity" 
+            android:parentActivityName="com.gloria.mygoals.MainActivity" >
+	        <!-- Parent activity meta-data to support 4.0 and lower -->
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.gloria.mygoals.MainActivity" />
+        </activity>
+        <activity 
+            android:name="com.gloria.mygoals.EditGoalActivity"
+            android:parentActivityName="com.gloria.mygoals.ViewGoalActivity" >
+	        <!-- Parent activity meta-data to support 4.0 and lower -->
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.gloria.mygoals.ViewGoalActivity" />            
+        </activity>
+        <activity 
+            android:name="com.gloria.mygoals.EditActivity"
+            android:parentActivityName="com.gloria.mygoals.ViewGoalActivity" >
+	        <!-- Parent activity meta-data to support 4.0 and lower -->
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.gloria.mygoals.ViewGoalActivity" />             
+        </activity>
+        <activity 
+            android:name="com.gloria.mygoals.ViewActivity"
+            android:parentActivityName="com.gloria.mygoals.ViewGoalActivity" >
+	        <!-- Parent activity meta-data to support 4.0 and lower -->
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.gloria.mygoals.ViewGoalActivity" />             
+        </activity>
         <provider 
-            android:name="MyGoalsProvider" 
+            android:name="com.gloria.mygoals.MyGoalsProvider" 
             android:exported="false" 
             android:authorities="com.gloria.mygoals">
         </provider>
-        <activity android:name="EditActivity"></activity>
-        <activity android:name="ViewActivity"></activity>
-    </application>
+        </application>
 </manifest>
