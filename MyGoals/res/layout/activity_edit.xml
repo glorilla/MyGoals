@@ -44,7 +44,6 @@
             android:hint="@string/title"
             android:inputType="text" >
 
-            <requestFocus />
         </EditText>
 
         <EditText
@@ -74,7 +73,7 @@
             android:layout_marginBottom="4dp"
             android:layout_marginRight="4dp"
             android:layout_marginTop="20dp"
-            android:text="@string/goal_start_date"
+            android:text="@string/From_date"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
 
@@ -90,6 +89,15 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
+        <TextView
+            android:id="@+id/t_activity_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/l_activity_start_date"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@id/t_activity_start_date"
+            android:text="00:00"
+            android:textAppearance="?android:attr/textAppearanceMedium" />    
 
         <!-- Duration -->
 
@@ -105,18 +113,9 @@
             android:text="@string/duration"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/t_activity_start_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/l_activity_start_date"
-            android:layout_marginLeft="4dp"
-            android:layout_toRightOf="@id/t_activity_start_date"
-            android:text="00:00"
-            android:textAppearance="?android:attr/textAppearanceMedium" />        
+    
         
-        
+        <!-- 
         <EditText
             android:id="@+id/t_task_duration"
             android:layout_width="wrap_content"
@@ -128,11 +127,25 @@
             android:ems="3"
             android:inputType="number"
             android:textAppearance="?android:attr/textAppearanceMedium" />
+		 -->
 
+        <TextView
+            android:id="@+id/t_task_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/l_task_duration"
+            android:layout_alignBottom="@+id/l_task_duration"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_toRightOf="@+id/l_task_duration"
+            android:text="01:00"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+		 
         <TextView
             android:id="@+id/l_goal_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/l_task_duration"
             android:layout_alignBottom="@+id/l_task_duration"
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@+id/t_task_duration"
@@ -197,7 +210,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="4dp"
-                    android:text="@string/every"
+                    android:text="@string/Every"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <EditText
@@ -234,7 +247,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="right|center_vertical"
                     android:text="L" />
 
                 <CheckBox
@@ -269,6 +281,7 @@
                     android:id="@+id/c_saturday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"                    
                     android:text="S" />
 
                 <CheckBox
@@ -291,11 +304,10 @@
                     android:id="@+id/c_activity_end_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/layout_week"
                     android:layout_marginBottom="4dp"
                     android:layout_marginLeft="16dp"
-                    android:text="@string/goal_end_date"
+                    android:checked="true"
+                    android:text="@string/To_date"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textStyle="bold" />
 
@@ -303,18 +315,12 @@
                     android:id="@+id/c_nb_task"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/c_activity_end_date"
-                    android:layout_below="@+id/c_activity_end_date"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="4dp"
                     android:text="@string/until"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textStyle="bold" />
             </RadioGroup>
-
-
-
-
 
             <TextView
                 android:id="@+id/t_activity_end_date"
@@ -331,10 +337,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/radioGroup"
-                android:layout_toRightOf="@+id/radioGroup"
                 android:layout_marginLeft="4dp"
+                android:layout_toRightOf="@+id/radioGroup"
+                android:clickable="false"
                 android:ems="2"
-                android:inputType="number" />
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="number"
+                android:text="1" />
             
             <TextView
                 android:id="@+id/l_event"
@@ -344,9 +354,9 @@
                 android:layout_alignBottom="@+id/t_nb_task"
                 android:layout_marginLeft="4dp"
                 android:layout_toRightOf="@+id/t_nb_task"
-                android:text="@string/events"
+                android:text="@string/occurrences"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />            
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/l_activity_workload"
@@ -355,11 +365,11 @@
                 android:layout_alignLeft="@+id/radioGroup"
                 android:layout_below="@+id/radioGroup"
                 android:layout_marginBottom="4dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginLeft="16dp"                
-                android:text="Activity Workload"
+                android:text="@string/Activity_Workload"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />            
+                android:textStyle="bold" />
             
         </RelativeLayout>
 

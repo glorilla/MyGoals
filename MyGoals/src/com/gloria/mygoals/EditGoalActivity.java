@@ -1,7 +1,5 @@
 package com.gloria.mygoals;
 
-import java.net.URI;
-
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -63,19 +61,17 @@ public class EditGoalActivity extends Activity implements usesDatePickerDialogIn
 		Log.d(TAG,"onCreate method");			
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.goal_edit);
-
-		// Set the mode and the Goal id thanks to the intent extra values	
-		mMode = (Mode)getIntent().getExtras().get(EXTRA_KEY_MODE);
-		mGoalId = getIntent().getIntExtra(EXTRA_KEY_ID,0);
+		setTitle(getResources().getText(R.string.my_goal));
 		
 		// Set the action bar
 		// Make sure we're running on Honeycomb or higher to use ActionBar APIs
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            /* Show the Up button in the action bar.		
-		    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		       If your minSdkVersion is 11 or higher, instead use: */
 		    getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        }		
+		
+		// Set the mode and the Goal id thanks to the intent extra values	
+		mMode = (Mode)getIntent().getExtras().get(EXTRA_KEY_MODE);
+		mGoalId = getIntent().getIntExtra(EXTRA_KEY_ID,0);
 
 		// Init the views' values and listeners
         initViews();
@@ -275,9 +271,28 @@ public class EditGoalActivity extends Activity implements usesDatePickerDialogIn
 		return mCurrentDate;
 	}
 
-	@Override
+/*	@Override
 	public TextView getCurrentDateTextView() {
 		return mCurrentDateTextView;
+	} */
+
+	@Override
+	public void DatePickerCallBack(int year, int month, int day) {
+		if (mCurrentDateTextView == mVStartDate) {
+			// Format the date to the user's locales and set the destination view
+			final Calendar c = Calendar.getInstance();
+			c.set(year, month, day);
+			mStartDate.setTime(c.getTimeInMillis());
+			mVStartDate.setText(SimpleDateFormat.getDateInstance().format(mCurrentDate));
+		} else if (mCurrentDateTextView == mVEndDate) {
+			// Format the date to the user's locales and set the destination view
+			final Calendar c = Calendar.getInstance();
+			c.set(year, month, day);
+			mEndDate.setTime(c.getTimeInMillis());
+			mVEndDate.setText(SimpleDateFormat.getDateInstance().format(mCurrentDate));			
+		} else {
+			Log.w(TAG,"Setting a date in this DatePicker dialog should update a View parameter");			
+		}
 	}
 
 

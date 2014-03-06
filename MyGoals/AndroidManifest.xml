@@ -29,5 +29,6 @@
             android:authorities="com.gloria.mygoals">
         </provider>
         <activity android:name="EditActivity"></activity>
+        <activity android:name="ViewActivity"></activity>
     </application>
 </manifest>

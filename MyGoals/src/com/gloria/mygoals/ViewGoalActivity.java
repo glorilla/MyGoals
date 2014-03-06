@@ -11,6 +11,7 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -56,6 +57,12 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 		Log.d(TAG,"onCreate method");		    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.goal_page);
+
+		// Set the action bar
+		// Make sure we're running on Honeycomb or higher to use ActionBar APIs
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		    getActionBar().setDisplayHomeAsUpEnabled(true);
+        }          
         
         mAdapter = new MyAdapter(getSupportFragmentManager());
 
@@ -67,10 +74,11 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
         /* The PageIndicator overrides the OnPageChangelistener affectation on the ViewPager.
         But it offers the method setOnPageChangeListener to continue the treatment on these events */
         mIndicator.setOnPageChangeListener(this);
-        
-		// Set the goal title as activity title
+ 
+        // Set the goal title as activity title
         mGoalTitle = getIntent().getStringExtra(EXTRA_KEY_TITLE);
         setTitle(mGoalTitle);
+
         // get the Goal id
     	mGoalId=getIntent().getIntExtra(ViewGoalActivity.EXTRA_KEY_ID, 0);
     }
@@ -119,7 +127,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.goal_detail, menu);
+		getMenuInflater().inflate(R.menu.goal_view, menu);
 		return true;
 	}
 	
@@ -127,45 +135,14 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.d(TAG,"onOptionsItemSelected method");					
 	    // Handle presses on the action bar items
-		//int position = mPager.getCurrentItem();
 	    switch (item.getItemId()) {
-	        /*case R.id.action_edit:
-	        	if (position % NUM_ITEMS == 0) {
-	        		// TODO To implement the action bar "edit" button for the goal fragment
-	        		openEditGoalActivity();
-	    		} else { 
-	        		// TODO To implement the action bar "edit" button for the activity fragment
-	    			openNewActivity();
-	    		} 
-	            return true;*/
 	        case R.id.action_delete:
 	        	removeGoal();
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
-/*
-	private void openEditGoalActivity() {
-		Log.d(TAG,"openEditGoalActivity method");				
-	    Intent intent = new Intent(this, EditGoalActivity.class);
-
-	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.EDIT);
-  	    intent.putExtra(EditGoalActivity.EXTRA_KEY_ID, mGoalId);
-  
-	    startActivity(intent);
-	}*/
-/*
-	private void openNewActivity() {
-		Log.d(TAG,"openEditActivity method");				
-	    Intent intent = new Intent(this, EditActivity.class);
-
-	    intent.putExtra(EditActivity.EXTRA_KEY_MODE, EditActivity.Mode.NEW);
-  	    intent.putExtra(EditActivity.EXTRA_KEY_GOAL_ID, mGoalId);
-  	    intent.putExtra(EditActivity.EXTRA_KEY_GOAL_TITLE, mGoalTitle);  	    
-  
-	    startActivity(intent);
-	}	
-	*/
+ 
 	private void removeGoal() {
 		Log.d(TAG,"removeGoal method");			
 		new AlertDialog.Builder(this)

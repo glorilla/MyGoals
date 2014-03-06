@@ -364,11 +364,6 @@ public final class MyGoals {
          
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.gloria.task";
         
-        /**
-         * The default sort order for this table
-         */
-        public static final String DEFAULT_SORT_ORDER = "_id DESC";
-
         /*
          * Column definitions
          */
@@ -380,11 +375,17 @@ public final class MyGoals {
         public static final String COLUMN_NAME_TITLE = "title";
 
         /**
-         * Column name of the goal id
-         * TODO to define the reference Type <P>Type: ?</P>
+         * Column name of the goal id of this task
+         * <P>Type: INTEGER</P>
          */
         public static final String COLUMN_NAME_GOAL_ID = "goal_id";
 
+        /**
+         * Title of the goal of this task
+         * <P>Type: TEXT</P>
+         */
+        public static final String COLUMN_NAME_GOAL_TITLE = "goal_title";        
+        
         /**
          * Column name of the activity id
          * TODO to define the reference Type <P>Type: ?</P>
@@ -401,7 +402,7 @@ public final class MyGoals {
          * Column name for the task start time
          * <P>Type: TEXT as ISO8601 strings ("YYYY-MM-DD HH:MM:SS.SSS")</P>
          */
-        public static final String COLUMN_NAME_START_TIME = "start_time";
+        public static final String COLUMN_NAME_START_DATE = "start_dt";
         
         /**
          * Column name for the task done date
@@ -421,12 +422,20 @@ public final class MyGoals {
          */
         public static final String COLUMN_NAME_STATUS = "status";
         
-        /**
+        /*
          * Column name for the task id
          * It is not needed as '_ID' is provided by the parent class BaseColumns 
         */        
-    }  
 
+	    /**
+	     * The default sort order for this table
+	     */
+	    // TODO default order
+	    public static final String DEFAULT_SORT_ORDER = MyGoals.Tasks.TABLE_NAME +
+	    		"." + MyGoals.Tasks.COLUMN_NAME_START_DATE + " ASC";    
+
+    }  
+    
     public static final class Repetition implements BaseColumns {
 
         // This class cannot be instantiated

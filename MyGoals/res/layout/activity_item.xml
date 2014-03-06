@@ -24,7 +24,7 @@
         android:layout_alignLeft="@id/t_activity_title"
         android:layout_below="@id/t_activity_title"
         android:layout_marginRight="4dp"
-        android:text="From"
+        android:text="@string/From_date"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -47,16 +47,6 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
-        android:id="@+id/t_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/t_status"
-        android:layout_alignBottom="@+id/t_status"
-        android:layout_alignParentRight="true"
-        android:text="7 on 10"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <TextView
         android:id="@+id/l_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,7 +54,7 @@
         android:layout_alignBottom="@id/l_from"
         android:layout_marginLeft="4dp"
         android:layout_toRightOf="@id/t_start_date"
-        android:text="to"
+        android:text="@string/to_date"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -78,13 +68,23 @@
         android:text="31/12/14"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
+	<TextView
+	    android:id="@+id/t_nb_task"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBaseline="@+id/t_status"
+	    android:layout_alignBottom="@+id/t_status"
+	    android:layout_toLeftOf="@+id/t_task_duration"
+	    android:textAppearance="?android:attr/textAppearanceSmall" />
+    
     <TextView
-        android:id="@+id/t_effort"
+        android:id="@+id/t_task_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/t_progress"
+        android:layout_alignBaseline="@+id/t_status"
+        android:layout_alignBottom="@+id/t_status"
         android:layout_alignParentRight="true"
-        android:text="10 x 2 hrs"
+        android:text="2hrs"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

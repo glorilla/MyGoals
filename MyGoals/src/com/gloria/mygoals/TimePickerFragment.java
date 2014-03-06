@@ -20,14 +20,14 @@ public class TimePickerFragment extends DialogFragment
 	private static final  String TAG = "TimePickerFragment"; 	
 	
 	private Date mDate;
-	private TextView mTextView;
+	//private TextView mTextView;
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Log.d(TAG,"onCreateDialog method");
 		
-		mDate = ((usesDatePickerDialogInterface) getActivity()).getCurrentDate();
-		mTextView = ((usesDatePickerDialogInterface) getActivity()).getCurrentDateTextView();
+		mDate = ((usesTimePickerDialogInterface) getActivity()).getCurrentDate();
+		//mTextView = ((usesDatePickerDialogInterface) getActivity()).getCurrentDateTextView();
 
 		final Calendar c = Calendar.getInstance();
 		// Use the current date as the default date in the picker
@@ -42,7 +42,8 @@ public class TimePickerFragment extends DialogFragment
 	@Override
 	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 		Log.d(TAG,"onTimeSet method");
-		if (mTextView != null) {
+		((usesTimePickerDialogInterface) getActivity()).TimePickerCallBack(hourOfDay, minute);
+		/*if (mTextView != null) {
 			// Format the date to the user's locales and set the destination view
 			final Calendar c = Calendar.getInstance();
 			c.set(1, 0, 1, hourOfDay, minute);
@@ -50,7 +51,7 @@ public class TimePickerFragment extends DialogFragment
 			mTextView.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(mDate));
 			return;
 		}
-		Log.w(TAG,"Setting a date in this TimePicker dialog should update a View parameter");
+		Log.w(TAG,"Setting a date in this TimePicker dialog should update a View parameter");*/
 
 		
 	}

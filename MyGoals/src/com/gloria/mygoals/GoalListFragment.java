@@ -107,16 +107,6 @@ public class GoalListFragment extends Fragment {
 			}
 		});
 	    
-	    // Add a footer to the list to add new goals
-	    View footer = mInflater.inflate(R.layout.footer_goal, null);
-	    lv.addFooterView(footer);
-	    footer.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-        		openNewGoalActivity();
-			}
-		});
-    
 	    // Define action when clicking on a Goal item 
 	    lv.setOnItemClickListener(new OnItemClickListener() {
 	    	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -127,7 +117,21 @@ public class GoalListFragment extends Fragment {
 	    	}
 	    });
 	    
-	    lv.setAdapter(mAdapter);		
+	    // Add a footer to the list to add new goals
+	    View footer = mInflater.inflate(R.layout.footer, null);
+	    TextView footerText=((TextView)footer.findViewById(R.id.t_footer_text));
+	    footerText.setHint(R.string.footer_add_goal);
+	    footer.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+        		openNewGoalActivity();
+			}
+		});	    
+
+	    lv.addFooterView(footer);
+	    
+	    lv.setAdapter(mAdapter);
+	    
 		return mRootView;
 	}
 

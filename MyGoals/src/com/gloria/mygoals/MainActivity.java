@@ -50,50 +50,7 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
         But it offers the method setOnPageChangeListener to continue the treatment on these events */
         mIndicator.setOnPageChangeListener(this);
     }
-/*
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		Log.d(TAG,"onCreateOptionsMenu method");				
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.goal_list, menu);
-		return true;
-	}
 	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Log.d(TAG,"onOptionsItemSelected method");			
-	    // Handle presses on the action bar items
-		int position = mPager.getCurrentItem();
-	    switch (item.getItemId()) {
-	        case R.id.action_new:
-	        	if (position % NUM_ITEMS == 0) {
-	        		// Goal page
-	        		openNewGoalActivity();
-	    		} else { 
-	    			// Event page
-	        		// TODO To implement the action bar "new" button for event page
-	    		} 
-	            return true;
-	        case R.id.action_settings:
-	            openSettings();
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
-	}
- 
-	private void openNewGoalActivity() {
-		Log.d(TAG,"openNewGoalActivity method");				
-	    Intent intent = new Intent(this, EditGoalActivity.class);
-	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.NEW);
-	    startActivity(intent);
-	}
-	
-	private void openSettings() {
-		Log.d(TAG,"openSettings method");				
-		// TODO To implement the "setting" button
-	}
-*/	
     public static class MyAdapter extends FragmentPagerAdapter {
         public MyAdapter(FragmentManager fm) {
             super(fm);
@@ -123,10 +80,10 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
 	public void onPageSelected(int position) {
     	if (position % NUM_ITEMS == 0) {
     		// Activity title set according to the goal list page
-            setTitle("My Goals");
+            setTitle(getResources().getText(R.string.my_goals));
 		} else { 
     		// Activity title set according to the goal list page
-            setTitle("My Tasks");
+            setTitle(getResources().getText(R.string.my_tasks));
 		} 		
 	}
 

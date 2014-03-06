@@ -51,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/t_goal_status"
         android:layout_below="@+id/t_goal_status"
+        android:max="100"
         android:progress="50" />
 
     <ImageView

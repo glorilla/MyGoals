@@ -13,6 +13,7 @@
 	    android:scrollbars="vertical" >
 	
 	    <!-- Title -->
+
 	    <TextView
 	        android:id="@+id/l_goal_detail_title"
 	        android:layout_width="wrap_content"
@@ -23,7 +24,7 @@
 	        android:layout_marginLeft="16dp"
 	        android:layout_marginRight="4dp"
 	        android:layout_marginTop="16dp"
-	        android:text="My Goal"
+	        android:text="@string/my_goal"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textStyle="bold" />
 	    
@@ -40,7 +41,7 @@
 	        android:layout_marginTop="4dp"
 	        android:layout_toRightOf="@id/l_goal_detail_title"
 	        android:ems="10"
-	        android:hint="title"
+	        android:hint="@+string/title"
 	        android:inputType="text" >
 	
 	        <requestFocus />
@@ -56,7 +57,7 @@
 	        android:layout_marginRight="16dp"
 	        android:layout_marginTop="4dp"
 	        android:ems="10"
-	        android:hint="description"
+	        android:hint="@string/description"
 	        android:inputType="textMultiLine"
 	        android:lines="2"
 	        android:maxLines="2"
@@ -75,7 +76,7 @@
 	        android:layout_marginTop="20dp"
 	        android:layout_marginRight="4dp"
 	        android:layout_marginLeft="4dp"
-	        android:text="@string/goal_start_date"
+	        android:text="@string/From_date"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textStyle="bold" />
 
@@ -116,7 +117,7 @@
 	        android:layout_marginTop="20dp"
 	        android:layout_marginRight="4dp"
 	        android:layout_marginLeft="4dp"
-	        android:text="@string/goal_end_date"
+	        android:text="@string/To_date"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textStyle="bold" />
 	    
@@ -133,17 +134,7 @@
 	        android:text="31/12/2014" 
 	        android:textAppearance="?android:attr/textAppearanceMedium" />	    
 	   
-		<!-- 
-	   <DatePicker
-	        android:id="@+id/d_goal_end_date"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignLeft="@id/l_goal_detail_title"
-	        android:layout_marginBottom="4dp"
-	        android:layout_marginTop="4dp"
-	        android:layout_below="@id/l_goal_detail_end_date"
-	        android:calendarViewShown="false" />
-	    -->				
+
 	   <!-- Estimated effort -->
 
 	   <TextView
@@ -154,7 +145,7 @@
 	       android:layout_below="@id/l_goal_detail_end_date"
 	       android:layout_marginBottom="4dp"
 	       android:layout_marginTop="20dp"
-	       android:text="Estimated Workload"
+	       android:text="@string/estimatedWorkload"
 	       android:textAppearance="?android:attr/textAppearanceMedium"
 	       android:textStyle="bold" />
 	
@@ -169,20 +160,21 @@
 	        android:layout_toRightOf="@+id/l_goal_detail_workload"
 	        android:ems="10"
 	        android:gravity="bottom|right"
-	        android:hint="Nb of "
+	        android:hint="@string/nbOf"
 	        android:inputType="number" />
 	    
 	   <TextView
 	       android:id="@+id/l_goal_hours"
 	       android:layout_width="wrap_content"
 	       android:layout_height="wrap_content"
+	       android:layout_alignBaseline="@id/t_goal_hours"
 	       android:layout_alignBottom="@id/t_goal_hours"
 	       android:layout_marginBottom="4dp"
 	       android:layout_marginLeft="4dp"
 	       android:layout_marginRight="4dp"
 	       android:layout_marginTop="4dp"
 	       android:layout_toRightOf="@id/t_goal_hours"
-	       android:text="hours"
+	       android:text="@string/hours"
 	       android:textAppearance="?android:attr/textAppearanceMedium" />
 	    
 	    <!-- Submit button -->
@@ -197,7 +189,7 @@
 	        android:layout_marginBottom="20dp"
 	        android:layout_marginRight="16dp"
 	        android:layout_marginTop="20dp"
-	        android:text="OK" />
+	        android:text="@string/create" />
 
 	    <Spinner
 	        android:id="@+id/sp_goal_detail_category"

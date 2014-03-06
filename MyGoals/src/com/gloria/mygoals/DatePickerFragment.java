@@ -19,14 +19,14 @@ public class DatePickerFragment extends DialogFragment
 	private static final  String TAG = "DatePickerFragment"; 	
 	
 	private Date mDate;
-	private TextView mTextView;
+	//private TextView mTextView;
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Log.d(TAG,"onCreateDialog method");
 		
 		mDate = ((usesDatePickerDialogInterface) getActivity()).getCurrentDate();
-		mTextView = ((usesDatePickerDialogInterface) getActivity()).getCurrentDateTextView();
+		//mTextView = ((usesDatePickerDialogInterface) getActivity()).getCurrentDateTextView();
 
 		final Calendar c = Calendar.getInstance();
 		// Use the current date as the default date in the picker
@@ -40,7 +40,8 @@ public class DatePickerFragment extends DialogFragment
 	
 	public void onDateSet(DatePicker view, int year, int month, int day) {
 		Log.d(TAG,"onDateSet method");
-		if (mTextView != null) {
+		((usesDatePickerDialogInterface) getActivity()).DatePickerCallBack(year, month, day);
+		/*if (mTextView != null) {
 			// Format the date to the user's locales and set the destination view
 			final Calendar c = Calendar.getInstance();
 			c.set(year, month, day);
@@ -48,6 +49,6 @@ public class DatePickerFragment extends DialogFragment
 			mTextView.setText(SimpleDateFormat.getDateInstance().format(mDate));
 			return;
 		}
-		Log.w(TAG,"Setting a date in this DatePicker dialog should update a View parameter");
+		Log.w(TAG,"Setting a date in this DatePicker dialog should update a View parameter");*/
 	}
 }

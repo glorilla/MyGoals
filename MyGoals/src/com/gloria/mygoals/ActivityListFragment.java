@@ -21,16 +21,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ActivityListFragment extends Fragment {
 	// For log purpose
 	private static final  String TAG = "ActivityListFragment";
+	
+	private final String[] activityState = {"Planned", "On Track", "Completed", "Late", "In Advance"};
 	
 	private View root_view;
 	private LayoutInflater mInflater;
@@ -46,6 +50,7 @@ public class ActivityListFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// Return the View built from the layout
+		mInflater=inflater;
 		root_view = inflater.inflate(R.layout.activity_list, container, false);
 		
 		 // get the listview in the view hierarchy
@@ -72,8 +77,8 @@ public class ActivityListFragment extends Fragment {
 	    		R.id.t_start_date, 
 	    		R.id.t_end_date,
 	    		R.id.t_status,
-	    		R.id.t_progress, 
-	    		R.id.t_effort
+	    		R.id.t_task_duration,	    		
+	    		R.id.t_nb_task
 	    		};
 
 	    // fill in the activity list layout
@@ -89,29 +94,74 @@ public class ActivityListFragment extends Fragment {
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
 
 					try {
-						Date endDate = sdf.parse(cursor.getString(columnIndex));
-						((TextView)view).setText(SimpleDateFormat.getDateInstance().format(endDate));
+						Date date = sdf.parse(cursor.getString(columnIndex));
+						((TextView)view).setText(SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT).format(date));
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					return true;
 				}
-				
-				// TODO Auto-generated method stub
+				if (view.getId()==R.id.t_status) {
+					((TextView)view).setText(activityState[Integer.parseInt(cursor.getString(columnIndex))]);
+					return true;
+				}
+				if (view.getId()==R.id.t_task_duration) {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+					
+					try {
+						Date time = sdf.parse(cursor.getString(columnIndex));
+						((TextView)view).setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(time)+getString(R.string.hours));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return true;
+				}
+				if (view.getId()==R.id.t_nb_task) {
+					int nbTask;
+					try {
+						nbTask = Integer.parseInt(cursor.getString(columnIndex));
+					}
+					catch(Exception e) {
+						nbTask = 0;
+					}
+					// it displays the number of tasks only it is greater than 1 
+					if (nbTask > 1) {
+						((TextView)view).setText(cursor.getString(columnIndex)+" x ");
+					}
+					return true;
+				}				
 				
 				return false;
 			}
 	    });
-	    
-	    lv.setAdapter(mAdapter);
+
 
 	    // Define action when clicking on an Activity item 
 	    lv.setOnItemClickListener(new OnItemClickListener() {
 	    	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Log.v("DEBUG", "Activity "+id+" has been clicked");	
+				Log.v("DEBUG", "Activity "+ id +" has been clicked");
+				mCursor.moveToPosition(position);
+				int activity_id = mCursor.getInt(MyGoalsProvider.ACTIVITY_ID_INDEX);
+				viewActivity(mCursor, activity_id);
 	    	}
-	    });
+	    });	    
+	    
+	    // Add a footer to the list to add new goals
+	    View footer = mInflater.inflate(R.layout.footer, null);
+	    TextView footerText=((TextView)footer.findViewById(R.id.t_footer_text));
+	    footerText.setHint(R.string.footer_add_activity);
+	    footer.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+        		openNewActivity();
+			}
+		});	    
+
+	    lv.addFooterView(footer);
+	    
+	    lv.setAdapter(mAdapter);
 		
 		return root_view;
 	}
@@ -166,5 +216,41 @@ public class ActivityListFragment extends Fragment {
   
 	    startActivity(intent);
 	}		
+	
+	private void viewActivity(Cursor c, int id) {
+		Log.d(TAG,"viewActivity method");		
+	    Intent intent = new Intent(getActivity(), ViewActivity.class);
+
+	    intent.putExtra(ViewActivity.EXTRA_KEY_ID, id);
+	    intent.putExtra(ViewActivity.EXTRA_KEY_GOAL_TITLE, ViewGoalActivity.mGoalTitle); 
+	    intent.putExtra(ViewActivity.EXTRA_KEY_TITLE, c.getString(MyGoalsProvider.ACTIVITY_TITLE_INDEX));
+	    intent.putExtra(ViewActivity.EXTRA_KEY_DESC, c.getString(MyGoalsProvider.ACTIVITY_DESC_INDEX));
+	    intent.putExtra(ViewActivity.EXTRA_KEY_START_DATE, c.getString(MyGoalsProvider.ACTIVITY_START_DATE_INDEX));
+	    intent.putExtra(ViewActivity.EXTRA_KEY_END_DATE, c.getString(MyGoalsProvider.ACTIVITY_END_DATE_INDEX));
+	    intent.putExtra(ViewActivity.EXTRA_KEY_DURATION, c.getString(MyGoalsProvider.ACTIVITY_DURATION_INDEX));
+	    intent.putExtra(ViewActivity.EXTRA_KEY_REPETITION, c.getInt(MyGoalsProvider.ACTIVITY_REPETITION_INDEX));
+	    intent.putExtra(ViewActivity.EXTRA_KEY_OCCURRENCE, c.getInt(MyGoalsProvider.ACTIVITY_OCCURRENCE_INDEX));
+	    intent.putExtra(ViewActivity.EXTRA_KEY_WEEKDAYS, c.getInt(MyGoalsProvider.ACTIVITY_WEEKDAYS_INDEX));
+	    intent.putExtra(ViewActivity.EXTRA_KEY_NB_TASKS, c.getInt(MyGoalsProvider.ACTIVITY_NB_TASKS_INDEX));
+	    
+	    startActivityForResult(intent, 0);
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == Activity.RESULT_OK) {
+			ViewActivity.result res = (ViewActivity.result)data.getExtras().get(ViewActivity.EXTRA_KEY_RESULT);
+			switch (res) {
+			case DELETION:
+				Toast.makeText(getActivity(), getResources().getText(R.string.Activity_deleted), Toast.LENGTH_SHORT).show();
+				break;
+			default:
+			}
+		}
+	}	
+	
+	
 	
 }
