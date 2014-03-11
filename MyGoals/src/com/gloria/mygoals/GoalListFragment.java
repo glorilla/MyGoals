@@ -33,7 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class GoalListFragment extends Fragment {
+public class GoalListFragment extends Fragment implements Refreshable {
 	// For log purpose
 	private static final  String TAG = "GoalListFragment";
 	
@@ -99,8 +99,10 @@ public class GoalListFragment extends Fragment {
 					return true;
 				}
 				if (view.getId()==R.id.goal_progress) {
-		        	int value=Integer.parseInt((String)cursor.getString(columnIndex));
+		        	int value=cursor.getInt(columnIndex);
+		        	int max=cursor.getInt(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_WORKLOAD));
 		        	((ProgressBar)view).setProgress(value);
+		        	((ProgressBar)view).setMax(max);
 		        	return true;
 		        }
 				return false;
@@ -141,14 +143,27 @@ public class GoalListFragment extends Fragment {
     }
 	
     @Override
-    public void onStart() {
-    	super.onStart();
+    public void onResume() {
 	    // create the list mapping
-		ContentResolver cr = getActivity().getContentResolver();
-		mCursor = cr.query( MyGoals.Goals.CONTENT_URI, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
+    	Log.d(TAG,"onResume");
+		
+    	if (null != mRootView) {
+			ContentResolver cr = getActivity().getContentResolver();
+			
+			mCursor.close();
+			mCursor = cr.query( MyGoals.Goals.CONTENT_URI, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
 
-		mAdapter.changeCursor(mCursor);
+			mAdapter.changeCursor(mCursor);
+		}
+    	
+    	super.onResume();
     }
+
+    @Override
+    public void onDestroyView() {
+    	mCursor.close();
+    	super.onDestroyView();
+    }	    
     
 	private void viewGoal(Cursor c, int goal_id) {
 	    Intent intent = new Intent(getActivity(), ViewGoalActivity.class);
@@ -203,6 +218,19 @@ public class GoalListFragment extends Fragment {
 	    Intent intent= new Intent(getActivity(), EditGoalActivity.class);
 	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.NEW);
 	    startActivity(intent);
+	}
+
+	@Override
+	public void OnRefresh() {
+	   	Log.d(TAG,"OnRefresh");
+		if (null != mRootView) {
+			ContentResolver cr = getActivity().getContentResolver();
+			
+			mCursor.close();
+			mCursor = cr.query( MyGoals.Goals.CONTENT_URI, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
+
+			mAdapter.changeCursor(mCursor);
+		}
 	}	
 	
 }

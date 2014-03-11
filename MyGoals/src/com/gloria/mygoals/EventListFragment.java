@@ -3,7 +3,9 @@ package com.gloria.mygoals;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import com.gloria.mygoals.dummy.DummyData;
 
@@ -11,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.Fragment;
@@ -25,6 +28,8 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
@@ -126,7 +131,34 @@ public class EventListFragment extends Fragment {
 				}				
 				if (view.getId()==R.id.b_event_done){				
 					// TODO Add try catch block
-					((CheckBox)view).setChecked(Boolean.parseBoolean(cursor.getString(columnIndex)));
+					// set the cursor position in the check box's tag to associate them together
+					view.setTag(cursor.getPosition());
+					
+					((CheckBox)view).setOnCheckedChangeListener(null);
+					
+					boolean checked = Boolean.parseBoolean(cursor.getString(columnIndex));
+					((CheckBox)view).setChecked(checked);
+					((CheckBox)view).setClickable(!checked);
+					
+					((CheckBox)view).setOnCheckedChangeListener(new OnCheckedChangeListener() {
+						
+						@Override
+						public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+							if (isChecked) {
+								// lock the task's checkbox
+								buttonView.setClickable(false);
+
+								// set the task as completed
+								int position = (Integer)(buttonView.getTag());
+								setTaskCompleted(position);
+								
+								// Refresh the view
+								mCursor.requery();
+							}
+						};
+					});
+					
 					return true;
 				}
 				if (view.getId()==R.id.t_progress){				
@@ -141,7 +173,8 @@ public class EventListFragment extends Fragment {
         // Define action when clicking on a Goal item 
         lv.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    			Log.v("DEBUG", "Item "+id+" has been clicked");	
+    			Log.v(TAG, "Item "+id+" has been clicked");
+    			
         	}
         });
         
@@ -169,14 +202,9 @@ public class EventListFragment extends Fragment {
     }
     
     @Override    
-    public void onStart() {
-    	super.onStart();
-    	
-	    // create the list mapping
-		ContentResolver cr = getActivity().getContentResolver();
-		mCursor = cr.query(MyGoals.Tasks.CONTENT_URI, MyGoalsProvider.TASK_PROJECTION, null, null, null);
-
-		mAdapter.changeCursor(mCursor);	
+    public void onDestroyView() {
+    	mCursor.close();
+    	super.onDestroyView();
 	}
 
 	@Override
@@ -207,5 +235,74 @@ public class EventListFragment extends Fragment {
 	    startActivity(intent);*/
 	}	    
     
-    
+	
+	private void setTaskCompleted(int position) {
+
+		mCursor.moveToPosition(position);
+		int taskId = mCursor.getInt(mCursor.getColumnIndex(MyGoals.Tasks._ID));
+
+		// TODO determine the task's status
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+		ContentResolver cr = getActivity().getContentResolver();
+		ContentValues values= new ContentValues();
+		
+		// update the task
+		Uri uri = Uri.parse(MyGoals.Tasks.CONTENT_ID_URI_BASE + "" + taskId);
+		values.put(MyGoals.Tasks.COLUMN_NAME_DONE_DATE, sdf.format(new Date()));
+		values.put(MyGoals.Tasks.COLUMN_NAME_DONE, Boolean.TRUE.toString());
+		// TODO Update the task' status
+		int nbTask = cr.update(uri, values, null, null);
+
+		// update the activity's progress
+		int activityId = mCursor.getInt(mCursor.getColumnIndex(MyGoals.Tasks.COLUMN_NAME_ACTIVITY_ID));
+		uri = Uri.parse(MyGoals.Activities.CONTENT_ID_URI_BASE + "" + activityId);
+		Cursor activityCursor = cr.query(uri, 
+				new String [] {MyGoals.Activities.COLUMN_NAME_PROGRESS, MyGoals.Activities.COLUMN_NAME_DURATION}, 
+				null, null, null);
+		
+		activityCursor.moveToFirst();
+		int progress = activityCursor.getInt(activityCursor.getColumnIndex(MyGoals.Activities.COLUMN_NAME_PROGRESS));
+		String sDuration = activityCursor.getString(activityCursor.getColumnIndex(MyGoals.Activities.COLUMN_NAME_DURATION));
+		GregorianCalendar calendar = new GregorianCalendar();
+		try {
+			calendar.setTime(sdf.parse(sDuration));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// TODO To use Date or Integer or ... for the durations 
+		int duration = calendar.get(GregorianCalendar.HOUR_OF_DAY); 
+		progress += 1; 
+		
+		activityCursor.close();
+		
+		values.clear();
+		values.put(MyGoals.Activities.COLUMN_NAME_PROGRESS, progress);
+		int nbActivity = cr.update(uri, values, null, null);		
+		
+		// update the goal's progress
+		int goalId = mCursor.getInt(mCursor.getColumnIndex(MyGoals.Tasks.COLUMN_NAME_GOAL_ID));		
+		uri = Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + goalId);
+		Cursor goalCursor = cr.query(uri, 
+				new String [] {MyGoals.Goals.COLUMN_NAME_PROGRESS},
+				null, null, null);		
+		
+		goalCursor.moveToFirst();
+		progress = goalCursor.getInt(goalCursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_PROGRESS));
+		progress += duration;
+		
+		goalCursor.close();
+				
+		values.clear();
+		values.put(MyGoals.Goals.COLUMN_NAME_PROGRESS, progress);
+		int nbGoal = cr.update(uri, values, null, null);
+		
+		if (nbTask != 1 || nbActivity != 1 || nbGoal != 1) {
+			Log.v(TAG, "Update error");
+		}
+	} 
 }

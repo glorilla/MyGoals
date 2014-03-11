@@ -280,7 +280,13 @@ public final class MyGoals {
          * Column name for the activity weekdays
          *<P>Type: INTEGER </P>
          */
-        public static final String COLUMN_NAME_NB_TASKS = "nb_tasks";        
+        public static final String COLUMN_NAME_NB_TASKS = "nb_tasks";
+
+        /**
+         * Column name for the activity progress
+         *<P>Type: INTEGER </P>
+         */
+		public static final String COLUMN_NAME_PROGRESS = "progress";        
         
         /**
          * Column name for the activity nb of tasks

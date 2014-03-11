@@ -25,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -69,7 +70,8 @@ public class ActivityListFragment extends Fragment {
 				MyGoals.Activities.COLUMN_NAME_END_DATE,
 				MyGoals.Activities.COLUMN_NAME_REPETITION,
 				MyGoals.Activities.COLUMN_NAME_DURATION,
-				MyGoals.Activities.COLUMN_NAME_NB_TASKS
+				MyGoals.Activities.COLUMN_NAME_NB_TASKS,
+				MyGoals.Activities.COLUMN_NAME_PROGRESS				
 				};
 	    
 		int[] to = new int[] { 
@@ -78,7 +80,8 @@ public class ActivityListFragment extends Fragment {
 	    		R.id.t_end_date,
 	    		R.id.t_status,
 	    		R.id.t_task_duration,	    		
-	    		R.id.t_nb_task
+	    		R.id.t_nb_task,
+	    		R.id.progress
 	    		};
 
 	    // fill in the activity list layout
@@ -132,7 +135,11 @@ public class ActivityListFragment extends Fragment {
 					}
 					return true;
 				}				
-				
+				if (view.getId()==R.id.progress) {
+					((ProgressBar)view).setMax(cursor.getInt(cursor.getColumnIndex(MyGoals.Activities.COLUMN_NAME_NB_TASKS)));
+					((ProgressBar)view).setProgress(cursor.getInt(columnIndex));
+					return true;
+				}
 				return false;
 			}
 	    });

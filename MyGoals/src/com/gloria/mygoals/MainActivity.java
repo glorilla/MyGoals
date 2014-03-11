@@ -81,6 +81,10 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
     	if (position % NUM_ITEMS == 0) {
     		// Activity title set according to the goal list page
             setTitle(getResources().getText(R.string.my_goals));
+            Refreshable fragment = (Refreshable) mAdapter.instantiateItem(mPager, position);
+            if (fragment != null) {
+                fragment.OnRefresh();
+            } 
 		} else { 
     		// Activity title set according to the goal list page
             setTitle(getResources().getText(R.string.my_tasks));

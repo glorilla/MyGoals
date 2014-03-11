@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -36,6 +37,7 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ContentResolver;
@@ -296,18 +298,42 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				computeListOfTasks();
-
-				// Update the Activity's end date & nb of tasks
-				mVEndDate.setText(SimpleDateFormat.getDateTimeInstance().format(mEndDate));
-				mVNbTasks.setText("" + mNbTasks);					
+				//if (!hasFocus) {
+					if (isValid(v)) {
+						computeListOfTasks();
+				
+						// Update the Activity's end date & nb of tasks
+						mVEndDate.setText(SimpleDateFormat.getDateTimeInstance().format(mEndDate));
+						mVNbTasks.setText("" + mNbTasks);
+					} else {
+						v.requestFocus();
+					}
+				//}
 			}
 		});
 		
-		mVNbTasks.setOnClickListener(new OnClickListener() {
+		//mVNbTasks.setOnClickListener(new OnClickListener() {
+		mVNbTasks.setOnFocusChangeListener(new OnFocusChangeListener() {
 			
 			@Override
+			//public void onClick(View v) {
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (!hasFocus) {
+					if (isValid(v)) {
+						computeListOfTasks();
+				
+						// Update the Activity's end date & nb of tasks
+						mVEndDate.setText(SimpleDateFormat.getDateTimeInstance().format(mEndDate));
+						mVNbTasks.setText("" + mNbTasks);
+					} 
+					else {
+						v.requestFocus();
+					}
+				}
+			}
+		}); 
+			
+	/*		@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				computeListOfTasks();
@@ -315,8 +341,8 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 				// Update the Activity's end date & nb of tasks
 				mVEndDate.setText(SimpleDateFormat.getDateTimeInstance().format(mEndDate));
 				mVNbTasks.setText("" + mNbTasks);					
-			}
-		});
+			}*/
+		
 		
 		mVFrequencyChoice.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -365,6 +391,27 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 		
 			
 	}	
+
+	protected boolean isValid(View v) {
+
+		try {
+
+		if (v==mVNbTasks) {
+			if (0 < Integer.parseInt(mVNbTasks.getText().toString()) ) 
+				return true;
+		}
+		
+		if (v==mVOccurence) {
+			if (0 < Integer.parseInt(mVOccurence.getText().toString()) ) 
+				return true;
+		}
+		
+		} catch (NumberFormatException e) {
+		}
+		
+		Toast.makeText(getApplicationContext(), "A number greater than 0 is expected", Toast.LENGTH_SHORT).show();
+		return false;
+	}
 
 	private boolean validateForm() {
 		Log.d(TAG,"validateForm method");		
@@ -453,13 +500,15 @@ public class EditActivity extends Activity implements usesDatePickerDialogInterf
 		values.put(MyGoals.Activities.COLUMN_NAME_NB_TASKS, mNbTasks);
 		values.put(MyGoals.Activities.COLUMN_NAME_OCCURRENCE, mOccurrence);
 		values.put(MyGoals.Activities.COLUMN_NAME_WEEKDAYS, mWeekdays);
+
+		values.put(MyGoals.Activities.COLUMN_NAME_PROGRESS, 0);
 		
 		return cr.insert(MyGoals.Activities.CONTENT_URI, values);
 
 	}		
 	
 	private Uri insertTaskInDB(int activityId, TaskDates task) {
-		Log.d(TAG,"insertActivityInDB method");
+		Log.d(TAG,"insertTaskInDB method");
 		
 		// Query the DB through a contentProvider, though use a contentResolver
 		ContentResolver cr = getContentResolver();

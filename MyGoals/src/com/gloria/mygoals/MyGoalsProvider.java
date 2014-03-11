@@ -33,7 +33,7 @@ public class MyGoalsProvider extends ContentProvider {
      * The database that the provider uses as its underlying data store
      */
     private static final String DATABASE_NAME = "mygoals.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     /**
      * Projection maps used to select columns from the database
@@ -84,7 +84,8 @@ public class MyGoalsProvider extends ContentProvider {
             MyGoals.Activities.COLUMN_NAME_REPETITION,	// Projection position 6, the activity's repetition
             MyGoals.Activities.COLUMN_NAME_OCCURRENCE,	// Projection position 7, the activity's occurrence
             MyGoals.Activities.COLUMN_NAME_WEEKDAYS,	// Projection position 8, the activity's weekdays
-            MyGoals.Activities.COLUMN_NAME_NB_TASKS	// Projection position 9, the activity's nb tasks
+            MyGoals.Activities.COLUMN_NAME_NB_TASKS,	// Projection position 9, the activity's nb tasks
+            MyGoals.Activities.COLUMN_NAME_PROGRESS,	// Projection position 9, the activity's progress (nb tasks done)            
     };
     
     /*
@@ -100,6 +101,7 @@ public class MyGoalsProvider extends ContentProvider {
     public static final int ACTIVITY_OCCURRENCE_INDEX = 7;
     public static final int ACTIVITY_WEEKDAYS_INDEX = 8;
     public static final int ACTIVITY_NB_TASKS_INDEX = 9;
+    public static final int ACTIVITY_PROGRESS_INDEX = 10;    
     
     /**
      * Standard projection for the interesting columns of a task.
@@ -108,42 +110,28 @@ public class MyGoalsProvider extends ContentProvider {
             MyGoals.Tasks._ID,               	// Projection position 0, the task's id
             MyGoals.Tasks.COLUMN_NAME_TITLE, 	// Projection position 1, the task's title
             MyGoals.Tasks.COLUMN_NAME_GOAL_ID,   	// Projection position 2, the task's goal id
-            MyGoals.Tasks.COLUMN_NAME_GOAL_TITLE, 	// Projection position 1, the task's title            
-            //MyGoals.Tasks.COLUMN_NAME_ACTIVITY_ID, 	// Projection position 3, the task's activity id
-            MyGoals.Tasks.COLUMN_NAME_DUE_DATE,  	// Projection position 4, the task's due date
-            MyGoals.Tasks.COLUMN_NAME_START_DATE,	// Projection position 5, the task's start time
-            //MyGoals.Tasks.COLUMN_NAME_DONE_DATE,	// Projection position 6, the task's done date
-            MyGoals.Tasks.COLUMN_NAME_DONE,		// Projection position 7, the task's done boolean
-            MyGoals.Tasks.COLUMN_NAME_STATUS	// Projection position 8, the task's status
+            MyGoals.Tasks.COLUMN_NAME_GOAL_TITLE, 	// Projection position 3, the task's title            
+            MyGoals.Tasks.COLUMN_NAME_ACTIVITY_ID, 	// Projection position 4, the task's activity id
+            MyGoals.Tasks.COLUMN_NAME_DUE_DATE,  	// Projection position 5, the task's due date
+            MyGoals.Tasks.COLUMN_NAME_START_DATE,	// Projection position 6, the task's start time
+            MyGoals.Tasks.COLUMN_NAME_DONE_DATE,	// Projection position 7, the task's done date
+            MyGoals.Tasks.COLUMN_NAME_DONE,		// Projection position 8, the task's done boolean
+            MyGoals.Tasks.COLUMN_NAME_STATUS	// Projection position 9, the task's status
     };
-    /*     
-    public static final String[] TASK_PROJECTION = new String[] {
-            MyGoals.Tasks._ID,               	// Projection position 0, the task's id
-            MyGoals.Tasks.COLUMN_NAME_TITLE, 	// Projection position 1, the task's title
-            MyGoals.Tasks.COLUMN_NAME_GOAL_ID,   	// Projection position 2, the task's goal id
-            MyGoals.Tasks.COLUMN_NAME_ACTIVITY_ID, 	// Projection position 3, the task's activity id
-            MyGoals.Tasks.COLUMN_NAME_DUE_DATE,  	// Projection position 4, the task's due date
-            MyGoals.Tasks.COLUMN_NAME_START_TIME,	// Projection position 5, the task's start time
-            MyGoals.Tasks.COLUMN_NAME_DONE_DATE,	// Projection position 6, the task's done date
-            MyGoals.Tasks.COLUMN_NAME_DONE,		// Projection position 7, the task's done boolean
-            MyGoals.Tasks.COLUMN_NAME_STATUS	// Projection position 8, the task's status
-    };
-    
+     
     /*
      * Indexes of the columns in the projection 
-     
+    */ 
 	public static final int TASK_ID_INDEX = 0;
     public static final int TASK_TITLE_INDEX = 1;
     public static final int TASK_GOAL_ID_INDEX = 2;
-    public static final int TASK_ACTIVITY_ID_INDEX = 3;
-    public static final int TASK_DUE_DATE_INDEX = 4;
-    public static final int TASK_START_TIME_INDEX = 5;
-    public static final int TASK_DONE_DATE_INDEX = 6;
-    public static final int TASK_DONE_INDEX = 7;
-    public static final int TASK_STATUS_INDEX = 8;
-    */
-    
-    
+    public static final int TASK_GOAL_ID_TITLE = 3;    
+    public static final int TASK_ACTIVITY_ID_INDEX = 4;
+    public static final int TASK_DUE_DATE_INDEX = 5;
+    public static final int TASK_START_DATE_INDEX = 6;
+    public static final int TASK_DONE_DATE_INDEX = 7;
+    public static final int TASK_DONE_INDEX = 8;
+    public static final int TASK_STATUS_INDEX = 9;
     
     /*
      * Constants used by the Uri matcher to choose an action based on the pattern
@@ -155,20 +143,17 @@ public class MyGoalsProvider extends ContentProvider {
     // The incoming URI matches the Goal ID URI pattern
     private static final int GOAL_ID = 2;
 
-    // The incoming URI matches the new activity URI pattern
-    //private static final int NEW_ACTIVITY = 3;
+    // The incoming URI matches the goal's activities URI pattern
+    private static final int ACTIVITIES = 3;
     
-    // The incoming URI matches the Activity ID URI pattern
+    // The incoming URI matches the activity ID URI pattern
     private static final int ACTIVITY_ID = 4;
     
-    // The incoming URI matches the goal's activities URI pattern
-    private static final int ACTIVITIES = 5;
-    
     // The incoming URI matches the goal's tasks URI pattern
-    private static final int TASKS = 6;    
+    private static final int TASKS = 5;    
 
     // The incoming URI matches the goal's tasks URI pattern
-    private static final int TASK_ID = 7;        
+    private static final int TASK_ID = 6;        
     
     /**
      * A UriMatcher instance
@@ -195,9 +180,6 @@ public class MyGoalsProvider extends ContentProvider {
 
         // Add a pattern that routes URIs terminated with "goals" plus an integer, to a goal ID operation
         sUriMatcher.addURI(MyGoals.AUTHORITY, "goals/#", GOAL_ID);
-
-        // Add a pattern that routes URIs terminated with "activities" to an activity operation
-        //sUriMatcher.addURI(MyGoals.AUTHORITY, "activities", NEW_ACTIVITY);
         
         // Add a pattern that routes URIs terminated with "activities?goal_id=#" to an activity operation
         sUriMatcher.addURI(MyGoals.AUTHORITY, "activities", ACTIVITIES);
@@ -216,16 +198,17 @@ public class MyGoalsProvider extends ContentProvider {
          */        
         sTasksProjectionMap = new HashMap<String, String>();
 
-        // Maps the string "goal_title" to the column name "title AS goal_title"
-        sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_GOAL_TITLE, MyGoals.Goals.TABLE_NAME+"."+MyGoals.Goals.COLUMN_NAME_TITLE + " AS " + MyGoals.Tasks.COLUMN_NAME_GOAL_TITLE);      
-        
-        // Maps the string "goal_title" to the column name "title AS goal_title"
-        sTasksProjectionMap.put(MyGoals.Tasks._ID, MyGoals.Tasks.TABLE_NAME+"."+MyGoals.Tasks._ID);      
- 
-        sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_TITLE, MyGoals.Tasks.TABLE_NAME + "." + MyGoals.Tasks.COLUMN_NAME_TITLE);	
+        // Maps the string "_id" to the column name "task._id"
+        sTasksProjectionMap.put(MyGoals.Tasks._ID, MyGoals.Tasks.TABLE_NAME+"."+MyGoals.Tasks._ID);
+        // Maps the string "title" to the column name "task.title"        
+        sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_TITLE, MyGoals.Tasks.TABLE_NAME + "." + MyGoals.Tasks.COLUMN_NAME_TITLE);
         sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_GOAL_ID,  MyGoals.Tasks.COLUMN_NAME_GOAL_ID);
+        // Maps the string "goal_title" to the column name "goal.title AS goal_title"
+        sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_GOAL_TITLE, MyGoals.Goals.TABLE_NAME+"."+MyGoals.Goals.COLUMN_NAME_TITLE + " AS " + MyGoals.Tasks.COLUMN_NAME_GOAL_TITLE);      
+        sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_ACTIVITY_ID, MyGoals.Tasks.COLUMN_NAME_ACTIVITY_ID);	
         sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_START_DATE, MyGoals.Tasks.TABLE_NAME + "." + MyGoals.Tasks.COLUMN_NAME_START_DATE);
         sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_DUE_DATE, MyGoals.Tasks.COLUMN_NAME_DUE_DATE);
+        sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_DONE_DATE, MyGoals.Tasks.COLUMN_NAME_DONE_DATE);
         sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_DONE,	MyGoals.Tasks.COLUMN_NAME_DONE);	
 		sTasksProjectionMap.put(MyGoals.Tasks.COLUMN_NAME_STATUS, MyGoals.Tasks.COLUMN_NAME_STATUS);
         
@@ -307,7 +290,8 @@ public class MyGoalsProvider extends ContentProvider {
                    + MyGoals.Activities.COLUMN_NAME_REPETITION + " INTEGER,"
                    + MyGoals.Activities.COLUMN_NAME_OCCURRENCE + " INTEGER,"
                    + MyGoals.Activities.COLUMN_NAME_WEEKDAYS + " INTEGER,"
-                   + MyGoals.Activities.COLUMN_NAME_NB_TASKS + " INTEGER"
+                   + MyGoals.Activities.COLUMN_NAME_NB_TASKS + " INTEGER,"
+                   + MyGoals.Activities.COLUMN_NAME_PROGRESS + " INTEGER"                   
                    + ");");
 
     	   // Table Task
@@ -430,7 +414,6 @@ public class MyGoalsProvider extends ContentProvider {
 		           orderBy = MyGoals.Goals.DEFAULT_SORT_ORDER;	               
 	               break;
 	           
-	           // If the incoming URI is for goals, chooses the Goals projection	
 	           case ACTIVITIES:
 	        	   // TODO to replace the immediate string by a constant
 	        	   String goal_id = uri.getQueryParameter("goal_id");
@@ -446,8 +429,8 @@ public class MyGoalsProvider extends ContentProvider {
 	    	       // TODO required? qb.setProjectionMap(sActivitiesProjectionMap);
 	               qb.appendWhere(
 	                   MyGoals.Activities._ID + "=" +   // the name of the ID column
-	                   // the position of the goal ID in the incoming URI
-	                   uri.getPathSegments().get(1 /* TODO define constant MyGoals.Activities.GOAL_ID_PATH_POSITION */));	
+	                   // the position of the activity ID in the incoming URI
+	                   uri.getPathSegments().get(MyGoals.Activities.ACTIVITY_ID_PATH_POSITION));	
 		           orderBy = MyGoals.Activities.DEFAULT_SORT_ORDER;
 	               break;
 	        	   
@@ -463,6 +446,16 @@ public class MyGoalsProvider extends ContentProvider {
 	    	       qb.appendWhere(MyGoals.Tasks.COLUMN_NAME_GOAL_ID + "=" + MyGoals.Goals.TABLE_NAME + "." + MyGoals.Goals._ID);
 		           orderBy = MyGoals.Tasks.DEFAULT_SORT_ORDER;	   
 	        	   break;
+	        	   
+	           case TASK_ID:
+	    	       qb.setTables( MyGoals.Tasks.TABLE_NAME);
+	    	       // TODO required? qb.setProjectionMap(sTasksProjectionMap);
+	               qb.appendWhere(
+	                   MyGoals.Tasks._ID + "=" +   // the name of the ID column
+	                   // the position of the task ID in the incoming URI
+	                   uri.getPathSegments().get(MyGoals.Tasks.TASK_ID_PATH_POSITION));	
+		           orderBy = MyGoals.Tasks.DEFAULT_SORT_ORDER;
+	               break;	        	   
 	        	   
 	           default:
 	               // If the URI doesn't match any of the known patterns, throw an exception.
@@ -788,53 +781,52 @@ public class MyGoalsProvider extends ContentProvider {
 
         return nbRow;	
 	}		
-		
+	
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
+	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
         // Validates the incoming URI.
-		switch (sUriMatcher.match(uri)) {
-		// The incoming URI is valid only if it matches one of the predefined URI pattern
-		case GOALS:
-			break;
+        switch (sUriMatcher.match(uri))  {
+        	case GOAL_ID:        		
+        		return updateGoal(uri, values, selection, selectionArgs);
+        	case ACTIVITY_ID:
+        		return updateActivity(uri, values, selection, selectionArgs);
+        	case TASK_ID:
+        		return updateTask(uri, values, selection, selectionArgs);
+        	default:	
+        		throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+	}
+	
+	public int updateGoal(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
 
-		/* If the incoming URI is for a single Goal identified by its ID, sets the selection "_ID = <goalID>" to the where clause,
-		 * so that it selects that single Goal
-		 */
-		case GOAL_ID:
-			if (selection == null) {
-				selection = MyGoals.Goals._ID + "=" + 
-				// the position of the note ID itself in the incoming URI
-				uri.getPathSegments().get(MyGoals.Goals.GOAL_ID_PATH_POSITION);
-			}
-			break;
-		default:
-			// If the URI doesn't match any of the known patterns, throw an exception.
-			throw new IllegalArgumentException("Unknown URI " + uri);
+		if (selection == null) {
+			selection = MyGoals.Goals._ID + "=" + 
+			// the position of the note ID itself in the incoming URI
+			uri.getPathSegments().get(MyGoals.Goals.GOAL_ID_PATH_POSITION);
 		}
  	
         // If the incoming values map is null, throws an exception
         if (values == null) {
             throw new IllegalArgumentException("Values are missing to update with URI " + uri);
         }
-
+/*
         // At least one field value must be provided for an update 	
         if ( values.containsKey(MyGoals.Goals.COLUMN_NAME_TITLE) == false || 
         		values.containsKey(MyGoals.Goals.COLUMN_NAME_DESC) == false ||
         		values.containsKey(MyGoals.Goals.COLUMN_NAME_START_DATE) == false || 
         		values.containsKey(MyGoals.Goals.COLUMN_NAME_TARGET_DATE) == false ||   
-        		values.containsKey(MyGoals.Goals.COLUMN_NAME_WORKLOAD) == false 
+        		values.containsKey(MyGoals.Goals.COLUMN_NAME_WORKLOAD) == false ||
+        		values.containsKey(MyGoals.Goals.COLUMN_NAME_PROGRESS) == false      		
         		)  
         {
             // If the mandatory informations are missing, throws an exception.
             throw new IllegalArgumentException("At least one field value must be provided to update the DB entry");
         }
-
+*/
         // Opens the database object in "write" mode.
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-
-        // 
         
         int nbRow = db.update(
             	MyGoals.Goals.TABLE_NAME,    // The table to update.
@@ -846,4 +838,83 @@ public class MyGoalsProvider extends ContentProvider {
         return nbRow;
 	}
 
+	public int updateActivity(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
+
+		if (selection == null) {
+			selection = MyGoals.Activities._ID + "=" + 
+			// the position of the note ID itself in the incoming URI
+			uri.getPathSegments().get(MyGoals.Activities.ACTIVITY_ID_PATH_POSITION);
+		}
+ 	
+        // If the incoming values map is null, throws an exception
+        if (values == null) {
+            throw new IllegalArgumentException("Values are missing to update with URI " + uri);
+        }
+
+        /* TODO At least one field value must be provided for an update 	
+        if ( values.containsKey(MyGoals.Goals.COLUMN_NAME_TITLE) == false || 
+        		values.containsKey(MyGoals.Goals.COLUMN_NAME_DESC) == false ||
+        		values.containsKey(MyGoals.Goals.COLUMN_NAME_START_DATE) == false || 
+        		values.containsKey(MyGoals.Goals.COLUMN_NAME_TARGET_DATE) == false ||   
+        		values.containsKey(MyGoals.Goals.COLUMN_NAME_WORKLOAD) == false 
+        		)  
+        {
+            // If the mandatory informations are missing, throws an exception.
+            throw new IllegalArgumentException("At least one field value must be provided to update the DB entry");
+        }
+         */
+        
+        // Opens the database object in "write" mode.
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        
+        int nbRow = db.update(
+            	MyGoals.Activities.TABLE_NAME,    // The table to update.
+        		values, 
+        		selection, 
+        		null
+        );
+
+        return nbRow;
+	}
+	
+	public int updateTask(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
+
+		if (selection == null) {
+			selection = MyGoals.Tasks._ID + "=" + 
+			// the position of the note ID itself in the incoming URI
+			uri.getPathSegments().get(MyGoals.Tasks.TASK_ID_PATH_POSITION);
+		}
+ 	
+        // If the incoming values map is null, throws an exception
+        if (values == null) {
+            throw new IllegalArgumentException("Values are missing to update with URI " + uri);
+        }
+
+        /* TODO At least one field value must be provided for an update 	
+        if ( values.containsKey(MyGoals.Goals.COLUMN_NAME_TITLE) == false || 
+        		values.containsKey(MyGoals.Goals.COLUMN_NAME_DESC) == false ||
+        		values.containsKey(MyGoals.Goals.COLUMN_NAME_START_DATE) == false || 
+        		values.containsKey(MyGoals.Goals.COLUMN_NAME_TARGET_DATE) == false ||   
+        		values.containsKey(MyGoals.Goals.COLUMN_NAME_WORKLOAD) == false 
+        		)  
+        {
+            // If the mandatory informations are missing, throws an exception.
+            throw new IllegalArgumentException("At least one field value must be provided to update the DB entry");
+        }*/
+
+        // Opens the database object in "write" mode.
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        
+        int nbRow = db.update(
+            	MyGoals.Tasks.TABLE_NAME,    // The table to update.
+        		values, 
+        		selection, 
+        		null
+        );
+
+        return nbRow;
+	}
+	
 }
