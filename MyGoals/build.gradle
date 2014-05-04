@@ -1,0 +1,41 @@
+apply plugin: 'android'
+apply plugin: 'idea'
+
+repositories {
+    mavenLocal()
+    maven { url 'http://dl.bintray.com/populov/maven' }
+    mavenCentral()
+    maven { url 'https://raw.github.com/ichigotake/ColorPicker/migrate-to-gradle/repository' }
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion '19.0.1'
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 19
+    }
+
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:+'
+    compile 'com.viewpagerindicator:library:2.4.1@aar'
+    compile 'be.billington.calendar.recurrencepicker:library:1.0.4@aar'
+    compile 'com.github.flavienlaurent.datetimepicker:library:0.0.1'
+    compile 'com.fourmob.colorpicker:colorpicker:1.0.0'
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
