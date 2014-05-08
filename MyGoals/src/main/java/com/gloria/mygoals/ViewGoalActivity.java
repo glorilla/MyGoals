@@ -35,10 +35,10 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 
 	public static final String EXTRA_KEY_ID = "id";
 	public static final String EXTRA_KEY_TITLE = "title";
-	public static final String EXTRA_KEY_DESC = "desc";
+	/*public static final String EXTRA_KEY_DESC = "desc";
 	public static final String EXTRA_KEY_START_DATE = "start_date";
 	public static final String EXTRA_KEY_TARGET_DATE = "target_date";
-	public static final String EXTRA_KEY_WORKLOAD = "workload";
+	public static final String EXTRA_KEY_WORKLOAD = "workload";*/
 	
 	public static final String EXTRA_KEY_RESULT = "result";
 	public static enum result {DELETION}

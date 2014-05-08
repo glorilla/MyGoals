@@ -1,20 +1,13 @@
 package com.gloria.mygoals;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import com.gloria.mygoals.dummy.DummyData;
-
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.format.DateFormat;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,13 +15,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;;
+import android.widget.TextView;
 
-public class GoalDetailFragment extends Fragment {
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+;
+
+public class GoalDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 	// For log purpose
 	private static final  String TAG = "GoalDetailFragment"; 
 
@@ -56,32 +52,14 @@ public class GoalDetailFragment extends Fragment {
 		Log.d(TAG,"onCreateView method");					
 		// Return the View built from the layout
 		mRootView = inflater.inflate(R.layout.goal_view, container, false);
-		Intent i = getActivity().getIntent();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+		//Intent i = getActivity().getIntent();
 
 		mVTitle=((TextView)mRootView.findViewById(R.id.t_goal_detail_title));
-		mVTitle.setText(i.getStringExtra(ViewGoalActivity.EXTRA_KEY_TITLE));
-
 		mVDescription=((TextView)mRootView.findViewById(R.id.t_goal_detail_description));
-		mVDescription.setText(i.getStringExtra(ViewGoalActivity.EXTRA_KEY_DESC));
-		
 		mVStartDate=((TextView)mRootView.findViewById(R.id.t_goal_start_date));
 		mVEndDate=((TextView)mRootView.findViewById(R.id.t_goal_end_date));
-
 		mVWorkload=((TextView)mRootView.findViewById(R.id.t_goal_hours));
-		mVWorkload.setText("" + i.getIntExtra(ViewGoalActivity.EXTRA_KEY_WORKLOAD, 0) + getResources().getString(R.string.hours));
-		
-		try {
-			mStartDate = sdf.parse(i.getStringExtra(ViewGoalActivity.EXTRA_KEY_START_DATE));
-			mEndDate = sdf.parse(i.getStringExtra(ViewGoalActivity.EXTRA_KEY_TARGET_DATE));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		mVStartDate.setText(SimpleDateFormat.getDateInstance().format(mStartDate));
-		mVEndDate.setText(SimpleDateFormat.getDateInstance().format(mEndDate));
-		
 		return mRootView;
 	}	
 	
@@ -95,6 +73,8 @@ public class GoalDetailFragment extends Fragment {
     public void onStart() {
 		Log.d(TAG,"onStart method");
 		super.onStart();
+
+        getLoaderManager().initLoader(0, null, this);
     }
     
 	@Override
@@ -125,6 +105,43 @@ public class GoalDetailFragment extends Fragment {
   	    intent.putExtra(EditGoalActivity.EXTRA_KEY_ID, ViewGoalActivity.mGoalId);
   
 	    startActivity(intent);
-	}	
+	}
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        Log.d(TAG,"onCreateLoader");
+
+        Uri uri = Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + ViewGoalActivity.mGoalId);
+
+        return new CursorLoader(getActivity(), uri, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        Log.d(TAG,"onLoadFinished");
+        swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        Log.d(TAG,"onLoaderReset");
+    }
+
+    private void swapCursor(Cursor cursor) {
+        cursor.moveToFirst();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+        mVTitle.setText(cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_TITLE)));
+        mVDescription.setText(cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_DESC)));
+        mVWorkload.setText("" + cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_WORKLOAD)) + getResources().getString(R.string.hours));
+        try {
+            mStartDate = sdf.parse(cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_START_DATE)));
+            mEndDate = sdf.parse(cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_TARGET_DATE)));
+            mVStartDate.setText(SimpleDateFormat.getDateInstance().format(mStartDate));
+            mVEndDate.setText(SimpleDateFormat.getDateInstance().format(mEndDate));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
 }

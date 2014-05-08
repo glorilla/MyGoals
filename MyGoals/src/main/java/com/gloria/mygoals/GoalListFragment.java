@@ -175,11 +175,12 @@ public class GoalListFragment extends Fragment implements /*Refreshable,*/ Loade
 	    
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_ID, goal_id);
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_TITLE, c.getString(MyGoalsProvider.GOAL_TITLE_INDEX));
+	    /*
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_DESC, c.getString(MyGoalsProvider.GOAL_DESC_INDEX));
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_START_DATE, c.getString(MyGoalsProvider.GOAL_START_DATE_INDEX));
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_TARGET_DATE, c.getString(MyGoalsProvider.GOAL_TARGET_DATE_INDEX));
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_WORKLOAD, c.getInt(MyGoalsProvider.GOAL_WORKLOAD_INDEX));
-	    
+	    */
 	    startActivityForResult(intent, 0);
 	}
 	
