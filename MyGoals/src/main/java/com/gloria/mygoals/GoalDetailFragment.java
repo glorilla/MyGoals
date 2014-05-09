@@ -128,6 +128,9 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void swapCursor(Cursor cursor) {
+        if(null==cursor || cursor.getCount()<=0) return;
+
+        // if cursor is not empty, get the values
         cursor.moveToFirst();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
         mVTitle.setText(cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_TITLE)));

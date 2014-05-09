@@ -722,23 +722,77 @@ public class MyGoalsProvider extends ContentProvider {
 
         // Validates the incoming URI.
         switch (sUriMatcher.match(uri))  {
-        	case GOAL_ID:        		
+        	case GOAL_ID:
         		return deleteGoal(uri, selection, selectionArgs);
+            case GOALS:
+                return deleteGoal(uri, selection, selectionArgs);
         	case ACTIVITY_ID:
         		return deleteActivity(uri, selection, selectionArgs);
+            case ACTIVITIES:
+                return deleteActivity(uri, selection, selectionArgs);
         	case TASK_ID:
         		return deleteTask(uri, selection, selectionArgs);
+            case TASKS:
+                return deleteTask(uri, selection, selectionArgs);
         	default:	
         		throw new IllegalArgumentException("Unknown URI " + uri);
         }
 	}
-	
+
+    /**
+     * Deletes goals according to the URI
+     * if the URI contains a goal id, the selection parameters are ignored
+     * @param uri the goal URI
+     * @param selection a condition on the goal table's columns
+     * @param selectionArgs in case the selection contains '?' characters, there are substituted by these values
+     * @return the number of rows deleted
+     */
 	public int deleteGoal(Uri uri, String selection, String[] selectionArgs) {
- 
-		if (selection == null) {
-			selection = MyGoals.Goals._ID + "=" + 
-			// the position of the note ID itself in the incoming URI
-			uri.getPathSegments().get(MyGoals.Goals.GOAL_ID_PATH_POSITION);
+        // get the activity_id if passed in the URI
+        String id = uri.getPathSegments().get(MyGoals.Goals.GOAL_ID_PATH_POSITION);
+
+        if (id != null) {
+            selection =  MyGoals.Goals._ID + "=" + id;
+            selectionArgs = null;
+        }
+
+        // Opens the database object in "write" mode.
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        // Execute the Delete SQL command
+        int nbRow = db.delete(
+                MyGoals.Goals.TABLE_NAME,
+                selection,
+                selectionArgs
+        );
+
+        // Notifies observers registered against this provider that the data changed.
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return nbRow;
+    }
+
+
+    /**
+     * Deletes activities according to the URI
+     * if the URI contains an activity id, the selection parameters are ignored
+     * @param uri the activity URI
+     * @param selection a condition on the activity table's columns
+     * @param selectionArgs in case the selection contains '?' characters, there are substituted by these values
+     * @return the number of rows deleted
+     */
+	public int deleteActivity(Uri uri, String selection, String[] selectionArgs) {
+        // get the activity_id if passed in the URI
+        String id = null;
+
+        try {
+            id = uri.getPathSegments().get(MyGoals.Activities.ACTIVITY_ID_PATH_POSITION);
+        }
+        catch (Exception e) {}
+
+		if (id != null) {
+			selection =  MyGoals.Activities._ID + "=" + id;
+            selectionArgs = null;
 		}
 		
         // Opens the database object in "write" mode.
@@ -746,9 +800,9 @@ public class MyGoalsProvider extends ContentProvider {
 
         // Execute the Delete SQL command
         int nbRow = db.delete(
-            	MyGoals.Goals.TABLE_NAME,    // The table to update.
-        		selection, 
-        		null
+            	MyGoals.Activities.TABLE_NAME,
+        		selection,
+                selectionArgs
         );
 
         // Notifies observers registered against this provider that the data changed.
@@ -757,53 +811,42 @@ public class MyGoalsProvider extends ContentProvider {
         return nbRow;	
 	}
 
-	public int deleteActivity(Uri uri, String selection, String[] selectionArgs) {
- 
-		if (selection == null) {
-			selection = MyGoals.Activities._ID + "=" + 
-			// the position of the note ID itself in the incoming URI
-			uri.getPathSegments().get(MyGoals.Activities.ACTIVITY_ID_PATH_POSITION);
-		}
-		
-        // Opens the database object in "write" mode.
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-
-        // Execute the Delete SQL command
-        int nbRow = db.delete(
-            	MyGoals.Activities.TABLE_NAME,    // The table to update.
-        		selection, 
-        		null
-        );
-
-        // Notifies observers registered against this provider that the data changed.
-        getContext().getContentResolver().notifyChange(uri, null);
-
-        return nbRow;	
-	}		
-
+    /**
+     * Deletes tasks according to the URI
+     * if the URI contains a task id, the selection parameters are ignored
+     * @param uri the task URI
+     * @param selection a condition on the task table's columns
+     * @param selectionArgs in case the selection contains '?' characters, there are substituted by these values
+     * @return the number of rows deleted
+     */
 	public int deleteTask(Uri uri, String selection, String[] selectionArgs) {
-		 
-		if (selection == null) {
-			selection = MyGoals.Tasks._ID + "=" + 
-			// the position of the note ID itself in the incoming URI
-			uri.getPathSegments().get(MyGoals.Tasks.TASK_ID_PATH_POSITION);
-		}
-		
+        // get the task_id if passed in the URI
+        String id = null;
+        try {
+            id = uri.getPathSegments().get(MyGoals.Tasks.TASK_ID_PATH_POSITION);
+        }
+        catch (Exception e) {}
+
+        if (id != null) {
+            selection =  MyGoals.Activities._ID + "=" + id;
+            selectionArgs = null;
+        }
+
         // Opens the database object in "write" mode.
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         // Execute the Delete SQL command
         int nbRow = db.delete(
-            	MyGoals.Tasks.TABLE_NAME,    // The table to update.
-        		selection, 
-        		null
+                MyGoals.Tasks.TABLE_NAME,
+                selection,
+                selectionArgs
         );
 
         // Notifies observers registered against this provider that the data changed.
         getContext().getContentResolver().notifyChange(uri, null);
 
-        return nbRow;	
-	}		
+        return nbRow;
+    }
 	
 	@Override
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {

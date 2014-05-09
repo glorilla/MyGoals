@@ -141,7 +141,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 		        finish();
 		        return true;
 	        case R.id.action_delete:
-	        	//removeGoal();
+	        	removeGoal();
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -151,13 +151,20 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 		Log.d(TAG,"removeGoal method");			
 		new AlertDialog.Builder(this)
 	    .setTitle("Delete entry")
-	    .setMessage("Are you sure you want to delete this entry?")
+	    .setMessage("Are you sure you want to delete this goal and all its tasks and activities?")
 	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) { 
 	            // continue with delete
 	        	ContentResolver cr = getContentResolver();
 	        	int nbRow =  cr.delete(Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + mGoalId), null, null);
-	        	Log.d(TAG, "" + nbRow + " rows have been successfully deleted");
+	        	Log.d(TAG, "" + nbRow + " rows of the goal table have been successfully deleted");
+
+                nbRow = cr.delete(MyGoals.Activities.CONTENT_URI, MyGoals.Activities.SELECT_BY_GOAL_ID, new String[] {""+mGoalId});
+                Log.d(TAG, "" + nbRow + " rows of the activity table have been successfully deleted");
+
+                nbRow = cr.delete(MyGoals.Tasks.CONTENT_URI, MyGoals.Tasks.SELECT_BY_GOAL_ID, new String[] {""+mGoalId});
+                Log.d(TAG, "" + nbRow + " rows of the task table have been successfully deleted");
+
 	        	Intent intent = getIntent();
 	        	intent.putExtra(EXTRA_KEY_RESULT, result.DELETION);
 	        	setResult(RESULT_OK,getIntent());

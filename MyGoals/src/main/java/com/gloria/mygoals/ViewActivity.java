@@ -235,7 +235,7 @@ public class ViewActivity extends Activity {
                 int nbRowGoal = cr.update(uri, values, null, null);
 
 	        	// Return the result OK
-	        	if (nbRowActivity>0 && nbRowTask >0 && nbRowTask >0 ) {
+	        	if (nbRowGoal>0 && nbRowActivity >0 && nbRowTask >0 ) {
 		        	getIntent().putExtra(EXTRA_KEY_RESULT, result.DELETION);
 		        	setResult(RESULT_OK,getIntent());
 	        	}

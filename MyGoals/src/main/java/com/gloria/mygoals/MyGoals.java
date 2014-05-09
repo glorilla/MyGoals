@@ -305,10 +305,13 @@ public final class MyGoals {
          */
         public static final String COLUMN_NAME_RRULE = "rrule";
 
+        /*
+         * Selection definitions
+         */
         /**
-         * Column name for the activity nb of tasks
-         * It is not needed as '_ID' is provided by the parent class BaseColumns 
-        */        
+         * Selection to select by the goal_id
+         */
+        public static final String SELECT_BY_GOAL_ID = COLUMN_NAME_GOAL_ID + "=?";
     }    
 
     /**
@@ -463,6 +466,19 @@ public final class MyGoals {
 	    public static final String DEFAULT_SORT_ORDER = Tasks.TABLE_NAME +
 	    		"." + Tasks.COLUMN_NAME_START_DATE + " ASC";
 
+        /*
+         * Selection definitions
+         */
+        /**
+         * Selection to select by the goal_id
+         */
+        public static final String SELECT_BY_GOAL_ID = COLUMN_NAME_GOAL_ID + "=?";
+
+        /**
+         * Selection to select by the goal_id
+         */
+        public static final String SELECT_BY_ACTIVITY_ID = COLUMN_NAME_ACTIVITY_ID + "=?";
+
     }  
     
     public static final class Repetition implements BaseColumns {
@@ -489,7 +505,7 @@ public final class MyGoals {
          * <P>Type: TEXT</P>
          */
         public static final String COLUMN_NAME_NAME = "name";
-    
+
     }
     
     public static final class Category implements BaseColumns {
