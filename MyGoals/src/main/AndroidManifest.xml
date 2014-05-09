@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
     <application
@@ -18,45 +18,58 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity 
-            android:name="com.gloria.mygoals.ViewGoalActivity" 
+        <activity
+            android:name="com.gloria.mygoals.ViewGoalActivity"
             android:parentActivityName="com.gloria.mygoals.MainActivity" >
-	        <!-- Parent activity meta-data to support 4.0 and lower -->
-	        <meta-data
-	            android:name="android.support.PARENT_ACTIVITY"
-	            android:value="com.gloria.mygoals.MainActivity" />
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gloria.mygoals.MainActivity" />
         </activity>
-        <activity 
+        <activity
             android:name="com.gloria.mygoals.EditGoalActivity"
             android:parentActivityName="com.gloria.mygoals.ViewGoalActivity" >
-	        <!-- Parent activity meta-data to support 4.0 and lower -->
-	        <meta-data
-	            android:name="android.support.PARENT_ACTIVITY"
-	            android:value="com.gloria.mygoals.ViewGoalActivity" />            
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gloria.mygoals.ViewGoalActivity" />
         </activity>
-        <activity 
+        <activity
             android:name="com.gloria.mygoals.EditActivity"
             android:parentActivityName="com.gloria.mygoals.ViewGoalActivity" >
-	        <!-- Parent activity meta-data to support 4.0 and lower -->
-	        <meta-data
-	            android:name="android.support.PARENT_ACTIVITY"
-	            android:value="com.gloria.mygoals.ViewGoalActivity" />             
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gloria.mygoals.ViewGoalActivity" />
         </activity>
-        <activity 
+        <activity
             android:name="com.gloria.mygoals.ViewActivity"
             android:parentActivityName="com.gloria.mygoals.ViewGoalActivity" >
-	        <!-- Parent activity meta-data to support 4.0 and lower -->
-	        <meta-data
-	            android:name="android.support.PARENT_ACTIVITY"
-	            android:value="com.gloria.mygoals.ViewGoalActivity" />             
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gloria.mygoals.ViewGoalActivity" />
         </activity>
-        <provider 
-            android:name="com.gloria.mygoals.MyGoalsProvider" 
-            android:exported="false" 
-            android:authorities="com.gloria.mygoals">
+
+        <provider
+            android:name="com.gloria.mygoals.MyGoalsProvider"
+            android:authorities="com.gloria.mygoals"
+            android:exported="false" >
         </provider>
-        </application>
+
+        <receiver
+            android:name="com.gloria.mygoals.NotificationReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
+    </application>
+
 </manifest>
