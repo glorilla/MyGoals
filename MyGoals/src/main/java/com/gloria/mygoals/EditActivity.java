@@ -285,7 +285,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
             if (null != insertTaskInDB(activityId, task)) {
                 mAlarmManager.set(AlarmManager.RTC_WAKEUP, task.startDate.getTime() - ALARM_DELAY,
                         mNotificationReceiverPendingIntent);
-                Log.v(TAG, "current time:" + (new Date()).getTime() + ",alarm time:" + task.startDate.getTime() - ALARM_DELAY );
+                Log.v(TAG, "current time:" + (new Date()).getTime() + ",alarm time:" + (task.startDate.getTime() - ALARM_DELAY) );
             }
         }
     }
