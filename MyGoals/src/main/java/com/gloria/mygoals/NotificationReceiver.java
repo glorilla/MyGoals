@@ -1,11 +1,11 @@
 package com.gloria.mygoals;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.text.DateFormat;
@@ -16,11 +16,6 @@ public class NotificationReceiver extends BroadcastReceiver {
     // Notification ID to allow for future updates
     private static final int MY_NOTIFICATION_ID = 1;
     private static final String TAG = "NotificationReceiver";
-
-    // Notification Text Elements
-    private final CharSequence tickerText = "Are you ready to start your task?";
-    private final CharSequence contentTitle = "A task will start in 15 min";
-    private final CharSequence contentText = "One more step to your goal achievement!";
 
     // Notification Action Elements
     private Intent mNotificationIntent;
@@ -35,11 +30,15 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        CharSequence tickerText = context.getString(R.string.notif_ticker_text);// "Are you ready to start your task?"
+        CharSequence contentTitle = context.getString(R.string.notif_title);    // "A task will start in 15 min";
+        CharSequence contentText = context.getString(R.string.notif_text);      // "One more step to your goal achievement!";
+
         mNotificationIntent = new Intent(context, MainActivity.class);
         mContentIntent = PendingIntent.getActivity(context, 0,
                 mNotificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        Notification.Builder notificationBuilder = new Notification.Builder(
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
                 context).setTicker(tickerText)
                 .setSmallIcon(android.R.drawable.stat_sys_warning)
                 .setAutoCancel(true).setContentTitle(contentTitle)
