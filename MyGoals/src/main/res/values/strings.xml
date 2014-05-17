@@ -46,4 +46,7 @@
     <string name="Activity_deleted">Activity deleted</string>
     <string name="tasks">tasks</string>
     <string name="Repetition">Repetition</string>
+    <string name="notif_ticker_text">Are you ready to start your task?</string>
+    <string name="notif_title">A task will start in 15 min</string>
+    <string name="notif_text">One more step to your goal achievement!</string>
 </resources>

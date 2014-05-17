@@ -9,7 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 
-import com.viewpagerindicator.LinePageIndicator;
+import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
 /**
@@ -41,7 +41,7 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
         mPager = (ViewPager)findViewById(R.id.list_pager);
         mPager.setAdapter(mAdapter);
         
-        mIndicator = (LinePageIndicator)findViewById(R.id.indicator);
+        mIndicator = (CirclePageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
         /* The PageIndicator overrides the OnPageChangelistener affectation on the ViewPager.
         But it offers the method setOnPageChangeListener to continue the treatment on these events */

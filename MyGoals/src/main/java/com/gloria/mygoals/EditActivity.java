@@ -109,7 +109,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate method");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit2);
+        setContentView(R.layout.activity_edit);
         setTitle(getResources().getString(R.string.my_activity));
 
         // Set the mode and the Goal id thanks to the intent extra values
