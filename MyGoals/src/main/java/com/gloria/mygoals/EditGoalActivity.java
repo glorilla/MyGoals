@@ -1,7 +1,11 @@
 package com.gloria.mygoals;
 
+import android.app.AlertDialog;
+
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -205,13 +209,36 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
 	}*/
 
 	private boolean validateForm() {
-		Log.d(TAG,"validateForm method");		
+		//Log.d(TAG,"validateForm method");
 		/* TODO To implement the form validation before submitting
 		 	- are all mandatory fields filled ?
 		 	- is start date < end date ?
+		 	new AlertDialog.Builder(this)
+	    .setTitle("Delete entry")
+	    .setMessage("Are you sure you want to delete this goal and all its tasks and activities?")
 		 */
+
+        if (    (mVGoalTitle.getText().toString().isEmpty())
+                || (mVGoalDesc.getText().toString().isEmpty())
+                || (mVGoalWorkload.getText().toString().isEmpty())
+           )
+        {
+            Log.d(TAG,"Error validateForm method: Title Or Desc Or WorkLoad is empty");
+
+            // I don't know how to MAKE A DIALOG BOX with just a single button !
+            /*new AlertDialog.Builder(this)
+                    .setTitle("Error : Incomplete Form!")
+                    .setMessage("Please check your informations and complete the forms.")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                      })
+                    )
+                    .setIcon(R.drawable.alert_warning)
+                    .show();*/
+            return false;
+        }
+
+        Log.d(TAG,"validateForm method: Ok!");
 		return true;
-		//return false;
 	}
 
 	private void insertInDB() {
