@@ -223,7 +223,7 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
                 || (mVGoalWorkload.getText().toString().isEmpty())
            )
         {
-            Log.d(TAG,"Error validateForm method: Title Or Desc Or WorkLoad is empty");
+            Log.d(TAG,"Error validateForm method: Title Or Description Or WorkLoad is empty");
 
             // I don't know how to MAKE A DIALOG BOX with just a single button !
             /*new AlertDialog.Builder(this)
@@ -234,8 +234,22 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
                     )
                     .setIcon(R.drawable.alert_warning)
                     .show();*/
+
             return false;
+
         }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
+        if (Integer.parseInt(sdf.format(mStartDate)) > Integer.parseInt(sdf.format(mEndDate)))
+        {
+            Log.d(TAG, "Error validateForm method: StartDate superior than EndDate : "+mStartDate+" > "+mEndDate);
+            return  false;
+
+            /* PLEASE ADD A DIALOGBOX ;) */
+        }
+
+
+
 
         Log.d(TAG,"validateForm method: Ok!");
 		return true;
