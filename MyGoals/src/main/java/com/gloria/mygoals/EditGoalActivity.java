@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fourmob.colorpicker.ColorPickerDialog;
 import com.fourmob.colorpicker.ColorPickerSwatch.OnColorSelectedListener;
@@ -225,15 +226,7 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
         {
             Log.d(TAG,"Error validateForm method: Title Or Description Or WorkLoad is empty");
 
-            // I don't know how to MAKE A DIALOG BOX with just a single button !
-            /*new AlertDialog.Builder(this)
-                    .setTitle("Error : Incomplete Form!")
-                    .setMessage("Please check your informations and complete the forms.")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                      })
-                    )
-                    .setIcon(R.drawable.alert_warning)
-                    .show();*/
+           Toast.makeText(this, getResources().getText(R.string.forms_empty), Toast.LENGTH_LONG).show();
 
             return false;
 
@@ -243,9 +236,10 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
         if (Integer.parseInt(sdf.format(mStartDate)) > Integer.parseInt(sdf.format(mEndDate)))
         {
             Log.d(TAG, "Error validateForm method: StartDate superior than EndDate : "+mStartDate+" > "+mEndDate);
-            return  false;
 
-            /* PLEASE ADD A DIALOGBOX ;) */
+            Toast.makeText(this, getResources().getText(R.string.forms_incorrect_date), Toast.LENGTH_LONG).show();
+
+            return  false;
         }
 
 

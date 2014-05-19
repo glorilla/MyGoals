@@ -49,4 +49,7 @@
     <string name="notif_ticker_text">Are you ready to start your task?</string>
     <string name="notif_title">A task will start in 15 min</string>
     <string name="notif_text">One more step to your goal achievement!</string>
+
+    <string name="forms_empty">One or more fields are empty!</string>
+    <string name="forms_incorrect_date">The start date is more recent than the end date!</string>
 </resources>
