@@ -48,4 +48,8 @@
     <string name="notif_ticker_text">Prêt pour votre tâche?</string>
     <string name="notif_title">Votre prochaine tâcche commence dans 15 min</string>
     <string name="notif_text">Un pas de plus vers votre objectif!</string>
+
+
+    <string name="forms_empty">Un ou plusieurs champs sont vide!</string>
+    <string name="forms_incorrect_date">La date de début est plus récente que la date de fin!</string>
 </resources>

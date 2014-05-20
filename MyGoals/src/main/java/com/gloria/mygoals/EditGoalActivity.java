@@ -1,7 +1,11 @@
 package com.gloria.mygoals;
 
+import android.app.AlertDialog;
+
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -16,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fourmob.colorpicker.ColorPickerDialog;
 import com.fourmob.colorpicker.ColorPickerSwatch.OnColorSelectedListener;
@@ -205,13 +210,43 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
 	}*/
 
 	private boolean validateForm() {
-		Log.d(TAG,"validateForm method");		
+		//Log.d(TAG,"validateForm method");
 		/* TODO To implement the form validation before submitting
 		 	- are all mandatory fields filled ?
 		 	- is start date < end date ?
+		 	new AlertDialog.Builder(this)
+	    .setTitle("Delete entry")
+	    .setMessage("Are you sure you want to delete this goal and all its tasks and activities?")
 		 */
+
+        if (    (mVGoalTitle.getText().toString().isEmpty())
+                || (mVGoalDesc.getText().toString().isEmpty())
+                || (mVGoalWorkload.getText().toString().isEmpty())
+           )
+        {
+            Log.d(TAG,"Error validateForm method: Title Or Description Or WorkLoad is empty");
+
+           Toast.makeText(this, getResources().getText(R.string.forms_empty), Toast.LENGTH_LONG).show();
+
+            return false;
+
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
+        if (Integer.parseInt(sdf.format(mStartDate)) > Integer.parseInt(sdf.format(mEndDate)))
+        {
+            Log.d(TAG, "Error validateForm method: StartDate superior than EndDate : "+mStartDate+" > "+mEndDate);
+
+            Toast.makeText(this, getResources().getText(R.string.forms_incorrect_date), Toast.LENGTH_LONG).show();
+
+            return  false;
+        }
+
+
+
+
+        Log.d(TAG,"validateForm method: Ok!");
 		return true;
-		//return false;
 	}
 
 	private void insertInDB() {
