@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -183,13 +184,13 @@ public class ViewActivity extends Activity {
 	private void removeActivity() {
 		Log.d(TAG,"removeActivity method");			
 		new AlertDialog.Builder(this)
-	    .setTitle("Delete entry")
-	    .setMessage("This activity and its tasks will be deleted. Do you agree?")
+	    .setTitle(getResources().getText(R.string.dialog_title_deleteActivity))
+	    .setMessage(getResources().getText(R.string.dialog_message_deleteActivity))
 	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-	        public void onClick(DialogInterface dialog, int which) { 
+	        public void onClick(DialogInterface dialog, int which) {
 	            // continue with delete
 	        	ContentResolver cr = getContentResolver();
-	        	
+
 	        	// delete the activity
 	        	int nbRowActivity =  cr.delete(Uri.parse(MyGoals.Activities.CONTENT_ID_URI_BASE + "" + mActivityId), null, null);
 	        	Log.d(TAG, "" + nbRowActivity + "activities have been successfully deleted");
