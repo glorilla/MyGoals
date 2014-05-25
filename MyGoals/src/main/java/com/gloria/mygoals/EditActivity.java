@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
@@ -262,10 +263,18 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
 
     private boolean validateForm() {
         Log.d(TAG, "validateForm method");
-        /* TODO To implement the form validation before submitting
-		 	- are all mandatory fields filled ?
-		 	- is start date < end date ?
-		 */
+        if (    (mVActivityTitle.getText().toString().isEmpty())
+                || (mVActivityDesc.getText().toString().isEmpty())
+                )
+        {
+            Log.d(TAG,"Error validateForm method: Title Or Description Or WorkLoad is empty");
+
+            Toast.makeText(this, getResources().getText(R.string.forms_empty), Toast.LENGTH_LONG).show();
+
+            return false;
+
+        }
+
         return true;
         //return false;
     }
