@@ -150,8 +150,8 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	private void removeGoal() {
 		Log.d(TAG,"removeGoal method");			
 		new AlertDialog.Builder(this)
-	    .setTitle("Delete entry")
-	    .setMessage("Are you sure you want to delete this goal and all its tasks and activities?")
+	    .setTitle(getResources().getText(R.string.dialog_title_deleteGoal))
+	    .setMessage(getResources().getText(R.string.dialog_message_deleteGoal))
 	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) { 
 	            // continue with delete

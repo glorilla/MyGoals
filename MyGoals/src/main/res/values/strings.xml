@@ -52,4 +52,10 @@
 
     <string name="forms_empty">One or more fields are empty!</string>
     <string name="forms_incorrect_date">The start date is more recent than the end date!</string>
+
+    <string name="dialog_title_deleteActivity">Delete entry...</string>
+    <string name="dialog_message_deleteActivity">This activity and its tasks will be deleted. Do you agree?</string>
+
+    <string name="dialog_title_deleteGoal">Delete entry...</string>
+    <string name="dialog_message_deleteGoal">Are you sure you want to delete this goal and all its tasks and activities?</string>
 </resources>

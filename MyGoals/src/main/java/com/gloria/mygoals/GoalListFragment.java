@@ -192,7 +192,7 @@ public class GoalListFragment extends Fragment implements /*Refreshable,*/ Loade
 			ViewGoalActivity.result res = (ViewGoalActivity.result)data.getExtras().get(ViewGoalActivity.EXTRA_KEY_RESULT);
 			switch (res) {
 			case DELETION:
-				Toast.makeText(getActivity(), "Goal deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getText(R.string.Goal_deleted), Toast.LENGTH_SHORT).show();
 				break;
 			default:
 			}
