@@ -34,13 +34,13 @@
     <string name="footer_add_task">Ajouter une nouvelle tâche </string>
 	<string name="footer_add_activity">Ajouter une nouvelle activité</string>    
     <string name="estimatedWorkload">Charge de travail estimée</string>
-    <string name="nbOf">"Nbre d'"</string>
+    <string name="nbOf">"Nbre d\'"</string>
     <string name="my_goal">Mon Objectif</string>
     <string name="my_goals">Mes Objectifs</string>
     <string name="my_tasks">Mes Tâches</string>
     <string name="my_activity">Mon Activité</string>
     <string name="occurrences">occurrences</string>
-    <string name="Activity_Workload">"Charge de travail de l'activité"</string>
+    <string name="Activity_Workload">"Charge de travail de l\'activité"</string>
     <string name="Goal_deleted">Objectif supprimé</string>    
     <string name="Activity_deleted">Activité supprimé</string>
     <string name="tasks">tâches</string>
@@ -52,10 +52,10 @@
     <string name="forms_empty">Un ou plusieurs champs sont vide!</string>
     <string name="forms_incorrect_date">La date de début est plus récente que la date de fin!</string>
 
-    <string name="dialog_title_deleteActivity">Suppression de l'activité...</string>
-    <string name="dialog_message_deleteActivity">Souhaitez vous supprimer l'activité ?</string>
+    <string name="dialog_title_deleteActivity">Suppression de l\'activité...</string>
+    <string name="dialog_message_deleteActivity">Souhaitez vous supprimer l\'activité ?</string>
 
-    <string name="dialog_title_deleteGoal">Suppression de l'objectif...</string>
-    <string name="dialog_message_deleteGoal">Êtes vous sur de supprimer l'objectif et ses activités ?</string>
+    <string name="dialog_title_deleteGoal">Suppression de l\'objectif...</string>
+    <string name="dialog_message_deleteGoal">Êtes vous sur de supprimer l\'objectif et ses activités ?</string>
 
 </resources>
