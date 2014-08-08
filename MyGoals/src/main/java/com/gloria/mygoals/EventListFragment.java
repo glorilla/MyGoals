@@ -158,7 +158,7 @@ public class EventListFragment extends Fragment implements LoaderManager.LoaderC
 								// Refresh the view
 								//mCursor.requery();
 							}
-						};
+						}
 					});
 					
 					return true;
@@ -260,12 +260,13 @@ public class EventListFragment extends Fragment implements LoaderManager.LoaderC
 		Log.d(TAG,"onOptionsItemSelected method");			
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
-	        case R.id.action_new:
+	     /*   case R.id.action_new:
         		openNewTaskActivity();
-	            return true;
+	            return true;*/
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+
 	}
  
 	private void openNewTaskActivity() {
