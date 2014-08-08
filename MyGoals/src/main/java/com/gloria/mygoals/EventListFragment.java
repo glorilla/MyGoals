@@ -193,8 +193,8 @@ public class EventListFragment extends Fragment implements LoaderManager.LoaderC
                 CheckBox v = (CheckBox)view.findViewById(R.id.b_event_done);
                 if (v.isChecked()) {
                     new AlertDialog.Builder(getActivity())
-                            .setTitle("Uncheck this entry")
-                            .setMessage("Do you really want to uncheck this task?")
+                            .setTitle(R.string.dialog_title_uncheckTask)
+                            .setMessage(R.string.dialog_message_uncheckTask)
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // continue with uncheck

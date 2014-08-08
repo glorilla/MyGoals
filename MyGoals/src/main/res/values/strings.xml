@@ -58,4 +58,7 @@
 
     <string name="dialog_title_deleteGoal">Delete entry...</string>
     <string name="dialog_message_deleteGoal">Are you sure you want to delete this goal and all its tasks and activities?</string>
+
+    <string name="dialog_title_uncheckTask">Uncheck this entry</string>
+    <string name="dialog_message_uncheckTask">Do you really want to uncheck this task?</string>
 </resources>
