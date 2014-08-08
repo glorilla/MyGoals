@@ -20,7 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.viewpagerindicator.LinePageIndicator;
+import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
 /**
@@ -69,7 +69,7 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
         mPager = (ViewPager)findViewById(R.id.goal_pager);
         mPager.setAdapter(mAdapter);
         
-        mIndicator = (LinePageIndicator)findViewById(R.id.indicator);
+        mIndicator = (CirclePageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
         /* The PageIndicator overrides the OnPageChangelistener affectation on the ViewPager.
         But it offers the method setOnPageChangeListener to continue the treatment on these events */
