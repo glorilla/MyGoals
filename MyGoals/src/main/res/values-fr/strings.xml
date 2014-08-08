@@ -59,6 +59,6 @@
     <string name="dialog_message_deleteGoal">Souhaitez vous supprimer l\'objectif, ses activités et ses tâches?</string>
 
     <string name="dialog_title_uncheckTask">Invalidation de la tâche</string>
-    <string name="dialog_message_uncheckTask">Souhaitez-vous vraiment décocher cette tâche ?</string>
+    <string name="dialog_message_uncheckTask">Souhaitez-vous vraiment décocher cette tâche?</string>
 
 </resources>
