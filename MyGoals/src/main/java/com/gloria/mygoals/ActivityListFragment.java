@@ -1,6 +1,5 @@
 package com.gloria.mygoals;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,13 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -164,7 +160,7 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 
 
 	    // Define action when clicking on an Activity item 
-	    lv.setOnItemClickListener(new OnItemClickListener() {
+	    /*lv.setOnItemClickListener(new OnItemClickListener() {
 	    	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Log.v("DEBUG", "Activity "+ id +" has been clicked");
                 Cursor cursor = mAdapter.getCursor();
@@ -173,7 +169,7 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 				int activity_id = cursor.getInt(MyGoalsProvider.ACTIVITY_ID_INDEX);
 				viewActivity(cursor, activity_id);
 	    	}
-	    });	    
+	    });*/
 	    
 	    // Add a footer to the list to add new goals
 	    View footer = mInflater.inflate(R.layout.footer, null);
@@ -246,7 +242,7 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 	    startActivity(intent);
 	}		
 	
-	private void viewActivity(Cursor c, int id) {
+	/*private void viewActivity(Cursor c, int id) {
 		Log.d(TAG,"viewActivity method");		
 	    Intent intent = new Intent(getActivity(), ViewActivity.class);
 
@@ -264,13 +260,13 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 	    intent.putExtra(ViewActivity.EXTRA_KEY_NB_TASKS, c.getInt(MyGoalsProvider.ACTIVITY_NB_TASKS_INDEX));
 	    
 	    startActivityForResult(intent, 0);
-	}
+	}*/
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == Activity.RESULT_OK) {
+		/*if (resultCode == Activity.RESULT_OK) {
 			ViewActivity.result res = (ViewActivity.result)data.getExtras().get(ViewActivity.EXTRA_KEY_RESULT);
 			switch (res) {
 			case DELETION:
@@ -278,7 +274,7 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 				break;
 			default:
 			}
-		}
+		}*/
 	}
 
 
