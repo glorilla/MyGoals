@@ -1,6 +1,9 @@
 package com.gloria.mygoals;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -18,16 +21,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import be.billington.calendar.recurrencepicker.EventRecurrence;
@@ -164,7 +166,7 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 
 
 	    // Define action when clicking on an Activity item 
-	    lv.setOnItemClickListener(new OnItemClickListener() {
+	    /*lv.setOnItemClickListener(new OnItemClickListener() {
 	    	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Log.v("DEBUG", "Activity "+ id +" has been clicked");
                 Cursor cursor = mAdapter.getCursor();
@@ -173,8 +175,35 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 				int activity_id = cursor.getInt(MyGoalsProvider.ACTIVITY_ID_INDEX);
 				viewActivity(cursor, activity_id);
 	    	}
-	    });	    
-	    
+	    });*/
+
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long id) {
+                Log.v(TAG, "Item "+id+" has been long clicked");
+
+                new AlertDialog.Builder(getActivity())
+                    .setTitle(getResources().getText(R.string.dialog_title_deleteActivity))
+                    .setMessage(getResources().getText(R.string.dialog_message_deleteActivity))
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // continue with delete
+                            Log.v(TAG, "Delete the activity at position: " + position);
+                            removeActivity(position);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.drawable.alert_warning)
+                    .show();
+
+                return true;
+            }
+        });
+
 	    // Add a footer to the list to add new goals
 	    View footer = mInflater.inflate(R.layout.footer, null);
 	    TextView footerText=((TextView)footer.findViewById(R.id.t_footer_text));
@@ -244,9 +273,87 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
   	    intent.putExtra(EditActivity.EXTRA_KEY_GOAL_TITLE, ViewGoalActivity.mGoalTitle);  	    
   
 	    startActivity(intent);
-	}		
-	
-	private void viewActivity(Cursor c, int id) {
+	}
+
+    private void removeActivity(int position) {
+        Log.d(TAG, "removeActivity method");
+
+        Cursor cursor = mAdapter.getCursor();
+        cursor.moveToPosition(position);
+        int activityId = cursor.getInt(cursor.getColumnIndex(MyGoals.Activities._ID));
+
+        ContentResolver cr = getActivity().getContentResolver();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+/*
+        // Update the goal progress by subtracting the completed tasks workload
+        Uri uri = Uri.parse(MyGoals.Activities.CONTENT_ID_URI_BASE + "" + activityId);
+        Cursor activityCursor = cr.query(uri,
+                MyGoalsProvider.ACTIVITY_PROJECTION,
+                //new String[]{MyGoals.Activities.COLUMN_NAME_GOAL_ID, MyGoals.Activities.COLUMN_NAME_DURATION},
+                null, null, null);
+
+        activityCursor.moveToFirst();*/
+        Date activity_duration;
+
+        // delete the activity
+        int nbRowActivity = cr.delete(Uri.parse(MyGoals.Activities.CONTENT_ID_URI_BASE + "" + activityId), null, null);
+        Log.d(TAG, "" + nbRowActivity + "activities have been successfully deleted");
+
+        // delete the tasks of the activity
+        // query the tasks of the activity
+        int nbRowTask = 0;
+        Uri uri = Uri.parse(MyGoals.Tasks.CONTENT_URI + "?activity_id=" + activityId);
+        Cursor c = cr.query(uri, MyGoalsProvider.TASK_PROJECTION, null, null, null);
+
+        // Get the task duration in the activity tuple for the goal workload computation
+        String sDuration = cursor.getString(MyGoalsProvider.ACTIVITY_DURATION_INDEX);
+        try {
+            activity_duration = sdf.parse(sDuration);
+        } catch (ParseException e) {
+            activity_duration = new Date();
+            e.printStackTrace();
+        }
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(activity_duration);
+        // TODO To use Date or Integer or ... for the durations
+        int duration = calendar.get(GregorianCalendar.HOUR_OF_DAY);
+
+        int workload = 0;
+        int taskId;
+        while (c.moveToNext()) {
+            taskId = c.getInt(0); // TODO index of "_ID" column
+            if (c.getString(c.getColumnIndex(MyGoals.Tasks.COLUMN_NAME_DONE)).equals(Boolean.TRUE.toString())) {
+                workload += duration;
+            }
+            cr.delete(Uri.parse(MyGoals.Tasks.CONTENT_ID_URI_BASE + "" + taskId), null, null);
+        }
+        Log.d(TAG, "" + nbRowTask + "tasks have been successfully deleted");
+
+        // Update the goal progress by subtracting the completed tasks workload
+        int goal_id = cursor.getInt(MyGoalsProvider.ACTIVITY_GOAL_ID_INDEX);
+        uri = Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + goal_id);
+        Cursor goalCursor = cr.query(uri,
+                new String[]{MyGoals.Goals.COLUMN_NAME_PROGRESS},
+                null, null, null);
+
+        goalCursor.moveToFirst();
+        int progress = goalCursor.getInt(goalCursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_PROGRESS));
+        progress -= workload;
+
+        goalCursor.close();
+
+        ContentValues values = new ContentValues();
+        values.put(MyGoals.Goals.COLUMN_NAME_PROGRESS, progress);
+        int nbRowGoal = cr.update(uri, values, null, null);
+
+        // Return the result OK
+        if (nbRowGoal > 0 && nbRowActivity > 0 && nbRowTask > 0) {
+            //getIntent().putExtra(EXTRA_KEY_RESULT, result.DELETION);
+            //setResult(RESULT_OK, getIntent());
+        }
+    }
+
+	/*private void viewActivity(Cursor c, int id) {
 		Log.d(TAG,"viewActivity method");		
 	    Intent intent = new Intent(getActivity(), ViewActivity.class);
 
@@ -264,13 +371,13 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 	    intent.putExtra(ViewActivity.EXTRA_KEY_NB_TASKS, c.getInt(MyGoalsProvider.ACTIVITY_NB_TASKS_INDEX));
 	    
 	    startActivityForResult(intent, 0);
-	}
+	}*/
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == Activity.RESULT_OK) {
+		/*if (resultCode == Activity.RESULT_OK) {
 			ViewActivity.result res = (ViewActivity.result)data.getExtras().get(ViewActivity.EXTRA_KEY_RESULT);
 			switch (res) {
 			case DELETION:
@@ -278,7 +385,7 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 				break;
 			default:
 			}
-		}
+		}*/
 	}
 
 

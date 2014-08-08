@@ -55,7 +55,7 @@ public class MyGoalsProvider extends ContentProvider {
             MyGoals.Goals.COLUMN_NAME_TARGET_DATE,  // Projection position 4, the goal's target date
             MyGoals.Goals.COLUMN_NAME_WORKLOAD,	// Projection position 5, the goal's workload
             MyGoals.Goals.COLUMN_NAME_PROGRESS,	// Projection position 6, the goal's progress
-            MyGoals.Goals.COLUMN_NAME_COLOR	// Projection position 6, the goal's background color
+            MyGoals.Goals.COLUMN_NAME_COLOR	// Projection position 7, the goal's background color
     };
     
     /*
@@ -77,17 +77,18 @@ public class MyGoalsProvider extends ContentProvider {
     public static final String[] ACTIVITY_PROJECTION = new String[] {
             MyGoals.Activities._ID,               	// Projection position 0, the activity's id
             MyGoals.Activities.COLUMN_NAME_TITLE, 	// Projection position 1, the activity's title
-            MyGoals.Activities.COLUMN_NAME_DESC,   	// Projection position 2, the activity's description
-            MyGoals.Activities.COLUMN_NAME_START_DATE, 	// Projection position 3, the activity's start date
-            MyGoals.Activities.COLUMN_NAME_END_DATE,  	// Projection position 4, the activity's end date
-            MyGoals.Activities.COLUMN_NAME_DURATION,	// Projection position 5, the activity's task duration
-            MyGoals.Activities.COLUMN_NAME_REPETITION,	// Projection position 6, the activity's repetition
-            MyGoals.Activities.COLUMN_NAME_OCCURRENCE,	// Projection position 7, the activity's occurrence
-            MyGoals.Activities.COLUMN_NAME_WEEKDAYS,	// Projection position 8, the activity's weekdays
-            MyGoals.Activities.COLUMN_NAME_NB_TASKS,	// Projection position 9, the activity's nb tasks
-            MyGoals.Activities.COLUMN_NAME_PROGRESS,	// Projection position 10, the activity's progress (nb tasks done)
-            //MyGoals.Activities.COLUMN_NAME_GOAL_COLOR,	// Projection position 11, the activity's background color
-            MyGoals.Activities.COLUMN_NAME_RRULE	// Projection position 11, the activity's recurrence rule
+            MyGoals.Activities.COLUMN_NAME_GOAL_ID, // Projection position 2, the activity's goal id
+            MyGoals.Activities.COLUMN_NAME_DESC,   	// Projection position 3, the activity's description
+            MyGoals.Activities.COLUMN_NAME_START_DATE, 	// Projection position 4, the activity's start date
+            MyGoals.Activities.COLUMN_NAME_END_DATE,  	// Projection position 5, the activity's end date
+            MyGoals.Activities.COLUMN_NAME_DURATION,	// Projection position 6, the activity's task duration
+            MyGoals.Activities.COLUMN_NAME_REPETITION,	// Projection position 7, the activity's repetition
+            MyGoals.Activities.COLUMN_NAME_OCCURRENCE,	// Projection position 8, the activity's occurrence
+            MyGoals.Activities.COLUMN_NAME_WEEKDAYS,	// Projection position 9, the activity's weekdays
+            MyGoals.Activities.COLUMN_NAME_NB_TASKS,	// Projection position 10, the activity's nb tasks
+            MyGoals.Activities.COLUMN_NAME_PROGRESS,	// Projection position 11, the activity's progress (nb tasks done)
+            //MyGoals.Activities.COLUMN_NAME_GOAL_COLOR,	// Projection position 12, the activity's background color
+            MyGoals.Activities.COLUMN_NAME_RRULE	// Projection position 12, the activity's recurrence rule
     };
     
     /*
@@ -95,17 +96,18 @@ public class MyGoalsProvider extends ContentProvider {
      */
 	public static final int ACTIVITY_ID_INDEX = 0;
     public static final int ACTIVITY_TITLE_INDEX = 1;
-    public static final int ACTIVITY_DESC_INDEX = 2;
-    public static final int ACTIVITY_START_DATE_INDEX = 3;
-    public static final int ACTIVITY_END_DATE_INDEX = 4;
-    public static final int ACTIVITY_DURATION_INDEX = 5;
-    public static final int ACTIVITY_REPETITION_INDEX = 6;
-    public static final int ACTIVITY_OCCURRENCE_INDEX = 7;
-    public static final int ACTIVITY_WEEKDAYS_INDEX = 8;
-    public static final int ACTIVITY_NB_TASKS_INDEX = 9;
-    public static final int ACTIVITY_PROGRESS_INDEX = 10;
+    public static final int ACTIVITY_GOAL_ID_INDEX = 2;
+    public static final int ACTIVITY_DESC_INDEX = 3;
+    public static final int ACTIVITY_START_DATE_INDEX = 4;
+    public static final int ACTIVITY_END_DATE_INDEX = 5;
+    public static final int ACTIVITY_DURATION_INDEX = 6;
+    public static final int ACTIVITY_REPETITION_INDEX = 7;
+    public static final int ACTIVITY_OCCURRENCE_INDEX = 8;
+    public static final int ACTIVITY_WEEKDAYS_INDEX = 9;
+    public static final int ACTIVITY_NB_TASKS_INDEX = 10;
+    public static final int ACTIVITY_PROGRESS_INDEX = 11;
     //public static final int ACTIVITY_COLOR_INDEX = 11;
-    public static final int ACTIVITY_RRULE_INDEX = 11;
+    public static final int ACTIVITY_RRULE_INDEX = 12;
 
 
     /**
