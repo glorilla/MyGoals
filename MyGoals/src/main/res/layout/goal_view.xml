@@ -58,7 +58,7 @@
 	        android:text="no description"
 	        android:lines="2" />        
 	       
-	    <!-- Category -->
+	    <!-- Category
 	    <ImageView
 	        android:id="@+id/img_category"
         	android:layout_width="wrap_content"	        
@@ -70,9 +70,9 @@
 		    android:layout_marginLeft="4dp"
 		    android:layout_marginTop="16dp"
 	        android:src="@android:drawable/ic_menu_gallery" />	
-	    	
-	    <!-- Start Date -->
+	    -->
 
+	    <!-- Start Date -->
 		<TextView
 		    android:id="@+id/l_goal_detail_start_date"
 		    android:layout_width="wrap_content"

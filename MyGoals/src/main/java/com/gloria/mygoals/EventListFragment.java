@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -219,7 +218,7 @@ public class EventListFragment extends Fragment implements LoaderManager.LoaderC
         });
 
 	    // Add a footer to the list to add new tasks
-	    View footer = mInflater.inflate(R.layout.footer, null);
+	    /*View footer = mInflater.inflate(R.layout.footer, null);
 	    TextView footerText=((TextView)footer.findViewById(R.id.t_footer_text));
 	    footerText.setHint(R.string.footer_add_task);
 	    footer.setOnClickListener(new OnClickListener() {
@@ -229,7 +228,7 @@ public class EventListFragment extends Fragment implements LoaderManager.LoaderC
 			}
 		});	    
 
-	    lv.addFooterView(footer);
+	    lv.addFooterView(footer);*/
 	    
 	    lv.setAdapter(mAdapter);
 	    
