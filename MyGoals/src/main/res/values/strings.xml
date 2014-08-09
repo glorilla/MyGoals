@@ -61,4 +61,6 @@
 
     <string name="dialog_title_uncheckTask">Uncheck this entry</string>
     <string name="dialog_message_uncheckTask">Do you really want to uncheck this task?</string>
+
+    <string name="single_task_activity">One-time task</string>
 </resources>

@@ -61,4 +61,5 @@
     <string name="dialog_title_uncheckTask">Invalidation de la tâche</string>
     <string name="dialog_message_uncheckTask">Souhaitez-vous vraiment décocher cette tâche?</string>
 
+    <string name="single_task_activity">Tâche ponctuelle</string>
 </resources>

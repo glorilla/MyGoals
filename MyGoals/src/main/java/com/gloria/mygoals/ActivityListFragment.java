@@ -124,6 +124,7 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+                        return false;
 					}
 					return true;
 				}
@@ -133,12 +134,14 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 						nbTask = Integer.parseInt(cursor.getString(columnIndex));
 					}
 					catch(Exception e) {
-						nbTask = 0;
+                        return false;
 					}
 					// it displays the number of tasks only it is greater than 1 
 					if (nbTask > 1) {
 						((TextView)view).setText(cursor.getString(columnIndex)+" x ");
-					}
+					} else {
+                        ((TextView)view).setText("");
+                    }
 					return true;
 				}				
 				if (view.getId()==R.id.progress) {
@@ -147,18 +150,20 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 					return true;
 				}
                 if (view.getId()==R.id.t_recurrence_rule) {
-                    try {
-                        EventRecurrence rec = new EventRecurrence();
-                        rec.parse(cursor.getString(columnIndex));
-                        //rec.setStartDate();
-
-                        String str = EventRecurrenceFormatter.getRepeatString(getActivity(), getResources(), rec, false);
-                        ((TextView) view).setText(str);
-
-                        return true;
-                    } catch (Exception e) {
-                        return true;
+                    String str="";
+                    String rrule=cursor.getString(columnIndex);
+                    if (null==rrule) {
+                        str=getString(R.string.single_task_activity);
+                    } else {
+                        try {
+                            EventRecurrence rec = new EventRecurrence();
+                            rec.parse(rrule);
+                            str = EventRecurrenceFormatter.getRepeatString(getActivity(), getResources(), rec, false);
+                        } catch (Exception e) {
+                        }
                     }
+                    ((TextView) view).setText(str);
+                    return true;
                 }
 				return false;
 			}
