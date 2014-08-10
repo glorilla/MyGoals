@@ -400,12 +400,12 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         ArrayList<TaskDates> listOfTask = new ArrayList<TaskDates>();
 
         // Convert the duration to a calendar object
-        GregorianCalendar duration = new GregorianCalendar();
+        Calendar duration = Calendar.getInstance(Locale.US);
         duration.setTime(mDuration);
 
         // Convert the task's start date to a calendar object
-        GregorianCalendar startDate = new GregorianCalendar();
-        GregorianCalendar endDate = new GregorianCalendar();
+        Calendar startDate = Calendar.getInstance(Locale.US);
+        Calendar endDate = Calendar.getInstance(Locale.US);
         startDate.setTime(mStartDate);
 
         // Compute the task's end date
@@ -413,7 +413,12 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         endDate.add(Calendar.HOUR_OF_DAY, duration.get(Calendar.HOUR_OF_DAY));
         endDate.add(Calendar.MINUTE, duration.get(Calendar.MINUTE));
 
-        // Case of only 1 task in the activity, task dates equals activity dates
+        // US Calendar for computation of tasks series requiring Sunday as first day of week
+        /*startDate.setFirstDayOfWeek(Calendar.SUNDAY);
+        endDate.setFirstDayOfWeek(Calendar.SUNDAY);
+        duration.setFirstDayOfWeek(Calendar.SUNDAY);*/
+
+        // CASE OF ONE-TASK ACTIVITY (task dates equals activity dates)
         if (null == taskRecurrence) {
             mEndDate = endDate.getTime();
             mNbTasks = 1;
@@ -421,7 +426,24 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
             return listOfTask;
         }
 
-        // Case of multitasks activity
+        // CASE OF MULTITASKS ACTIVITY
+        // Get the interval
+        int interval = taskRecurrence.interval <= 1 ? 1 : taskRecurrence.interval;
+
+        // Get the end activity occurrences criterion
+        //      Tasks are determined in function of the activity's end date
+        //      Convert the activity's end date to a calendar object
+        GregorianCalendar activityEnd = new GregorianCalendar();
+        boolean bFixedEndDate = taskRecurrence.until != null;
+        if (bFixedEndDate) {
+            try {
+                Time t = new Time();
+                t.parse(taskRecurrence.until);
+                activityEnd.setTime(new Date(t.normalize(false)));
+            } catch (TimeFormatException e) {
+            }
+        }
+
         // Set the period unity between 2 consecutive tasks
         int unity;
         switch (taskRecurrence.freq) {
@@ -439,38 +461,47 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
                 break;
         }
 
-        int interval = taskRecurrence.interval <= 1 ? 1 : taskRecurrence.interval;
+        // 1 - Add the 1st occurrence
+        int i = 0, d = 0;
+        if (taskRecurrence.bydayCount > 1) {
+            // It is a normal case for weekly recurrence only
+            if (taskRecurrence.freq == EventRecurrence.WEEKLY) {
+                boolean bFound=false;
+                if (null != taskRecurrence.byday) {
+                    int nextWeekDay = taskRecurrence.startDate.weekDay;
+                    for (int j = 0; j < 7 && !bFound; j++) {
+                        nextWeekDay = (taskRecurrence.startDate.weekDay + j) % 7;
 
-        // Convert the activity's end date to a calendar object
-        GregorianCalendar activityEnd = new GregorianCalendar();
+                        if (taskRecurrence.startDate.weekDay + j == 7) {
+                            // next week
+                            startDate.add(unity, interval);
+                            endDate.add(unity, interval);
+                            Log.d(TAG,"1-Next week");
+                        }
 
-        // Tasks are determined in function of the activity's end date
-        boolean bFixedEndDate = taskRecurrence.until != null;
-        if (bFixedEndDate) {
-            try {
-                Time t = new Time();
-                t.parse(taskRecurrence.until);
-                activityEnd.setTime(new Date(t.normalize(false)));
-            } catch (TimeFormatException e) {
-            }
-        }
-
-        // In case of several days per week, determines the 1st weekday following the start date
-        int d = 0;
-        if (null != taskRecurrence.byday) {
-            for (d = taskRecurrence.byday.length - 1; d >= 0; d--) {
-                if (EventRecurrence.day2TimeDay(taskRecurrence.byday[d]) <= taskRecurrence.startDate.weekDay) {
-                    break;
+                        for (d = 0; d < taskRecurrence.byday.length; d++) {
+                            Log.d(TAG,"j:"+j+",startWeekDay:"+taskRecurrence.startDate.weekDay+",nextWeekDay:"+nextWeekDay+",d:"+d+",selectDay:"+EventRecurrence.day2TimeDay(taskRecurrence.byday[d]));
+                            if (EventRecurrence.day2TimeDay(taskRecurrence.byday[d]) == nextWeekDay) {
+                                startDate.set(Calendar.DAY_OF_WEEK, EventRecurrence.day2CalendarDay(taskRecurrence.byday[d]));
+                                endDate.set(Calendar.DAY_OF_WEEK, EventRecurrence.day2CalendarDay(taskRecurrence.byday[d]));
+                                bFound=true;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
-
-        int i = 0;
-        while ((bFixedEndDate && (endDate.before(activityEnd) || endDate.equals(activityEnd)))
+        // Add the task to the result list
+        if ((bFixedEndDate && (endDate.before(activityEnd) || endDate.equals(activityEnd)))
                 || (!bFixedEndDate && i < taskRecurrence.count)) {
-            // Add the task to the result list
             listOfTask.add(new TaskDates(i++, startDate.getTime(), endDate.getTime()));
+        } else {
+            return null;
+        }
 
+        // 2 - Add the next occurrences
+        while (true) {
             // Increment the dates for the next task
             if (taskRecurrence.bydayCount == 0) {
                 // Normal case for monthly and daily recurrence
@@ -499,31 +530,29 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
                 }
             } else if (taskRecurrence.bydayCount > 1) {
                 // Normal case for weekly recurrence only
+                Log.d(TAG,"2-d:"+d+",taskRecurrence.byday.length:"+taskRecurrence.byday.length);
                 if (taskRecurrence.freq == EventRecurrence.WEEKLY) {
                     d++;
                     if (d == taskRecurrence.byday.length) {
                         startDate.add(unity, interval);
                         endDate.add(unity, interval);
                         d = 0;
+                        Log.d(TAG,"2-Next week");
                     }
                     startDate.set(Calendar.DAY_OF_WEEK, EventRecurrence.day2CalendarDay(taskRecurrence.byday[d]));
                     endDate.set(Calendar.DAY_OF_WEEK, EventRecurrence.day2CalendarDay(taskRecurrence.byday[d]));
+                    Log.d(TAG,"startWeekDay:"+taskRecurrence.startDate.weekDay+",d:"+d+",selectDay:"+EventRecurrence.day2TimeDay(taskRecurrence.byday[d]));
                 }
             }
-        }
-        /*
-        // NB OF OCCURRENCES
-        else if (taskRecurrence.count > 0) {
-            for (int i=0; i < taskRecurrence.count; i++) {
-                // Add the task to the result list
-                listOfTask.add(new TaskDates(i, startDate.getTime(), endDate.getTime()));
-                // TODO to implement the week days feature
-                // Increment the dates for the next task
-                startDate.add(unity, interval);
-                endDate.add(unity, interval);
-            }
 
-        }*/
+            if ((bFixedEndDate && (endDate.before(activityEnd) || endDate.equals(activityEnd)))
+                || (!bFixedEndDate && i < taskRecurrence.count)) {
+                // Add the task to the result list
+                listOfTask.add(new TaskDates(i++, startDate.getTime(), endDate.getTime()));
+            } else {
+                break;
+            }
+        }
 
         // Update the Activity's end date & Nb of tasks
         mNbTasks = listOfTask.size();
