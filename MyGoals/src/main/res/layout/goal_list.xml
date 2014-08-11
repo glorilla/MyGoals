@@ -14,8 +14,8 @@
         android:id="@+id/arrowRight"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:paddingTop="8dp"
+        android:paddingRight="8dp"
         android:src="@drawable/arrow_right_med" />
 
     <ListView

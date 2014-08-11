@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,9 +65,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
     static final String EXTRA_KEY_GOAL_ID = "goal_id";
     static final String EXTRA_KEY_GOAL_TITLE = "goal_title";
 
-    static enum Mode {NEW, EDIT}
-
-    ;
+    static enum Mode {NEW, EDIT};
 
     // activity state
     private Mode mMode = Mode.NEW;
@@ -263,8 +262,11 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
 
     private boolean validateForm() {
         Log.d(TAG, "validateForm method");
-        if (    (mVActivityTitle.getText().toString().isEmpty())
-                || (mVActivityDesc.getText().toString().isEmpty())
+        if (    mVActivityTitle.getText().toString().isEmpty()
+                || mVFrequencyChoice.getText().toString().isEmpty()
+                || mVStartDate.getText().toString().isEmpty()
+                || mVStartTime.getText().toString().isEmpty()
+                //|| mVActivityDesc.getText().toString().isEmpty()
                 )
         {
             Log.d(TAG,"Error validateForm method: Title Or Description Or WorkLoad is empty");
@@ -334,7 +336,33 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         values.put(MyGoals.Activities.COLUMN_NAME_END_DATE, sdf.format(mEndDate));
         values.put(MyGoals.Activities.COLUMN_NAME_PROGRESS, 0);
 
-        return cr.insert(MyGoals.Activities.CONTENT_URI, values);
+        Uri res = cr.insert(MyGoals.Activities.CONTENT_URI, values);
+
+        // Update the workload baseline of the goal
+        Uri uri = Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + mGoalId);
+        Cursor goalCursor = cr.query(uri,
+                new String [] {MyGoals.Goals.COLUMN_NAME_WORKLOAD},
+                null, null, null);
+
+        goalCursor.moveToFirst();
+
+        int workload = goalCursor.getInt(goalCursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_WORKLOAD));
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(mDuration);
+        int duration = calendar.get(GregorianCalendar.HOUR_OF_DAY);
+        workload += mNbTasks * duration;
+
+        goalCursor.close();
+
+        values.clear();
+        values.put(MyGoals.Goals.COLUMN_NAME_WORKLOAD, workload);
+        int nbGoal = cr.update(uri, values, null, null);
+
+        if (nbGoal != 1) {
+            Log.v(TAG, "Error when updating the goal workload");
+        }
+
+        return res;
     }
 
     private Uri insertTaskInDB(int activityId, TaskDates task) {

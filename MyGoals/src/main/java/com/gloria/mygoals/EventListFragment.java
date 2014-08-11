@@ -390,7 +390,6 @@ public class EventListFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         // TODO To use Date or Integer or ... for the durations
-        int duration = calendar.get(GregorianCalendar.HOUR_OF_DAY);
         progress -= 1;
 
         activityCursor.close();
@@ -407,6 +406,7 @@ public class EventListFragment extends Fragment implements LoaderManager.LoaderC
                 null, null, null);
 
         goalCursor.moveToFirst();
+        int duration = calendar.get(GregorianCalendar.HOUR_OF_DAY);
         progress = goalCursor.getInt(goalCursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_PROGRESS));
         progress -= duration;
 

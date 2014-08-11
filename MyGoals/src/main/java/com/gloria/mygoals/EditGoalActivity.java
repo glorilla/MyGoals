@@ -1,11 +1,7 @@
 package com.gloria.mygoals;
 
-import android.app.AlertDialog;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -54,7 +50,7 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
 	// form views
 	EditText mVGoalTitle;
 	EditText mVGoalDesc;
-	EditText mVGoalWorkload;
+	//EditText mVGoalWorkload;
 	TextView mVStartDate;
 	TextView mVEndDate;
 	Button mSubmitBtn;
@@ -102,7 +98,7 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
         mVGoalDesc = (EditText) findViewById(R.id.t_goal_detail_description);        
 		mVStartDate = (TextView) findViewById(R.id.t_pick_start_date);
 		mVEndDate = (TextView) findViewById(R.id.t_pick_end_date);
-		mVGoalWorkload = (EditText)findViewById(R.id.t_goal_hours);
+		//mVGoalWorkload = (EditText)findViewById(R.id.t_goal_hours);
         mVColorPicker = (ImageView)findViewById(R.id.i_color);
 		mSubmitBtn = (Button) findViewById(R.id.btn_goal_detail_submit);
 
@@ -220,11 +216,13 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
 		 */
 
         if (    (mVGoalTitle.getText().toString().isEmpty())
-                || (mVGoalDesc.getText().toString().isEmpty())
-                || (mVGoalWorkload.getText().toString().isEmpty())
+                || (mVStartDate.getText().toString().isEmpty())
+                || (mVEndDate.getText().toString().isEmpty())
+                //|| (mVGoalDesc.getText().toString().isEmpty())
+                //|| (mVGoalWorkload.getText().toString().isEmpty())
            )
         {
-            Log.d(TAG,"Error validateForm method: Title Or Description Or WorkLoad is empty");
+            Log.d(TAG,"Error validateForm method: Title is empty");
 
            Toast.makeText(this, getResources().getText(R.string.forms_empty), Toast.LENGTH_LONG).show();
 
@@ -241,9 +239,6 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
 
             return  false;
         }
-
-
-
 
         Log.d(TAG,"validateForm method: Ok!");
 		return true;
@@ -266,7 +261,7 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
 		values.put(MyGoals.Goals.COLUMN_NAME_START_DATE, sdf.format(mStartDate));
 		values.put(MyGoals.Goals.COLUMN_NAME_TARGET_DATE, sdf.format(mEndDate));
 
-		values.put(MyGoals.Goals.COLUMN_NAME_WORKLOAD, ((EditText)findViewById(R.id.t_goal_hours)).getText().toString());
+		values.put(MyGoals.Goals.COLUMN_NAME_WORKLOAD, 0);
 		values.put(MyGoals.Goals.COLUMN_NAME_PROGRESS, 0);
         values.put(MyGoals.Goals.COLUMN_NAME_COLOR, mColor);
 		
@@ -290,7 +285,7 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
 		values.put(MyGoals.Goals.COLUMN_NAME_START_DATE, sdf.format(mStartDate));
 		values.put(MyGoals.Goals.COLUMN_NAME_TARGET_DATE, sdf.format(mEndDate));
 		
-		values.put(MyGoals.Goals.COLUMN_NAME_WORKLOAD, mVGoalWorkload.getText().toString());
+		//values.put(MyGoals.Goals.COLUMN_NAME_WORKLOAD, mVGoalWorkload.getText().toString());
 
         values.put(MyGoals.Goals.COLUMN_NAME_COLOR, mColor);
 		
@@ -327,7 +322,7 @@ public class EditGoalActivity extends FragmentActivity implements usesDatePicker
 			mVStartDate.setText(SimpleDateFormat.getDateInstance().format(mStartDate));
 			mVEndDate.setText(SimpleDateFormat.getDateInstance().format(mEndDate));
 			
-			mVGoalWorkload.setText(""+c.getInt(MyGoalsProvider.GOAL_WORKLOAD_INDEX));
+			//mVGoalWorkload.setText(""+c.getInt(MyGoalsProvider.GOAL_WORKLOAD_INDEX));
             mColor = c.getInt(MyGoalsProvider.GOAL_COLOR_INDEX);
 		}
         View rootLayout = findViewById(R.id.root_layout);

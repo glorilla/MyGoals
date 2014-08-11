@@ -49,7 +49,7 @@
     <string name="notif_title">Votre prochaine tâche commence dans 15 min</string>
     <string name="notif_text">Un pas de plus vers votre objectif!</string>
 
-    <string name="forms_empty">Un ou plusieurs champs sont vide!</string>
+    <string name="forms_empty">Un ou plusieurs champs obligatoires sont vides!</string>
     <string name="forms_incorrect_date">La date de début est plus récente que la date de fin!</string>
 
     <string name="dialog_title_deleteActivity">Suppression de l\'activité...</string>

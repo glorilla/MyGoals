@@ -289,15 +289,7 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 
         ContentResolver cr = getActivity().getContentResolver();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
-/*
-        // Update the goal progress by subtracting the completed tasks workload
-        Uri uri = Uri.parse(MyGoals.Activities.CONTENT_ID_URI_BASE + "" + activityId);
-        Cursor activityCursor = cr.query(uri,
-                MyGoalsProvider.ACTIVITY_PROJECTION,
-                //new String[]{MyGoals.Activities.COLUMN_NAME_GOAL_ID, MyGoals.Activities.COLUMN_NAME_DURATION},
-                null, null, null);
 
-        activityCursor.moveToFirst();*/
         Date activity_duration;
 
         // delete the activity
@@ -323,32 +315,38 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
         // TODO To use Date or Integer or ... for the durations
         int duration = calendar.get(GregorianCalendar.HOUR_OF_DAY);
 
-        int workload = 0;
+        int activity_progress = 0;
         int taskId;
         while (c.moveToNext()) {
             taskId = c.getInt(0); // TODO index of "_ID" column
             if (c.getString(c.getColumnIndex(MyGoals.Tasks.COLUMN_NAME_DONE)).equals(Boolean.TRUE.toString())) {
-                workload += duration;
+                activity_progress += duration;
             }
             cr.delete(Uri.parse(MyGoals.Tasks.CONTENT_ID_URI_BASE + "" + taskId), null, null);
         }
         Log.d(TAG, "" + nbRowTask + "tasks have been successfully deleted");
 
-        // Update the goal progress by subtracting the completed tasks workload
+        // Update the goal progress & workload by subtracting the completed tasks workload
         int goal_id = cursor.getInt(MyGoalsProvider.ACTIVITY_GOAL_ID_INDEX);
+        int nb_tasks = cursor.getInt(MyGoalsProvider.ACTIVITY_NB_TASKS_INDEX);
+
         uri = Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + goal_id);
         Cursor goalCursor = cr.query(uri,
-                new String[]{MyGoals.Goals.COLUMN_NAME_PROGRESS},
+                new String[]{MyGoals.Goals.COLUMN_NAME_PROGRESS,MyGoals.Goals.COLUMN_NAME_WORKLOAD},
                 null, null, null);
 
         goalCursor.moveToFirst();
         int progress = goalCursor.getInt(goalCursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_PROGRESS));
-        progress -= workload;
+        int workload = goalCursor.getInt(goalCursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_WORKLOAD));
+
+        progress -= activity_progress;
+        workload -= nb_tasks * duration;
 
         goalCursor.close();
 
         ContentValues values = new ContentValues();
         values.put(MyGoals.Goals.COLUMN_NAME_PROGRESS, progress);
+        values.put(MyGoals.Goals.COLUMN_NAME_WORKLOAD, workload);
         int nbRowGoal = cr.update(uri, values, null, null);
 
         // Return the result OK

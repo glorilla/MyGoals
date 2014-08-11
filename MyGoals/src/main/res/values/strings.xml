@@ -34,14 +34,14 @@
     <string name="footer_add_goal">Add a new goal</string>
     <string name="footer_add_task">Add a new task</string>
     <string name="footer_add_activity">Add a new activity</string>
-    <string name="estimatedWorkload">Estimated Work Load</string>
+    <string name="estimatedWorkload">Estimated Workload</string>
     <string name="nbOf">Nb of</string>
     <string name="my_goal">My Goal</string>
     <string name="my_goals">My Goals</string>
     <string name="my_tasks">My Tasks</string>
     <string name="my_activity">My Activity</string>
     <string name="occurrences">occurrences</string>
-    <string name="Activity_Workload">Activity Work Load</string>
+    <string name="Activity_Workload">Activity Workload</string>
     <string name="Goal_deleted">Goal deleted</string>    
     <string name="Activity_deleted">Activity deleted</string>
     <string name="tasks">tasks</string>
@@ -50,7 +50,7 @@
     <string name="notif_title">A task will start in 15 min</string>
     <string name="notif_text">One more step to your goal achievement!</string>
 
-    <string name="forms_empty">One or more fields are empty!</string>
+    <string name="forms_empty">One or several mandatory fields are empty!</string>
     <string name="forms_incorrect_date">The start date is more recent than the end date!</string>
 
     <string name="dialog_title_deleteActivity">Delete entry...</string>
