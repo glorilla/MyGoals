@@ -1,5 +1,6 @@
 package com.gloria.mygoals;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -9,8 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 
-import com.viewpagerindicator.CirclePageIndicator;
-import com.viewpagerindicator.PageIndicator;
+import static android.app.ActionBar.TabListener;
 
 /**
  * @author glorilla
@@ -18,15 +18,12 @@ import com.viewpagerindicator.PageIndicator;
  */
 public class MainActivity extends FragmentActivity implements OnPageChangeListener {
 	// For log purpose
-	private static final  String TAG = "GoalDetailFragment"; 
+	private static final String TAG = "GoalDetailFragment";
 	
     static final int NUM_ITEMS = 2; // nb of pages
 
-    MyAdapter mAdapter;	// adapter that provides the page to draw
-
-    ViewPager mPager; // the page renderer
-    
-    PageIndicator mIndicator; // the page indicator
+    ViewPager mViewPager; // the pages container
+    MyAdapter mAdapter;	// adapter that provides the fragment to set in the viewPager
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +35,11 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
         
         mAdapter = new MyAdapter(getSupportFragmentManager());
 
-        mPager = (ViewPager)findViewById(R.id.list_pager);
-        mPager.setAdapter(mAdapter);
-        
-        mIndicator = (CirclePageIndicator)findViewById(R.id.indicator);
-        mIndicator.setViewPager(mPager);
-        /* The PageIndicator overrides the OnPageChangelistener affectation on the ViewPager.
-        But it offers the method setOnPageChangeListener to continue the treatment on these events */
-        mIndicator.setOnPageChangeListener(this);
+        mViewPager = (ViewPager)findViewById(R.id.list_pager);
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.setOnPageChangeListener(this);
+
+        initActionBarTabs();
     }
 	
     public static class MyAdapter extends FragmentPagerAdapter {
@@ -75,17 +69,47 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
 
 	@Override
 	public void onPageSelected(int position) {
-    	if (position % NUM_ITEMS == 0) {
-    		// Activity title set according to the goal list page
-            setTitle(getResources().getText(R.string.my_goals));
-		} else { 
-    		// Activity title set according to the goal list page
-            setTitle(getResources().getText(R.string.my_tasks));
-		} 		
+        getActionBar().setSelectedNavigationItem(position);
 	}
 
 	@Override
 	public void onPageScrollStateChanged(int state) {
 	}
+
+    private void initActionBarTabs() {
+        final ActionBar actionBar = getActionBar();
+
+        // Specify that tabs should be displayed in the action bar.
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        // Create a tab listener that is called when the user changes tabs.
+        TabListener tabListener = new TabListener() {
+            @Override
+            public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
+                mViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
+                // Do nothing
+            }
+        };
+
+        // Add 2 tabs, specifying the tab's text and TabListener
+        actionBar.addTab(actionBar.newTab()
+                        .setText(getResources().getText(R.string.my_goals))
+                        .setTabListener(tabListener)
+        );
+        actionBar.addTab(actionBar.newTab()
+                        .setText(getResources().getText(R.string.my_tasks))
+                        .setTabListener(tabListener)
+        );
+
+    }
 
 }
