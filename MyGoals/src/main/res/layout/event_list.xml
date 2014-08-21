@@ -10,24 +10,13 @@
     android:clickable="false"
     android:focusable="false">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/arrowLeft"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:paddingTop="8dp"
-        android:paddingLeft="8dp"
-        android:src="@drawable/arrow_left_med" />
-
     <ListView
         android:id="@+id/lv_events"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:clickable="false"
-        android:layout_above="@+id/arrowLeft">
+        android:clickable="false" >
     </ListView>
 
 </RelativeLayout>

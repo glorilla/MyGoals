@@ -8,23 +8,12 @@
     android:paddingTop="0dp"
     tools:context=".GoalListActivity" >
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/arrowRight"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:paddingTop="8dp"
-        android:paddingRight="8dp"
-        android:src="@drawable/arrow_right_med" />
-
     <ListView
         android:id="@+id/lv_goals"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/arrowRight">
+        android:layout_alignParentTop="true" >
     </ListView>
 
 </RelativeLayout>
