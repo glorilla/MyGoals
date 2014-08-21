@@ -31,7 +31,7 @@ public class MyGoalsProvider extends ContentProvider {
      * The database that the provider uses as its underlying data store
      */
     private static final String DATABASE_NAME = "mygoals.db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     /**
      * Projection maps used to select columns from the database
@@ -301,7 +301,7 @@ public class MyGoalsProvider extends ContentProvider {
                    + MyGoals.Activities.COLUMN_NAME_DESC + " TEXT,"
                    + MyGoals.Activities.COLUMN_NAME_START_DATE + " TEXT,"
                    + MyGoals.Activities.COLUMN_NAME_END_DATE + " TEXT,"
-                   + MyGoals.Activities.COLUMN_NAME_DURATION + " TEXT,"
+                   + MyGoals.Activities.COLUMN_NAME_DURATION + " INTEGER,"
                    + MyGoals.Activities.COLUMN_NAME_REPETITION + " INTEGER,"
                    + MyGoals.Activities.COLUMN_NAME_OCCURRENCE + " INTEGER,"
                    + MyGoals.Activities.COLUMN_NAME_WEEKDAYS + " INTEGER,"

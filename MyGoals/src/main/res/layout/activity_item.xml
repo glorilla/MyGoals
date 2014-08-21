@@ -94,7 +94,7 @@
         android:layout_alignBaseline="@+id/t_status"
         android:layout_alignBottom="@+id/t_status"
         android:layout_alignParentRight="true"
-        android:text="2hrs"
+        android:text="2:20min"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ProgressBar

@@ -30,7 +30,6 @@ import android.widget.TextView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -308,18 +307,8 @@ public class EventListFragment extends Fragment implements LoaderManager.LoaderC
 		
 		activityCursor.moveToFirst();
 		int progress = activityCursor.getInt(activityCursor.getColumnIndex(MyGoals.Activities.COLUMN_NAME_PROGRESS));
-		String sDuration = activityCursor.getString(activityCursor.getColumnIndex(MyGoals.Activities.COLUMN_NAME_DURATION));
-		GregorianCalendar calendar = new GregorianCalendar();
-		try {
-			calendar.setTime(sdf.parse(sDuration));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		// TODO To use Date or Integer or ... for the durations 
-		int duration = calendar.get(GregorianCalendar.HOUR_OF_DAY); 
-		progress += 1; 
+		int duration = activityCursor.getInt(activityCursor.getColumnIndex(MyGoals.Activities.COLUMN_NAME_DURATION));
+		progress += 1;
 		
 		activityCursor.close();
 		
@@ -380,16 +369,8 @@ public class EventListFragment extends Fragment implements LoaderManager.LoaderC
 
         activityCursor.moveToFirst();
         int progress = activityCursor.getInt(activityCursor.getColumnIndex(MyGoals.Activities.COLUMN_NAME_PROGRESS));
-        String sDuration = activityCursor.getString(activityCursor.getColumnIndex(MyGoals.Activities.COLUMN_NAME_DURATION));
-        GregorianCalendar calendar = new GregorianCalendar();
-        try {
-            calendar.setTime(sdf.parse(sDuration));
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        int duration = activityCursor.getInt(activityCursor.getColumnIndex(MyGoals.Activities.COLUMN_NAME_DURATION));
 
-        // TODO To use Date or Integer or ... for the durations
         progress -= 1;
 
         activityCursor.close();
@@ -406,7 +387,6 @@ public class EventListFragment extends Fragment implements LoaderManager.LoaderC
                 null, null, null);
 
         goalCursor.moveToFirst();
-        int duration = calendar.get(GregorianCalendar.HOUR_OF_DAY);
         progress = goalCursor.getInt(goalCursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_PROGRESS));
         progress -= duration;
 

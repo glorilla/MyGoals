@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,7 +30,6 @@ import android.widget.TextView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import be.billington.calendar.recurrencepicker.EventRecurrence;
@@ -60,13 +60,6 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 		
 		 // get the listview in the view hierarchy
 		ListView lv= (ListView)root_view.findViewById(R.id.lv_activities);
-	    
-		//ContentResolver cr = getActivity().getContentResolver();
-		
-		//mGoalId=getActivity().getIntent().getIntExtra(ViewGoalActivity.EXTRA_KEY_ID, 0);
-		
-		//Uri uri = Uri.parse(MyGoals.Activities.CONTENT_URI + "?goal_id=" + ViewGoalActivity.mGoalId);
-		//Cursor = cr.query(uri, MyGoalsProvider.ACTIVITY_PROJECTION, null, null, null);
 		
 		String[] from = new String[] {
 				MyGoals.Activities.COLUMN_NAME_TITLE, 
@@ -116,16 +109,18 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 					return true;
 				}
 				if (view.getId()==R.id.t_task_duration) {
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
-					
-					try {
-						Date time = sdf.parse(cursor.getString(columnIndex));
-						((TextView)view).setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(time)+getString(R.string.hours));
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+                    int duration;
+                    try {
+                        duration = Integer.parseInt(cursor.getString(columnIndex));
+                        String dur = DateUtils.formatElapsedTime(duration);
+                        if (duration<3600) {
+                            ((TextView) view).setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.minutes));
+                        } else {
+                            ((TextView) view).setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.hours));                               }
+                    }
+                    catch(Exception e) {
                         return false;
-					}
+                    }
 					return true;
 				}
 				if (view.getId()==R.id.t_nb_task) {
@@ -168,19 +163,6 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
 				return false;
 			}
 	    });
-
-
-	    // Define action when clicking on an Activity item 
-	    /*lv.setOnItemClickListener(new OnItemClickListener() {
-	    	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Log.v("DEBUG", "Activity "+ id +" has been clicked");
-                Cursor cursor = mAdapter.getCursor();
-                cursor.moveToPosition(position);
-
-				int activity_id = cursor.getInt(MyGoalsProvider.ACTIVITY_ID_INDEX);
-				viewActivity(cursor, activity_id);
-	    	}
-	    });*/
 
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -239,13 +221,6 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
     public void onStart() {
     	super.onStart();
 
-	    // create the list mapping
-		/*ContentResolver cr = getActivity().getContentResolver();
-		Uri uri = Uri.parse(MyGoals.Activities.CONTENT_URI + "?goal_id=" +  ViewGoalActivity.mGoalId);
-		mCursor = cr.query(uri, MyGoalsProvider.ACTIVITY_PROJECTION, null, null, null);
-
-		mAdapter.changeCursor(mCursor);*/
-
         getLoaderManager().initLoader(0, null, this);
 	}
     
@@ -290,8 +265,6 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
         ContentResolver cr = getActivity().getContentResolver();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
 
-        Date activity_duration;
-
         // delete the activity
         int nbRowActivity = cr.delete(Uri.parse(MyGoals.Activities.CONTENT_ID_URI_BASE + "" + activityId), null, null);
         Log.d(TAG, "" + nbRowActivity + "activities have been successfully deleted");
@@ -303,17 +276,7 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
         Cursor c = cr.query(uri, MyGoalsProvider.TASK_PROJECTION, null, null, null);
 
         // Get the task duration in the activity tuple for the goal workload computation
-        String sDuration = cursor.getString(MyGoalsProvider.ACTIVITY_DURATION_INDEX);
-        try {
-            activity_duration = sdf.parse(sDuration);
-        } catch (ParseException e) {
-            activity_duration = new Date();
-            e.printStackTrace();
-        }
-        GregorianCalendar calendar = new GregorianCalendar();
-        calendar.setTime(activity_duration);
-        // TODO To use Date or Integer or ... for the durations
-        int duration = calendar.get(GregorianCalendar.HOUR_OF_DAY);
+        int duration = cursor.getInt(MyGoalsProvider.ACTIVITY_DURATION_INDEX);
 
         int activity_progress = 0;
         int taskId;
@@ -355,26 +318,6 @@ public class ActivityListFragment extends Fragment implements LoaderManager.Load
             //setResult(RESULT_OK, getIntent());
         }
     }
-
-	/*private void viewActivity(Cursor c, int id) {
-		Log.d(TAG,"viewActivity method");		
-	    Intent intent = new Intent(getActivity(), ViewActivity.class);
-
-	    intent.putExtra(ViewActivity.EXTRA_KEY_ID, id);
-	    intent.putExtra(ViewActivity.EXTRA_KEY_GOAL_TITLE, ViewGoalActivity.mGoalTitle);
-        intent.putExtra(ViewActivity.EXTRA_KEY_GOAL_ID, ViewGoalActivity.mGoalId);
-        intent.putExtra(ViewActivity.EXTRA_KEY_TITLE, c.getString(MyGoalsProvider.ACTIVITY_TITLE_INDEX));
-	    intent.putExtra(ViewActivity.EXTRA_KEY_DESC, c.getString(MyGoalsProvider.ACTIVITY_DESC_INDEX));
-	    intent.putExtra(ViewActivity.EXTRA_KEY_START_DATE, c.getString(MyGoalsProvider.ACTIVITY_START_DATE_INDEX));
-	    intent.putExtra(ViewActivity.EXTRA_KEY_END_DATE, c.getString(MyGoalsProvider.ACTIVITY_END_DATE_INDEX));
-	    intent.putExtra(ViewActivity.EXTRA_KEY_DURATION, c.getString(MyGoalsProvider.ACTIVITY_DURATION_INDEX));
-	    intent.putExtra(ViewActivity.EXTRA_KEY_REPETITION, c.getInt(MyGoalsProvider.ACTIVITY_REPETITION_INDEX));
-	    intent.putExtra(ViewActivity.EXTRA_KEY_OCCURRENCE, c.getInt(MyGoalsProvider.ACTIVITY_OCCURRENCE_INDEX));
-	    intent.putExtra(ViewActivity.EXTRA_KEY_WEEKDAYS, c.getInt(MyGoalsProvider.ACTIVITY_WEEKDAYS_INDEX));
-	    intent.putExtra(ViewActivity.EXTRA_KEY_NB_TASKS, c.getInt(MyGoalsProvider.ACTIVITY_NB_TASKS_INDEX));
-	    
-	    startActivityForResult(intent, 0);
-	}*/
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
