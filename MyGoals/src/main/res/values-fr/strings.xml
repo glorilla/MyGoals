@@ -10,8 +10,9 @@
     <string name="To_date">Au</string>
     <string name="to_date">au</string>
     <string name="to_time">à</string>        
-    <string name="goal_workload">"Nb d'heures"</string>
+    <string name="goal_workload">"Durée"</string>
     <string name="hours">h</string>
+    <string name="minutes">min</string>
     <string name="action_new">Nouveau</string>
     <string name="action_edit">Editer</string>
     <string name="action_delete">Supprimer</string>    

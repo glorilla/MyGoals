@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,7 +53,6 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
 		Log.d(TAG,"onCreateView method");					
 		// Return the View built from the layout
 		mRootView = inflater.inflate(R.layout.goal_view, container, false);
-		//Intent i = getActivity().getIntent();
 
 		mVTitle=((TextView)mRootView.findViewById(R.id.t_goal_detail_title));
 		mVDescription=((TextView)mRootView.findViewById(R.id.t_goal_detail_description));
@@ -110,7 +110,6 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         Log.d(TAG,"onCreateLoader");
-
         Uri uri = Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + ViewGoalActivity.mGoalId);
 
         return new CursorLoader(getActivity(), uri, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
@@ -135,7 +134,15 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
         mVTitle.setText(cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_TITLE)));
         mVDescription.setText(cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_DESC)));
-        mVWorkload.setText("" + cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_WORKLOAD)) + getResources().getString(R.string.hours));
+
+        int duration = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_WORKLOAD)));
+        String dur = DateUtils.formatElapsedTime(duration);
+        if (duration<3600) {
+            mVWorkload.setText(dur.substring(0, dur.length() - 3) + " " + getResources().getString(R.string.minutes));
+        } else {
+            mVWorkload.setText(dur.substring(0, dur.length() - 3) + " " + getResources().getString(R.string.hours));
+        }
+
         try {
             mStartDate = sdf.parse(cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_START_DATE)));
             mEndDate = sdf.parse(cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_TARGET_DATE)));

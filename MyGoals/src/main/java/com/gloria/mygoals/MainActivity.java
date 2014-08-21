@@ -39,6 +39,7 @@ public class MainActivity extends FragmentActivity implements OnPageChangeListen
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOnPageChangeListener(this);
 
+        // set the action bar tabs
         initActionBarTabs();
     }
 	

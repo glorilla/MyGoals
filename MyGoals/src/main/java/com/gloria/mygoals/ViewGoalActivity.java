@@ -3,6 +3,7 @@
  */
 package com.gloria.mygoals;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
@@ -20,9 +21,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.viewpagerindicator.CirclePageIndicator;
-import com.viewpagerindicator.PageIndicator;
-
 /**
  * @author glorilla
  *
@@ -35,20 +33,13 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 
 	public static final String EXTRA_KEY_ID = "id";
 	public static final String EXTRA_KEY_TITLE = "title";
-	/*public static final String EXTRA_KEY_DESC = "desc";
-	public static final String EXTRA_KEY_START_DATE = "start_date";
-	public static final String EXTRA_KEY_TARGET_DATE = "target_date";
-	public static final String EXTRA_KEY_WORKLOAD = "workload";*/
-	
+
 	public static final String EXTRA_KEY_RESULT = "result";
 	public static enum result {DELETION}
-	
+
+    ViewPager mViewPager; // the page renderer
     MyAdapter mAdapter;	// adapter that provides the page to draw
 
-    ViewPager mPager; // the page renderer
-    
-    PageIndicator mIndicator; // the page indicator    
-    
 	public static int mGoalId; 		// the id of the displayed Goal
 	public static String mGoalTitle;	// the title of the displayed Goal
 
@@ -66,21 +57,19 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
         
         mAdapter = new MyAdapter(getSupportFragmentManager());
 
-        mPager = (ViewPager)findViewById(R.id.goal_pager);
-        mPager.setAdapter(mAdapter);
+        mViewPager = (ViewPager)findViewById(R.id.goal_pager);
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.setOnPageChangeListener(this);
         
-        mIndicator = (CirclePageIndicator)findViewById(R.id.indicator);
-        mIndicator.setViewPager(mPager);
-        /* The PageIndicator overrides the OnPageChangelistener affectation on the ViewPager.
-        But it offers the method setOnPageChangeListener to continue the treatment on these events */
-        mIndicator.setOnPageChangeListener(this);
- 
         // Set the goal title as activity title
         mGoalTitle = getIntent().getStringExtra(EXTRA_KEY_TITLE);
         setTitle(mGoalTitle);
 
         // get the Goal id
     	mGoalId=getIntent().getIntExtra(ViewGoalActivity.EXTRA_KEY_ID, 0);
+
+        // set the action bar tabs
+        initActionBarTabs();
     }
 
     public static class MyAdapter extends FragmentPagerAdapter {
@@ -110,14 +99,8 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 
 	@Override
 	public void onPageSelected(int position) {
-		Log.d(TAG,"onPageSelected method");				
-    	if (position % NUM_ITEMS == 0) {
-    		// Set the goal title as activity title
-            setTitle(getIntent().getStringExtra(EXTRA_KEY_TITLE));
-		} else { 
-    		// Set activities fragment title
-            setTitle(R.string.activities);
-		} 	
+		Log.d(TAG,"onPageSelected method");
+        getActionBar().setSelectedNavigationItem(position);
 	}
 
 	@Override
@@ -180,4 +163,39 @@ public class ViewGoalActivity extends FragmentActivity implements OnPageChangeLi
 	    .show();
 	}
 
+    private void initActionBarTabs() {
+        final ActionBar actionBar = getActionBar();
+
+        // Specify that tabs should be displayed in the action bar.
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        // Create a tab listener that is called when the user changes tabs.
+        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+            @Override
+            public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
+                mViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
+                // Do nothing
+            }
+        };
+
+        // Add 2 tabs, specifying the tab's text and TabListener
+        actionBar.addTab(actionBar.newTab()
+                        .setText(getResources().getText(R.string.my_goal))
+                        .setTabListener(tabListener)
+        );
+        actionBar.addTab(actionBar.newTab()
+                        .setText(getResources().getText(R.string.activities))
+                        .setTabListener(tabListener)
+        );
+
+    }
 }

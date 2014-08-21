@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.util.Log;
 import android.util.TimeFormatException;
@@ -20,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
@@ -91,7 +93,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
     // form values
     private Date mStartDate;
     private Date mStartTime;
-    private Date mDuration;
+    private int mDuration=3600;
     private Date mEndDate;
     private int mNbTasks;
 
@@ -218,11 +220,9 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
             public void onClick(View v) {
                 Log.d(TAG, "onClick method on the task duration textView");
                 Log.v(TAG, "The id of the clicked view is " + v.getId());
-                // Init the view's references
-                mCurrentDateTextView = (TextView) v;
-                mCurrentDate = mDuration;
-                // Show the DatePickerDialog
-                showTimePickerDialog();
+
+                // Show the DurationPickerDialog
+                showDurationPickerDialog();
             }
         });
 
@@ -317,7 +317,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
 
         //Dates are stored as UTC date strings ("YYYY-MM-DD HH:mmZ")
         values.put(MyGoals.Activities.COLUMN_NAME_START_DATE, sdf.format(mStartDate));
-        values.put(MyGoals.Activities.COLUMN_NAME_DURATION, sdf.format(mDuration));
+        values.put(MyGoals.Activities.COLUMN_NAME_DURATION, mDuration);
 
         if (null != taskRecurrence) {
             values.put(MyGoals.Activities.COLUMN_NAME_REPETITION, taskRecurrence.freq);
@@ -347,10 +347,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         goalCursor.moveToFirst();
 
         int workload = goalCursor.getInt(goalCursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_WORKLOAD));
-        GregorianCalendar calendar = new GregorianCalendar();
-        calendar.setTime(mDuration);
-        int duration = calendar.get(GregorianCalendar.HOUR_OF_DAY);
-        workload += mNbTasks * duration;
+        workload += mNbTasks * mDuration;
 
         goalCursor.close();
 
@@ -401,35 +398,26 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         mVStartTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(mStartDate));
 
         // init the task duration to 1:00
-        GregorianCalendar duration = new GregorianCalendar(1, 0, 1, 1, 0);
-        mDuration = duration.getTime();
-        mVTaskDuration.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(mDuration));
+        mDuration = 3600;
+        String dur = DateUtils.formatElapsedTime(mDuration);
 
+        if (mDuration<3600) {
+            mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.minutes));
+        } else {
+            mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.hours));
+        }
+        
         // Compute the task's end date
         GregorianCalendar endDate = new GregorianCalendar();
         endDate.setTime(mStartDate);
-        endDate.add(Calendar.HOUR, duration.get(Calendar.HOUR));
-        endDate.add(Calendar.MINUTE, duration.get(Calendar.MINUTE));
+        endDate.add(Calendar.SECOND, mDuration);
         mEndDate = endDate.getTime();
-        //mVEndDate.setText(SimpleDateFormat.getDateTimeInstance().format(mEndDate));
-
-        // Default spinner value and panes' visibility
-        //mVFrequencyChoice.setSelection(mFreqSpinnerPos);
-
         mNbTasks = 1;
-		/*mOccurrence = 1;
-		mWeekdays = "";*/
-
     }
 
     private ArrayList<TaskDates> computeListOfTasks() {
-
         // the result object
         ArrayList<TaskDates> listOfTask = new ArrayList<TaskDates>();
-
-        // Convert the duration to a calendar object
-        Calendar duration = Calendar.getInstance(Locale.US);
-        duration.setTime(mDuration);
 
         // Convert the task's start date to a calendar object
         Calendar startDate = Calendar.getInstance(Locale.US);
@@ -438,13 +426,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
 
         // Compute the task's end date
         endDate.setTime(mStartDate);
-        endDate.add(Calendar.HOUR_OF_DAY, duration.get(Calendar.HOUR_OF_DAY));
-        endDate.add(Calendar.MINUTE, duration.get(Calendar.MINUTE));
-
-        // US Calendar for computation of tasks series requiring Sunday as first day of week
-        /*startDate.setFirstDayOfWeek(Calendar.SUNDAY);
-        endDate.setFirstDayOfWeek(Calendar.SUNDAY);
-        duration.setFirstDayOfWeek(Calendar.SUNDAY);*/
+        endDate.add(Calendar.SECOND, mDuration);
 
         // CASE OF ONE-TASK ACTIVITY (task dates equals activity dates)
         if (null == taskRecurrence) {
@@ -596,11 +578,6 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
     public void showDatePickerDialog() {
         Log.d(TAG, "showDatePickerDialog method");
 
-		/*DialogFragment dialog = new DatePickerFragment();
-	    dialog.show(getFragmentManager(), "datePicker");*/
-
-        //GregorianCalendar c = new GregorianCalendar();
-
         final Calendar c = Calendar.getInstance();
         // Use the current date as the default date in the picker
         if (mCurrentDate != null) {
@@ -613,7 +590,6 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         dialog.setYearRange(1985, 2028);*/
 
         dialog.show(this.getSupportFragmentManager(), "datePicker");
-
     }
 
 
@@ -625,10 +601,6 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
     public void showTimePickerDialog() {
         Log.d(TAG, "showTimePickerDialog method");
 
-		/*DialogFragment dialog = new TimePickerFragment();
-	    dialog.show(getFragmentManager(), "timePicker");*/
-
-        //GregorianCalendar c = new GregorianCalendar();
         final Calendar c = Calendar.getInstance();
         // Use the current date as the default date in the picker
         if (mCurrentDate != null) {
@@ -637,6 +609,30 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
 
         TimePickerDialog dialog = TimePickerDialog.newInstance(this, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true, false);
         dialog.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    public void showDurationPickerDialog() {
+        Log.d(TAG, "showDurationPickerDialog method");
+
+        android.app.TimePickerDialog dialog = new android.app.TimePickerDialog(this,
+            new android.app.TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+                    mDuration=hourOfDay*3600+minute*60;
+
+                    String dur = DateUtils.formatElapsedTime(mDuration);
+                    if (mDuration<3600) {
+                        mVTaskDuration.setText(dur.substring(0,dur.length() - 3) + " " + getString(R.string.minutes));
+                    } else {
+                        mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.hours));
+                    }
+
+                    // Recompute the View parameters
+                    computeListOfTasks();
+                }
+            }, mDuration/3600, mDuration/60, true);
+
+        dialog.show();
     }
 
     @Override
@@ -665,17 +661,6 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
             // Update the Activity's end date & nb of tasks
 			/*mVEndDate.setText(SimpleDateFormat.getDateTimeInstance().format(mEndDate));
 			mVNbTasks.setText("" + mNbTasks);*/
-		/*} else if (mCurrentDateTextView == mVEndDate) {
-			// Format the date to the user's locales and set the destination view
-			final Calendar c = Calendar.getInstance();
-			c.setTime(mEndDate);			
-			c.set(year, month, day);
-			mEndDate.setTime(c.getTimeInMillis());
-			//mVEndDate.setText(SimpleDateFormat.getDateTimeInstance().format(mEndDate));
-			// Recompute the View parameters
-			computeListOfTasks();
-			// Update the Activity's nb of tasks
-			//mVNbTasks.setText("" + mNbTasks);*/
         } else {
             Log.w(TAG, "Setting a date in a DatePicker dialog should update a View");
         }
@@ -698,12 +683,20 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
             // Update the Activity's end date & nb of tasks
 			/*mVEndDate.setText(SimpleDateFormat.getDateTimeInstance().format(mEndDate));
 			mVNbTasks.setText("" + mNbTasks);*/
-        } else if (mCurrentDateTextView == mVTaskDuration) {
+        }
+        //TODO to remove, useless code
+        else if (mCurrentDateTextView == mVTaskDuration) {
             // Format the date to the user's locales and set the destination view
-            final Calendar c = Calendar.getInstance();
-            c.set(1, 0, 1, hourOfDay, minute);
-            mDuration.setTime(c.getTimeInMillis());
-            mVTaskDuration.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(mDuration));
+            mDuration=hourOfDay*3600+minute*60;
+
+            //mVTaskDuration.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(mDuration));
+            String dur = DateUtils.formatElapsedTime(mDuration);
+            if (mDuration<3600) {
+                mVTaskDuration.setText(dur.substring(0,dur.length() - 3) + " " + getString(R.string.minutes));
+            } else {
+                mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.hours));
+            }
+
             // Recompute the View parameters
             computeListOfTasks();
             // Update the Activity's end date & nb of tasks
@@ -718,8 +711,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG, "onCreateOptionsMenu method");
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // getMenuInflater().inflate(R.menu., menu);
+
         return true;
     }
 
