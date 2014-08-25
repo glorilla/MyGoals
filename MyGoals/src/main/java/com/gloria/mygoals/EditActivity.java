@@ -28,6 +28,7 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,38 +43,20 @@ import be.billington.calendar.recurrencepicker.RecurrencePickerDialog;
 
 public class EditActivity extends FragmentActivity implements usesDatePickerDialogInterface, usesTimePickerDialogInterface, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    // Inner class TaskDates stores the start date&time and the end date&time of a task
-    private class TaskDates {
-        // 0-based index
-        public int index;
-        public Date startDate;
-        public Date endDate;
-
-        public TaskDates(int index, Date startDate, Date endDate) {
-            this.index = index;
-            this.startDate = startDate;
-            this.endDate = endDate;
-        }
-    }
-
-    // For log purpose
-    private final static String TAG = "EditActivity";
-
     // Frequency spinner choices
     static final int NONE = 0;
-
     // Intent extra parameters' interface
     static final String EXTRA_KEY_MODE = "mode";
     static final String EXTRA_KEY_GOAL_ID = "goal_id";
     static final String EXTRA_KEY_GOAL_TITLE = "goal_title";
-
-    static enum Mode {NEW, EDIT};
-
+    // For log purpose
+    private final static String TAG = "EditActivity";
+    private static final long ALARM_DELAY = 15 * 60 * 1000L;
     // activity state
     private Mode mMode = Mode.NEW;
+    ;
     private int mGoalId = 0;
     private String mGoalTitle;
-
     // form views
     private TextView mVGoalTitle;
     private EditText mVActivityTitle;
@@ -84,28 +67,24 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
     private TextView mVFrequencyChoice;
     // TODO To add the workload field in the activity table
     private Button mSubmitBtn;
-
+    private Button mCancelBtn;
     // For the RecurrencePickerDialog
     private Bundle bundle;
     private EventRecurrence taskRecurrence;
     private String mRrule;
-
     // form values
     private Date mStartDate;
     private Date mStartTime;
-    private int mDuration=3600;
+    private int mDuration = 3600;
     private Date mEndDate;
     private int mNbTasks;
-
     // for DatePickerDialog purpose
     private Date mCurrentDate;
     private TextView mCurrentDateTextView;
-
     // for notifications purpose
     private AlarmManager mAlarmManager;
     private Intent mNotificationReceiverIntent;
     private PendingIntent mNotificationReceiverPendingIntent;
-    private static final long ALARM_DELAY = 15 * 60 * 1000L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +101,8 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         // Set the action bar
         // Make sure we're running on Honeycomb or higher to use ActionBar APIs
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
+            // TODO pb with theme.holo.dialog
+//            getActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         // Get the AlarmManager Service
@@ -148,6 +128,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         mVStartTime = (TextView) findViewById(R.id.t_activity_start_time);
         mVFrequencyChoice = (TextView) findViewById(R.id.t_frequency);
         mSubmitBtn = (Button) findViewById(R.id.btn_submit);
+        mCancelBtn = (Button) findViewById(R.id.btn_cancel);
 
         // Set the Goal Title
         mVGoalTitle.setText(mGoalTitle);
@@ -183,6 +164,15 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
                     }
                     EditActivity.this.finish();        // quit the activity
                 }
+            }
+        });
+
+        mCancelBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick method on the cancel button");
+                finish();
             }
         });
 
@@ -262,14 +252,13 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
 
     private boolean validateForm() {
         Log.d(TAG, "validateForm method");
-        if (    mVActivityTitle.getText().toString().isEmpty()
+        if (mVActivityTitle.getText().toString().isEmpty()
                 || mVFrequencyChoice.getText().toString().isEmpty()
                 || mVStartDate.getText().toString().isEmpty()
                 || mVStartTime.getText().toString().isEmpty()
-                //|| mVActivityDesc.getText().toString().isEmpty()
-                )
-        {
-            Log.d(TAG,"Error validateForm method: Title Or Description Or WorkLoad is empty");
+                || mDuration > 0
+                ) {
+            Log.d(TAG, "Error validateForm method: Title Or Description Or WorkLoad is empty");
 
             Toast.makeText(this, getResources().getText(R.string.forms_empty), Toast.LENGTH_LONG).show();
 
@@ -291,12 +280,14 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         Uri res = insertActivityInDB();
         // TODO Raise an exception if not a parseable string
         int activityId = Integer.parseInt(res.getPathSegments().get(1));
+        // Update the goal start and target date if the activity is over the goal dates.
+        // TODO to consider the updateGoalDate result
+        updateGoalDate();
 
         for (TaskDates task : tasks) {
             if (null != insertTaskInDB(activityId, task)) {
-                mAlarmManager.set(AlarmManager.RTC_WAKEUP, task.startDate.getTime() - ALARM_DELAY,
-                        mNotificationReceiverPendingIntent);
-                Log.v(TAG, "current time:" + (new Date()).getTime() + ",alarm time:" + (task.startDate.getTime() - ALARM_DELAY) );
+                mAlarmManager.set(AlarmManager.RTC_WAKEUP, task.startDate.getTime() - ALARM_DELAY, mNotificationReceiverPendingIntent);
+                Log.v(TAG, "current time:" + (new Date()).getTime() + ",alarm time:" + (task.startDate.getTime() - ALARM_DELAY));
             }
         }
     }
@@ -341,7 +332,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         // Update the workload baseline of the goal
         Uri uri = Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + mGoalId);
         Cursor goalCursor = cr.query(uri,
-                new String [] {MyGoals.Goals.COLUMN_NAME_WORKLOAD},
+                new String[]{MyGoals.Goals.COLUMN_NAME_WORKLOAD},
                 null, null, null);
 
         goalCursor.moveToFirst();
@@ -360,6 +351,47 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         }
 
         return res;
+    }
+
+    private boolean updateGoalDate() {
+        Log.d(TAG, "updateGoalDate method");
+        // update the goal's progress
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        ContentResolver cr = getContentResolver();
+        Date startDate, targetDate;
+
+        Uri uri = Uri.parse(MyGoals.Goals.CONTENT_ID_URI_BASE + "" + mGoalId);
+        Cursor cursor = cr.query(uri, new String[]{MyGoals.Goals.COLUMN_NAME_START_DATE, MyGoals.Goals.COLUMN_NAME_TARGET_DATE}, null, null, null);
+
+        cursor.moveToFirst();
+        String sStartDate = cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_START_DATE));
+        String sTargetDate = cursor.getString(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_TARGET_DATE));
+        cursor.close();
+
+        try {
+            startDate = sdf.parse(sStartDate);
+            targetDate = sdf.parse(sTargetDate);
+        } catch (ParseException e) {
+            return false;
+        }
+
+        ContentValues values = new ContentValues();
+        if (mStartDate.before(startDate)) {
+            values.put(MyGoals.Goals.COLUMN_NAME_START_DATE, sdf.format(mStartDate));
+        }
+        if (mEndDate.after(targetDate)) {
+            values.put(MyGoals.Goals.COLUMN_NAME_TARGET_DATE, sdf.format(mEndDate));
+        }
+        int res = 0;
+        if (values.size() > 0) {
+            res = cr.update(uri, values, null, null);
+        }
+        if (res != 1) {
+            Log.v(TAG, "Update error");
+            return false;
+        }
+        return true;
     }
 
     private Uri insertTaskInDB(int activityId, TaskDates task) {
@@ -401,12 +433,12 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         mDuration = 3600;
         String dur = DateUtils.formatElapsedTime(mDuration);
 
-        if (mDuration<3600) {
+        if (mDuration < 3600) {
             mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.minutes));
         } else {
             mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.hours));
         }
-        
+
         // Compute the task's end date
         GregorianCalendar endDate = new GregorianCalendar();
         endDate.setTime(mStartDate);
@@ -476,7 +508,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         if (taskRecurrence.bydayCount > 1) {
             // It is a normal case for weekly recurrence only
             if (taskRecurrence.freq == EventRecurrence.WEEKLY) {
-                boolean bFound=false;
+                boolean bFound = false;
                 if (null != taskRecurrence.byday) {
                     int nextWeekDay = taskRecurrence.startDate.weekDay;
                     for (int j = 0; j < 7 && !bFound; j++) {
@@ -486,15 +518,15 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
                             // next week
                             startDate.add(unity, interval);
                             endDate.add(unity, interval);
-                            Log.d(TAG,"1-Next week");
+                            Log.d(TAG, "1-Next week");
                         }
 
                         for (d = 0; d < taskRecurrence.byday.length; d++) {
-                            Log.d(TAG,"j:"+j+",startWeekDay:"+taskRecurrence.startDate.weekDay+",nextWeekDay:"+nextWeekDay+",d:"+d+",selectDay:"+EventRecurrence.day2TimeDay(taskRecurrence.byday[d]));
+                            Log.d(TAG, "j:" + j + ",startWeekDay:" + taskRecurrence.startDate.weekDay + ",nextWeekDay:" + nextWeekDay + ",d:" + d + ",selectDay:" + EventRecurrence.day2TimeDay(taskRecurrence.byday[d]));
                             if (EventRecurrence.day2TimeDay(taskRecurrence.byday[d]) == nextWeekDay) {
                                 startDate.set(Calendar.DAY_OF_WEEK, EventRecurrence.day2CalendarDay(taskRecurrence.byday[d]));
                                 endDate.set(Calendar.DAY_OF_WEEK, EventRecurrence.day2CalendarDay(taskRecurrence.byday[d]));
-                                bFound=true;
+                                bFound = true;
                                 break;
                             }
                         }
@@ -540,23 +572,23 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
                 }
             } else if (taskRecurrence.bydayCount > 1) {
                 // Normal case for weekly recurrence only
-                Log.d(TAG,"2-d:"+d+",taskRecurrence.byday.length:"+taskRecurrence.byday.length);
+                Log.d(TAG, "2-d:" + d + ",taskRecurrence.byday.length:" + taskRecurrence.byday.length);
                 if (taskRecurrence.freq == EventRecurrence.WEEKLY) {
                     d++;
                     if (d == taskRecurrence.byday.length) {
                         startDate.add(unity, interval);
                         endDate.add(unity, interval);
                         d = 0;
-                        Log.d(TAG,"2-Next week");
+                        Log.d(TAG, "2-Next week");
                     }
                     startDate.set(Calendar.DAY_OF_WEEK, EventRecurrence.day2CalendarDay(taskRecurrence.byday[d]));
                     endDate.set(Calendar.DAY_OF_WEEK, EventRecurrence.day2CalendarDay(taskRecurrence.byday[d]));
-                    Log.d(TAG,"startWeekDay:"+taskRecurrence.startDate.weekDay+",d:"+d+",selectDay:"+EventRecurrence.day2TimeDay(taskRecurrence.byday[d]));
+                    Log.d(TAG, "startWeekDay:" + taskRecurrence.startDate.weekDay + ",d:" + d + ",selectDay:" + EventRecurrence.day2TimeDay(taskRecurrence.byday[d]));
                 }
             }
 
             if ((bFixedEndDate && (endDate.before(activityEnd) || endDate.equals(activityEnd)))
-                || (!bFixedEndDate && i < taskRecurrence.count)) {
+                    || (!bFixedEndDate && i < taskRecurrence.count)) {
                 // Add the task to the result list
                 listOfTask.add(new TaskDates(i++, startDate.getTime(), endDate.getTime()));
             } else {
@@ -592,7 +624,6 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         dialog.show(this.getSupportFragmentManager(), "datePicker");
     }
 
-
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
         DatePickerCallBack(year, month, day);
@@ -615,22 +646,22 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         Log.d(TAG, "showDurationPickerDialog method");
 
         android.app.TimePickerDialog dialog = new android.app.TimePickerDialog(this,
-            new android.app.TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-                    mDuration=hourOfDay*3600+minute*60;
+                new android.app.TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+                        mDuration = hourOfDay * 3600 + minute * 60;
 
-                    String dur = DateUtils.formatElapsedTime(mDuration);
-                    if (mDuration<3600) {
-                        mVTaskDuration.setText(dur.substring(0,dur.length() - 3) + " " + getString(R.string.minutes));
-                    } else {
-                        mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.hours));
+                        String dur = DateUtils.formatElapsedTime(mDuration);
+                        if (mDuration < 3600) {
+                            mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.minutes));
+                        } else {
+                            mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.hours));
+                        }
+
+                        // Recompute the View parameters
+                        computeListOfTasks();
                     }
-
-                    // Recompute the View parameters
-                    computeListOfTasks();
-                }
-            }, mDuration/3600, mDuration/60, true);
+                }, mDuration / 3600, mDuration / 60, true);
 
         dialog.show();
     }
@@ -659,7 +690,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
             // Recompute the View parameters
             computeListOfTasks();
             // Update the Activity's end date & nb of tasks
-			/*mVEndDate.setText(SimpleDateFormat.getDateTimeInstance().format(mEndDate));
+            /*mVEndDate.setText(SimpleDateFormat.getDateTimeInstance().format(mEndDate));
 			mVNbTasks.setText("" + mNbTasks);*/
         } else {
             Log.w(TAG, "Setting a date in a DatePicker dialog should update a View");
@@ -687,12 +718,12 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
         //TODO to remove, useless code
         else if (mCurrentDateTextView == mVTaskDuration) {
             // Format the date to the user's locales and set the destination view
-            mDuration=hourOfDay*3600+minute*60;
+            mDuration = hourOfDay * 3600 + minute * 60;
 
             //mVTaskDuration.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(mDuration));
             String dur = DateUtils.formatElapsedTime(mDuration);
-            if (mDuration<3600) {
-                mVTaskDuration.setText(dur.substring(0,dur.length() - 3) + " " + getString(R.string.minutes));
+            if (mDuration < 3600) {
+                mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.minutes));
             } else {
                 mVTaskDuration.setText(dur.substring(0, dur.length() - 3) + " " + getString(R.string.hours));
             }
@@ -726,6 +757,22 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    static enum Mode {NEW, EDIT}
+
+    // Inner class TaskDates stores the start date&time and the end date&time of a task
+    private class TaskDates {
+        // 0-based index
+        public int index;
+        public Date startDate;
+        public Date endDate;
+
+        public TaskDates(int index, Date startDate, Date endDate) {
+            this.index = index;
+            this.startDate = startDate;
+            this.endDate = endDate;
         }
     }
 }

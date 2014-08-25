@@ -1,6 +1,7 @@
 package com.gloria.mygoals;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -29,8 +30,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class GoalListFragment extends Fragment implements /*Refreshable,*/ LoaderManager.LoaderCallbacks<Cursor> {
-	// For log purpose
+public class GoalListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    // For log purpose
 	private static final  String TAG = "GoalListFragment";
 	
 	private View mRootView;
@@ -53,9 +54,6 @@ public class GoalListFragment extends Fragment implements /*Refreshable,*/ Loade
 		ListView lv= (ListView)mRootView.findViewById(R.id.lv_goals);
     	
 	    // create the list mapping
-		/*ContentResolver cr = getActivity().getContentResolver();
-		mCursor = cr.query(MyGoals.Goals.CONTENT_URI, MyGoalsProvider.GOAL_PROJECTION, null, null, null);*/
-		
 		String[] from = new String[] {
 				MyGoals.Goals.COLUMN_NAME_TITLE, 
 				MyGoals.Goals.COLUMN_NAME_DESC,
@@ -72,18 +70,13 @@ public class GoalListFragment extends Fragment implements /*Refreshable,*/ Loade
                 R.id.root_layout
 	    		};
 		
-
-	    // fill in the goal list layout
-	    //TODO Create a custom adapter to display Goal in the list of goals with category icon, colors ...
-
 	    mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.goal_item, /*mCursor*/ null, from, to, 0);
  
 	    mAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
 			@Override
-			public boolean setViewValue(View view, Cursor cursor,
-					int columnIndex) {
-				// TODO Auto-generated method stub
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                // TODO Auto-generated method stub
 				if (view.getId()==R.id.t_goal_end_date){
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mmZ", Locale.US);
 
@@ -96,13 +89,13 @@ public class GoalListFragment extends Fragment implements /*Refreshable,*/ Loade
 					}
 					return true;
 				}
-				if (view.getId()==R.id.goal_progress) {
-		        	int value=cursor.getInt(columnIndex);
-		        	int max=cursor.getInt(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_WORKLOAD));
-		        	((ProgressBar)view).setProgress(value);
-		        	((ProgressBar)view).setMax(max);
-		        	return true;
-		        }
+                if (view.getId() == R.id.goal_progress) {
+                    int value = cursor.getInt(columnIndex);
+                    int max = cursor.getInt(cursor.getColumnIndex(MyGoals.Goals.COLUMN_NAME_WORKLOAD));
+                    ((ProgressBar) view).setMax(max > 0 ? max : 1);
+                    ((ProgressBar) view).setProgress(value);
+                    return true;
+                }
                 if (view.getId()==R.id.root_layout) {
                     int value=cursor.getInt(columnIndex);
                     view.setBackgroundColor(value);
@@ -130,8 +123,8 @@ public class GoalListFragment extends Fragment implements /*Refreshable,*/ Loade
 	    footer.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-        		openNewGoalActivity();
-			}
+                openNewGoalDialog();
+            }
 		});	    
 
 	    lv.addFooterView(footer);
@@ -149,24 +142,12 @@ public class GoalListFragment extends Fragment implements /*Refreshable,*/ Loade
 	
     @Override
     public void onResume() {
-	    // create the list mapping
     	Log.d(TAG,"onResume");
-		/*
-    	if (null != mRootView) {
-			ContentResolver cr = getActivity().getContentResolver();
-			
-			mCursor.close();
-			mCursor = cr.query( MyGoals.Goals.CONTENT_URI, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
-
-			mAdapter.changeCursor(mCursor);
-		}*/
-    	
     	super.onResume();
     }
 
     @Override
     public void onDestroyView() {
-    	//mCursor.close();
     	super.onDestroyView();
     }	    
     
@@ -175,16 +156,11 @@ public class GoalListFragment extends Fragment implements /*Refreshable,*/ Loade
 	    
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_ID, goal_id);
 	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_TITLE, c.getString(MyGoalsProvider.GOAL_TITLE_INDEX));
-	    /*
-	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_DESC, c.getString(MyGoalsProvider.GOAL_DESC_INDEX));
-	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_START_DATE, c.getString(MyGoalsProvider.GOAL_START_DATE_INDEX));
-	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_TARGET_DATE, c.getString(MyGoalsProvider.GOAL_TARGET_DATE_INDEX));
-	    intent.putExtra(ViewGoalActivity.EXTRA_KEY_WORKLOAD, c.getInt(MyGoalsProvider.GOAL_WORKLOAD_INDEX));
-	    */
-	    startActivityForResult(intent, 0);
+
+        startActivityForResult(intent, 0);
 	}
-	
-	@Override
+
+    @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		super.onActivityResult(requestCode, resultCode, data);
@@ -212,32 +188,18 @@ public class GoalListFragment extends Fragment implements /*Refreshable,*/ Loade
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_new:
-        		openNewGoalActivity();
-	            return true;
+                openNewGoalDialog();
+                return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
- 
-	private void openNewGoalActivity() {
-		Log.d(TAG,"openNewGoalActivity method");				
-	    Intent intent= new Intent(getActivity(), EditGoalActivity.class);
-	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.NEW);
-	    startActivity(intent);
-	}
 
-	/*@Override
-	public void OnRefresh() {
-	   	Log.d(TAG,"OnRefresh");
-		if (null != mRootView) {
-			ContentResolver cr = getActivity().getContentResolver();
-			
-			mCursor.close();
-			mCursor = cr.query( MyGoals.Goals.CONTENT_URI, MyGoalsProvider.GOAL_PROJECTION, null, null, null);
-
-			mAdapter.changeCursor(mCursor);
-		}
-	}*/
+    private void openNewGoalDialog() {
+        Log.d(TAG, "openNewGoalDialog method");
+        DialogFragment dialog = new EditGoalDialog(R.string.new_goal, EditGoalDialog.Mode.NEW, 0);
+        dialog.show(getActivity().getFragmentManager(), "EditGoalDialog");
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {

@@ -1,6 +1,6 @@
 package com.gloria.mygoals;
 
-import android.content.Intent;
+import android.app.DialogFragment;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -90,22 +90,17 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	    	case R.id.action_edit:
-        		// TODO To implement the action bar "edit" button for the goal fragment
-        		openEditGoalActivity();
-	        default:
+                openEditGoalDialog();
+            default:
 	            return super.onOptionsItemSelected(item);
 	    }
-	}    
-
-	private void openEditGoalActivity() {
-		Log.d(TAG,"openEditGoalActivity method");				
-	    Intent intent = new Intent(getActivity(), EditGoalActivity.class);
-
-	    intent.putExtra(EditGoalActivity.EXTRA_KEY_MODE, EditGoalActivity.Mode.EDIT);
-  	    intent.putExtra(EditGoalActivity.EXTRA_KEY_ID, ViewGoalActivity.mGoalId);
-  
-	    startActivity(intent);
 	}
+
+    private void openEditGoalDialog() {
+        Log.d(TAG, "openEditGoalDialog method");
+        DialogFragment dialog = new EditGoalDialog(R.string.modify_goal, EditGoalDialog.Mode.EDIT, ViewGoalActivity.mGoalId);
+        dialog.show(getActivity().getFragmentManager(), "EditGoalDialog");
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {

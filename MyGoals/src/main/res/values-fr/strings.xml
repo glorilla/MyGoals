@@ -6,34 +6,35 @@
     <string name="goal_description">Description</string>
     <string name="goal_category">Catégorie</string>
     <string name="From_date">Du</string>
-    <string name="From_time">De</string>    
+    <string name="From_time">De</string>
     <string name="To_date">Au</string>
     <string name="to_date">au</string>
-    <string name="to_time">à</string>        
+    <string name="to_time">à</string>
     <string name="goal_workload">"Durée"</string>
     <string name="hours">h</string>
     <string name="minutes">min</string>
     <string name="action_new">Nouveau</string>
     <string name="action_edit">Editer</string>
-    <string name="action_delete">Supprimer</string>    
+    <string name="action_delete">Supprimer</string>
     <string name="title_activity_new_goal">Nouvel Objectif</string>
     <string name="activities">"Activités associées"</string>
     <string name="create">Créer</string>
     <string name="modify">Modifier</string>
+    <string name="modify_goal">"Modifier l'objectif"</string>
     <string name="day">jour</string>
     <string name="week">semaine</string>
     <string name="days">jours</string>
     <string name="weeks">semaines</string>
-    <string name="months">mois</string>    
+    <string name="months">mois</string>
     <string name="title">intitulé</string>
     <string name="description">description</string>
     <string name="duration">Durée</string>
     <string name="Every">Chaque</string>
-    <string name="until">"Jusqu'au"</string> 
+    <string name="until">"Jusqu'au"</string>
     <string name="events">occurrences</string>
     <string name="footer_add_goal">Ajouter un nouvel objectif</string>
     <string name="footer_add_task">Ajouter une nouvelle tâche </string>
-	<string name="footer_add_activity">Ajouter une nouvelle activité</string>    
+    <string name="footer_add_activity">Ajouter une nouvelle activité</string>
     <string name="estimatedWorkload">Charge de travail estimée</string>
     <string name="nbOf">"Nbre d'"</string>
     <string name="my_goal">Mon Objectif</string>
@@ -42,7 +43,7 @@
     <string name="my_activity">Mon Activité</string>
     <string name="occurrences">occurrences</string>
     <string name="Activity_Workload">"Charge de travail de l'activité"</string>
-    <string name="Goal_deleted">Objectif supprimé</string>    
+    <string name="Goal_deleted">Objectif supprimé</string>
     <string name="Activity_deleted">Activité supprimé</string>
     <string name="tasks">tâches</string>
     <string name="Repetition">Répétition</string>
@@ -53,14 +54,15 @@
     <string name="forms_empty">Un ou plusieurs champs obligatoires sont vides!</string>
     <string name="forms_incorrect_date">La date de début est plus récente que la date de fin!</string>
 
-    <string name="dialog_title_deleteActivity">Suppression de l\'activité...</string>
-    <string name="dialog_message_deleteActivity">Souhaitez vous supprimer l\'activité et ses tâches?</string>
+    <string name="dialog_title_deleteActivity">"Suppression de l'activité…"</string>
+    <string name="dialog_message_deleteActivity">"Souhaitez vous supprimer l'activité et ses tâches?"</string>
 
-    <string name="dialog_title_deleteGoal">Suppression de l\'objectif...</string>
-    <string name="dialog_message_deleteGoal">Souhaitez vous supprimer l\'objectif, ses activités et ses tâches?</string>
+    <string name="dialog_title_deleteGoal">"Suppression de l'objectif…"</string>
+    <string name="dialog_message_deleteGoal">"Souhaitez vous supprimer l'objectif, ses activités et ses tâches?"</string>
 
     <string name="dialog_title_uncheckTask">Invalidation de la tâche</string>
     <string name="dialog_message_uncheckTask">Souhaitez-vous vraiment décocher cette tâche?</string>
 
     <string name="single_task_activity">Tâche ponctuelle</string>
+    <string name="new_goal">Nouvel objectif</string>
 </resources>

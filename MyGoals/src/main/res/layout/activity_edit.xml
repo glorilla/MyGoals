@@ -2,7 +2,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_alignParentLeft="true"
-    android:layout_alignParentTop="true" >
+    android:layout_alignParentTop="true">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -10,7 +10,7 @@
         android:layout_gravity="left"
         android:orientation="vertical"
         android:scrollbarAlwaysDrawVerticalTrack="false"
-        android:scrollbars="vertical" >
+        android:scrollbars="vertical">
 
         <!-- Title -->
 
@@ -42,7 +42,7 @@
             android:layout_toRightOf="@id/l_activity_goalTitle"
             android:ems="10"
             android:hint="@string/title"
-            android:inputType="text" >
+            android:inputType="text">
 
         </EditText>
 
@@ -98,7 +98,7 @@
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@id/t_activity_start_date"
             android:text="00:00"
-            android:textAppearance="?android:attr/textAppearanceMedium" />    
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <!-- Duration -->
 
@@ -126,19 +126,8 @@
             android:layout_toRightOf="@+id/l_task_duration"
             android:text="01:00"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-		 
-        <!-- <TextView
-            android:id="@+id/l_goal_hours"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/l_task_duration"
-            android:layout_alignBottom="@+id/l_task_duration"
-            android:layout_marginLeft="4dp"
-            android:layout_toRightOf="@+id/t_task_duration"
-            android:text="@string/hours"
-            android:textAppearance="?android:attr/textAppearanceMedium" /> -->
 
-        <!-- Repetition -->
+        <!-- Repetition
 
         <TextView
             android:id="@+id/l_repetition"
@@ -147,40 +136,72 @@
             android:layout_alignLeft="@+id/l_activity_start_date"
             android:layout_below="@+id/l_task_duration"
             android:layout_marginBottom="4dp"
+            android:layout_marginRight="4dp"
             android:layout_marginTop="20dp"
             android:text="@string/Repetition"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold"
-            android:layout_marginRight="4dp" />
+            android:textStyle="bold" /> -->
 
         <TextView
             android:id="@+id/t_frequency"
+            style="@android:style/Widget.Holo.Light.Spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/l_repetition"
-            android:layout_toRightOf="@id/l_repetition"
-            android:clickable="true"
-            android:layout_marginLeft="4dp"
+            android:layout_alignLeft="@+id/l_activity_start_date"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignEnd="@+id/btn_submit"
-            android:text="@string/does_not_repeat"
-            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:layout_alignStart="@+id/l_activity_start_date"
+            android:layout_below="@+id/l_task_duration"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            style="@android:style/Widget.Holo.Light.Spinner" />
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:text="@string/does_not_repeat"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
+        <!--
+                android:layout_alignBaseline="@id/l_repetition"
+                android:layout_toRightOf="@id/l_repetition"
+        -->
 
         <!-- Submit button -->
+        <View
+            android:id="@+id/buttonLine"
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_below="@id/t_frequency"
+            android:layout_marginTop="20dp"
+            android:background="?android:attr/dividerHorizontal" />
 
-        <Button
-            android:id="@+id/btn_submit"
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/l_activity_goalTitle"
-            android:layout_below="@id/l_repetition"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="48dp"
-            android:text="@string/create" />
+            android:layout_below="@id/buttonLine"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_weight="5"
+                android:text="@android:string/cancel" />
+
+            <Button
+                android:id="@+id/btn_submit"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_weight="5"
+                android:text="@string/create" />
+        </LinearLayout>
 
     </RelativeLayout>
 

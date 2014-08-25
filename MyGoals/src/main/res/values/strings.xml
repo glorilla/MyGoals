@@ -7,20 +7,21 @@
     <string name="goal_description">Description</string>
     <string name="goal_category">Category</string>
     <string name="From_date">From</string>
-    <string name="From_time">From</string>    
+    <string name="From_time">From</string>
     <string name="To_date">To</string>
-    <string name="to_date">to</string>   
-    <string name="to_time">to</string> 
+    <string name="to_date">to</string>
+    <string name="to_time">to</string>
     <string name="goal_workload">Duration</string>
     <string name="hours">hrs</string>
     <string name="minutes">min</string>
     <string name="action_new">New</string>
     <string name="action_edit">Edit</string>
-    <string name="action_delete">Delete</string>    
+    <string name="action_delete">Delete</string>
     <string name="title_activity_new_goal">New Goal</string>
     <string name="activities">"Associated activities"</string>
-    <string name="create">create</string>
-    <string name="modify">modify</string>
+    <string name="create">Create</string>
+    <string name="modify">Modify</string>
+    <string name="modify_goal">Modify the goal</string>
     <string name="day">day</string>
     <string name="week">week</string>
     <string name="days">days</string>
@@ -30,8 +31,8 @@
     <string name="description">description</string>
     <string name="duration">Duration</string>
     <string name="Every">Every</string>
-    <string name="until">Until</string> 
-    <string name="events">events</string>     
+    <string name="until">Until</string>
+    <string name="events">events</string>
     <string name="footer_add_goal">Add a new goal</string>
     <string name="footer_add_task">Add a new task</string>
     <string name="footer_add_activity">Add a new activity</string>
@@ -43,7 +44,7 @@
     <string name="my_activity">My Activity</string>
     <string name="occurrences">occurrences</string>
     <string name="Activity_Workload">Activity Workload</string>
-    <string name="Goal_deleted">Goal deleted</string>    
+    <string name="Goal_deleted">Goal deleted</string>
     <string name="Activity_deleted">Activity deleted</string>
     <string name="tasks">tasks</string>
     <string name="Repetition">Repetition</string>
@@ -64,4 +65,5 @@
     <string name="dialog_message_uncheckTask">Do you really want to uncheck this task?</string>
 
     <string name="single_task_activity">One-time task</string>
+    <string name="new_goal">New goal</string>
 </resources>

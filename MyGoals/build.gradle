@@ -1,4 +1,4 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'idea'
 
 repositories {
@@ -12,12 +12,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.0.1'
+    compileSdkVersion 20
+    buildToolsVersion '20'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 20
     }
 
     buildTypes {
@@ -29,7 +29,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:+'
+    compile 'com.android.support:support-v4:20.0.0'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.1'
     compile 'com.fourmob.colorpicker:colorpicker:1.0.0'
     compile 'com.viewpagerindicator:library:2.4.1@aar'
