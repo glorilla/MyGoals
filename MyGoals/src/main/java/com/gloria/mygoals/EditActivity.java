@@ -256,7 +256,7 @@ public class EditActivity extends FragmentActivity implements usesDatePickerDial
                 || mVFrequencyChoice.getText().toString().isEmpty()
                 || mVStartDate.getText().toString().isEmpty()
                 || mVStartTime.getText().toString().isEmpty()
-                || mDuration > 0
+                || mDuration <= 0
                 ) {
             Log.d(TAG, "Error validateForm method: Title Or Description Or WorkLoad is empty");
 
